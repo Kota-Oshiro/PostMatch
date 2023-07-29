@@ -1,0 +1,25 @@
+
+.match-container {
+  width: 100%;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+}
+
+.total-post-count {
+  margin-left: 0.5rem;
+  padding: 0.2rem 0.4rem;
+  background-color: #f7f7f7;
+  border-radius: 6px;
+  border: none;
+}
+
+@media (min-width: 800px) {
+    
+  .match-container {
+    max-width: 520px;
+    margin: 48px auto 0;
+    border: none;
+  }
+
+}
+  

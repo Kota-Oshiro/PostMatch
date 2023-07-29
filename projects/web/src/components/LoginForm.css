@@ -1,0 +1,49 @@
+@keyframes fadeInScaleUp {
+  from {
+    transform: translate(-50%) scale(0);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%) scale(1);
+    opacity: 1;
+  }
+}
+  
+.login-modal {
+  animation: fadeInScaleUp 0.2s ease-out; /* ここでアニメーションを指定 */
+  position: fixed;
+  z-index: 9999;
+  top: 20%;
+  left: 50%;
+  transform: translate(-50%);
+  width: calc(100% - 48px);
+  max-width: 480px;
+}
+
+.login-modal-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: auto;
+  padding: 42px 24px;
+  background-color: #fff;
+  border: none;
+  border-radius: 12px;
+}
+
+.login-modal-logo {
+  margin: 0;
+  width: 16rem;
+  height: auto;
+  margin: 12px 0;
+}
+
+.login-modal-text {
+  margin: 12px 0;
+}
+
+.login-modal-annotation {
+  color: #888888;
+}
+  

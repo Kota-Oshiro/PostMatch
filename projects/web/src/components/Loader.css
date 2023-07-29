@@ -1,0 +1,57 @@
+.loader-container, .loader-tab-container, .loader-in-content-container {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.loader-container, .loader-tab-container {
+    padding: 24px 0 390px;
+}
+
+.loader-in-content-container {
+    padding: 24px;
+    height: 160px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loader {
+    position: relative;
+    top: 5%;
+    margin: 0 auto;
+    border: 5px solid #f7f7f7;
+    border-top: 5px solid #3465FF;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    animation: spin 1s linear infinite;
+}
+
+.loader-in-button {
+    border: 4px solid #888888;
+    border-top: 4px solid #f7f7f7;
+    border-radius: 50%;
+    width: 14px;
+    height: 14px;
+    animation: spin 1s linear infinite;
+}
+
+
+@media (min-width: 800px) {
+    
+    .loader-container, .loader-tab-container {
+        max-width: 520px;
+        border-radius: 12px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .loader-container {
+        margin-top: 52px;
+      }
+
+}
+
+

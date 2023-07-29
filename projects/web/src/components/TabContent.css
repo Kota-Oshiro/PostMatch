@@ -1,0 +1,116 @@
+.activity-tab, .activity-tab-user, .activity-tab-team {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px;
+}
+
+.activity-tab {
+  border-bottom: solid 1px #eeeeee;
+}
+
+.activity-tab-user, .activity-tab-team {
+  background-color: transparent;
+}
+  
+.activity-tab-column, .activity-tab-column-user, .activity-tab-column-team {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  cursor: pointer;
+  transition: border-color;
+}
+
+.activity-tab-column {
+  width: calc(50% - 12px);
+}
+
+.activity-tab-column-user, .activity-tab-column-team {
+  width: calc(25% - 24px);
+  background-color: transparent;
+}
+  
+.activity-tab-column:after, .activity-tab-column-user:after, .activity-tab-column-team:after {
+  content: '';
+  position: absolute;
+  left: 20%;
+  right: 20%;
+  bottom: -24px;
+  height: 6px;
+  border-radius: 50px 50px 0 0;
+}
+  
+.activity-tab-column.active:after {
+  background: #3465FF;
+}
+
+.activity-tab-column-user.active:after, .activity-tab-column-team.active:after {
+  background: #fff;
+}
+
+.activity-tab-column-user > span, .activity-tab-column-team > span {
+  color: #fff;
+}
+  
+.activity-tab-column.active > span, .activity-tab-column-user.active > span, .activity-tab-column-team.active > span {
+  font-weight: 900;
+}
+  
+.activity-tab-count {
+  padding: 3rem 6rem;
+  background-color: #eeeeee;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #000;
+  border-radius: 6px;
+  border: none;
+}
+  
+.activity-container, .activity-container-user, .activity-container-team {
+  width: 100%;
+  margin-bottom: 100px;
+  min-height: 460px;
+  box-sizing: border-box;
+  background-color: #fff;
+}
+
+.activity-title {
+  padding: 24px 24px 0;
+}
+
+.activity-title.add-padding{
+  padding-bottom: 24px;
+}
+  
+.activity-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.activity-content.padding {
+  padding: 24px;
+}
+
+@media (min-width: 800px) {
+    
+  .activity-container, .activity-container-user, .activity-container-team {
+    max-width: 520px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-bottom: 24px;
+    border: none;
+  }
+
+  .activity-container {
+    margin-top: 52px;
+    border-radius: 12px;
+  }
+
+  .activity-container-user, .activity-container-team {
+    border-radius: 0 0 12px 12px;
+  }
+
+}
+  

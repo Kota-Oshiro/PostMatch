@@ -1,0 +1,77 @@
+import React, { useEffect, useRef} from 'react';
+import { useInfiniteQuery } from 'react-query';
+import axios from 'axios';
+import { Helmet } from 'react-helmet';
+
+import './TabContent.css';
+import PostList from './PostList';
+
+import { Loader } from './Loader';
+
+function Posts() {
+
+  const ignitionPage = useRef(null);
+
+  // 初期レンダリング
+  const fetchPosts = async ({ pageParam = 1 }) => {
+    const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/posts/?page=${pageParam}`);
+    return res.data;
+  };
+
+  const { data, isLoading, status, isError, error, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery(['posts'], fetchPosts, {
+    staleTime: Infinity,
+    getNextPageParam: (lastPage) => {
+      if (lastPage.next !== null) {
+        const nextPageUrl = new URL(lastPage.next);
+        return nextPageUrl.searchParams.get('page');
+      }
+    },
+  });
+
+  // ここからpostsのobserver
+  const observer = new IntersectionObserver(
+    entries => {
+      if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
+        fetchNextPage();
+      }
+    },
+    { threshold: 1 }
+  );
+
+  useEffect(() => {
+    if (!isLoading && !isError && ignitionPage.current) {
+      observer.observe(ignitionPage.current);
+    }
+    return () => observer.disconnect();
+  }, [observer, status, ignitionPage]);
+  
+  if (isLoading) {
+    return <Loader />;
+  }
+
+  if (isError) {
+    return <div>{error.message}</div>;
+  }
+
+  return (
+    <>
+      <Helmet>
+        <title>みんなのポスト - ポストマッチ</title>
+        <meta property='og:title' content='みんなのポスト - ポストマッチ' />
+      </Helmet>
+
+      <div className='bg'></div>
+      <div className='container'>
+        <h2 className='container-title'>みんなの観戦記録</h2>
+        {data && <PostList
+          data={data}
+          isLoading={isLoading}
+          isFetchingNextPage={isFetchingNextPage}
+          ignitionPage={ignitionPage}
+        />}
+      </div>
+    </>
+  )
+}
+
+export default Posts;

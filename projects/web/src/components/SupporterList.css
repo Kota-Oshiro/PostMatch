@@ -1,0 +1,27 @@
+.supporters {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap; 
+  width: 100%;
+  padding: 0 12px;
+  box-sizing: border-box;
+}
+
+.supporter-link {
+  display: inline-block;
+  width: calc(12% - 10px);
+  margin: 6px;
+}
+
+.supporter-profile-img {
+  width: 100%;
+  height: auto;
+  border-radius: 50%;
+  object-fit: cover;
+  transition: opacity;
+  cursor: pointer;
+}
+
+.supporter-profile-img:hover {
+  opacity: 0.8;
+}

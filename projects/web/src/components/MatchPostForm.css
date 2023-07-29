@@ -1,0 +1,74 @@
+@keyframes slideInUp {
+  from {
+    transform: translate(-50%, 100%);
+  }
+  to {
+  transform: translate(-50%, 0);
+  }
+}
+  
+.post-modal {
+  animation: slideInUp 0.2s ease-out; /* ここでアニメーションを指定 */
+  position: fixed;
+  z-index: 9999;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%);
+  width: 100%;
+}
+
+.post-modal-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+  padding: 24px;
+  background-color: #fff;
+}
+  
+@media (min-width: 800px) {
+  
+  .floating-button-container {
+    max-width: 520px;
+  }
+  
+  .floating-button-review-pc {
+    display: inline-block;
+  }
+    
+  .floating-button-review {
+    display: none;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  .post-modal {
+    animation: fadeIn 0.2s;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 520px;
+    box-sizing: border-box;
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+  }
+  
+  .post-modal-content {
+    padding-top: 24px;
+    height: auto;
+    border: none;
+    border-radius: 12px;
+  }
+
+  .post-modal-close {
+    top: 24px;
+  }
+  
+  .submit-post {
+    position: static;
+  }
+}
+  

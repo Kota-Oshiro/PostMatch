@@ -1,0 +1,33 @@
+.player {
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  padding: 6px 24px;
+  box-sizing: border-box;
+}
+
+.player-block {
+  display: flex;
+  align-items: center;
+  min-width: 36px;
+}
+
+.player-count {
+  padding: 0 12px;
+  height: 2rem;
+  line-height: 2rem;
+  background-color: #eeeeee;
+  border-radius: 50px;
+}
+
+.player-crest {
+  margin: 0 12px;
+  width: auto;
+  height: 2rem;
+  object-fit: cover;
+}
+
+.player-name {
+  font-size: 1.4rem;
+}
+

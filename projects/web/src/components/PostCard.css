@@ -1,0 +1,258 @@
+.post {
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  border-bottom: 1px solid #eeeeee;
+  cursor: pointer;
+}
+
+.post-no-hover:hover {
+  background-color: initial;
+}
+
+.post-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 6px;
+}
+
+.post-header-left {
+  display: flex;
+  align-items: center;
+}
+
+.ellipsis-icon-block, .copy-link-post {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 3.2rem;
+  width: 3.2rem;
+}
+
+.ellipsis-icon {
+  width: auto;
+  height: 1.6rem;
+  cursor: pointer;
+}
+
+.ellipsis-menu {
+  position: relative;
+  display: none;
+  align-items: center;
+  padding: 0 12px;
+  height: 3.2rem;
+  background-color: #f7f7f7;
+  border: none;
+  border-radius: 50px;
+  transition: right 0.5s ease-in-out;
+}
+
+.ellipsis-menu-block {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 3.2rem;
+  width: 3.2rem;
+  background-color: #f7f7f7;
+}
+
+.ellipsis-menu-icon {
+  width: auto;
+  height: 1.6rem;
+  cursor: pointer;
+}
+
+.copy-success-message {
+  position: absolute;
+  justify-content: flex-end;
+  top: 38px;
+  right: -4px;
+  width: 100%;
+  color: #888888;
+  font-size: 1rem;
+  z-index: 2;
+}
+
+.post-header-user {
+  display: flex;
+  flex-direction: column;
+  margin-left: 12px;
+}
+
+.post-header-block {
+  display: flex;
+  align-items: center;
+}
+
+.post-user-icon {
+  width: 3.8rem;
+  height: 3.8rem;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.post-user-name {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #000;
+  cursor: pointer;
+}
+
+.post-user-support {
+  display: flex;
+  align-items: center;
+}
+
+.post-user-crest, .post-match-icon {
+  width: 1.4rem;
+  height: 1.4rem;
+  object-fit: cover;
+}
+
+.post-user-crest {
+  margin-left: 6px;
+}
+
+.post-match-icon {
+  margin-right: 6px;
+}
+
+.post-created {
+  color: #888;
+  font-size: 1rem;
+}
+
+.post-tag {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 6px;
+}
+
+.post-tag-match, .post-tag-motm {
+  display: inline-flex;
+  align-self: flex-start;
+  align-items: center;
+  margin-bottom: 3px;
+  height: 24px;
+  box-sizing: border-box;
+}
+
+.post-tag-match {
+  padding: 0 8px;
+  background-color: #fff;
+  border: solid 2px #eeeeee;
+  border-radius: 50px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.post-match-text {
+  display: flex;
+  align-items: center;
+  margin-right: 6px;
+  color: #3465FF;
+  font-weight: 700;
+}
+
+.post-match-text-motm {
+  color: #000;
+}
+
+.post-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.post-text {
+  display: flex;
+  align-items:flex-start;
+  white-space: pre-wrap;
+  line-height: 17px;
+  font-size: 1.4rem;
+}
+
+.fade-out {
+  position: absolute;
+  display: none;
+  bottom: -24px;
+  left: -24px;
+  width: calc(100% + 48px);
+  height: calc(34px + 24px);
+  background: linear-gradient(to bottom, transparent 0px, #fff 34px, #fff 54px);
+  box-sizing: border-box;
+}
+
+.fade-out.show {
+  display: block;
+}
+
+.read-more {
+  position: absolute;
+  justify-content: center;
+  align-items: center;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  width: 96px;
+  height: 32px;
+  background-color: #242424;
+  border-radius: 50px;
+  border: none;
+}
+
+.read-more:hover {
+  background-color: #484848;
+}
+
+.read-more-text {
+  margin-right: 0.5rem;
+  line-height: 32px;
+  color: white;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.read-more-icon {
+  width: auto;
+  height: 1.2rem;
+}
+
+.read-more.below {
+  bottom: -40px;
+}
+
+.post.expanded {
+  padding-bottom: 60px;
+}
+
+.post-user-name {
+  transition: text-decoration;
+}
+
+.post-user-name:hover {
+  text-decoration: underline;
+}
+
+.post-user-icon:hover, .post-user-crest:hover, .post-tag-match:hover, .ellipsis-icon:hover, .ellipsis-menu-icon:hover {
+  opacity: 0.8;
+}
+
+.ellipsis-menu-block, .copy-link-post {
+  transition: background-color;
+}
+
+.ellipsis-menu-block:hover, .copy-link-post:hover {
+  background-color: #EFF1F1;
+}
+
+.post.no-hover:hover {
+  background-color: #fff;
+}
+
+@media (min-width: 800px) {
+
+}

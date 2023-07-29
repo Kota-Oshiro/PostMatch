@@ -1,0 +1,74 @@
+.edit-cropper-container {
+  z-index: 9999;
+  position: fixed;
+  left: 50%;
+  transform: translate(-50%);
+  margin-top: 100px;
+  width: 320px;
+  height: 320px;
+}
+
+.edit-cropper-container.hidden{
+  display: none;
+}
+
+.edit-cropper-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: #fff;
+  box-sizing: border-box;
+}
+
+.edit-cropper-header, .edit-cropper-footer {
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  background-color: #fff;
+  border: none;
+}
+
+.edit-cropper-header {
+  justify-content: center;
+  height: 60px;
+  border-radius: 12px 12px 0 0 ;
+}
+
+.edit-cropper-footer {
+  justify-content: space-between;
+  height: 80px;
+  border-radius: 0 0 12px 12px ;
+}
+
+.edit-cropper-cancel, .edit-cropper-apply {
+  display: inline-block;
+  padding: 6px 18px;
+  font-weight: 700;
+  font-size: 1.4rem;
+  border-radius: 6px;
+  line-height:17px;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+.edit-cropper-cancel {
+  background-color: #fff;
+  color: #343434;
+  border: solid 2px #eeeeee;
+}
+
+.edit-cropper-apply {
+  background-color: #242424;
+  color: #fff;
+  border: solid 2px #242424;
+}
+
+.edit-cropper-text {
+  font-weight: 700;
+  font-size: 1.6rem;
+}
+
+.edit-cropper-body {
+  width: 100%;
+  background-color: #fff;
+}

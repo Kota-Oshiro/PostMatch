@@ -1,0 +1,41 @@
+.article-container {
+  margin-bottom: 48px;
+  padding: 24px;
+  width: 100%;
+  background-color: #fff;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.article-section {
+  padding: 1rem 0;
+}
+
+.article-container > h1 {
+  font-size: 1.8rem;
+}
+
+.article-section > h2 {
+  font-size: 1.6rem;
+}
+
+.article-section > h2, .article-section > h3, .article-section > p, .article-section > ul, .article-section > ol, .article-link {
+  margin-bottom: 1rem;
+  line-height: 2rem;
+}
+
+.article-link {
+  display:block;
+  word-break: break-all;
+  text-decoration: underline;
+}
+
+@media (min-width: 800px) {
+
+  .article-container {
+    margin: 48px auto 96px;
+    max-width: 520px;
+    border-radius: 12px;
+  }
+
+}

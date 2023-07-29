@@ -1,0 +1,197 @@
+.top-container {
+  position: relative;
+  height: 600px;
+}
+
+.top {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  left: 0;
+  right: 0;
+  margin: 70px auto 0;
+  padding: 24px 24px;
+  max-width: 1000px;
+  box-sizing: border-box;
+  z-index: 99;
+}
+
+.top-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 480px;
+  box-sizing: border-box;
+}
+
+.top-text {
+  color: #fff;
+  font-weight: 700;
+  line-height: 1.8rem;
+}
+
+.top-logo {
+  margin: 4rem 0;
+  max-width: 300px;
+  width: 60%;
+  height: auto;
+}
+
+.top-textarea {
+  display: flex;
+  align-items: center;
+}
+
+.top-emoji {
+  margin-left: 0.5rem;
+  width: auto;
+  height: 1.8rem;
+}
+
+.news {
+  display: flex;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 520px;
+  box-sizing: border-box;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.news-text {
+  font-weight: 700;
+  margin-right: 1rem;
+}
+
+.container-how-to-use {
+  margin: 0 auto;
+  padding: 24px 24px 48px;
+  width: 100%;
+  max-width: 520px;
+  background-color: #fff;
+  box-sizing: border-box;
+}
+
+.how-to-use {
+  margin-top: 24px;
+}
+
+.how-to-use-step {
+  display: flex;
+  align-items: start;
+  margin: 0 auto 24px;
+  padding: 24px 24px 0 24px;
+  width: 100%;
+  max-width: 520px;
+  background-color: #f7f7f7;
+  box-sizing: border-box;
+  border-radius: 12px;
+}
+
+.how-to-use-img {
+  width: 50%;
+  height: auto;
+}
+
+.how-to-use-block {
+  display: flex;
+  flex-direction: column;
+}
+
+.how-to-use-text {
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+}
+
+.how-to-use-title {
+  margin-bottom: 18px;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #000;
+}
+
+.how-to-use-description {
+  font-size: 1.2rem;
+  font-weight: 400;
+}
+
+/* ▼ ここからレスポンシブ ▼ */
+
+@media (min-width: 800px) {
+
+  .top-content {
+    margin-top: 72px;
+  }
+
+  .top-container {
+    height: 800px;
+  }
+
+  .top-logo {
+    margin: 48px 0 72px;
+  }
+
+  .top-text {
+    font-size: 1.6rem;
+  }
+
+  .container-how-to-use {
+    max-width: 960px;
+    width: calc(100% - 48px);
+    margin-bottom: 48px;
+    padding: 48px 48px 0;
+    border-radius: 12px;
+  }
+
+  .news {
+    max-width: 1000px;
+    margin-bottom: 48px;
+  }
+
+  .news-text {
+    font-size: 1.4rem;
+  }
+
+  .index-title {
+    font-size: 2rem;
+  }
+
+  .how-to-use {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .how-to-use-step {
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    background-color: transparent;
+    width: calc(25% - 12px);
+  }
+
+  .how-to-use-text {
+    align-items: center;
+    padding: 0 1.4rem;
+  }
+
+  .how-to-use-title {
+    margin-bottom: 12px;
+    font-weight: 500;
+  }
+
+  .how-to-use-description {
+    color: #888888;
+  }
+
+  .how-to-use-img {
+    width: 100%;
+    height: auto;
+  }
+
+}

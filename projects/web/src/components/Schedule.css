@@ -1,0 +1,66 @@
+.schedule-container {
+    width: 100%;
+    padding-bottom: 24px;
+    background-color: #fff;
+    box-sizing: border-box;
+}
+
+.schedule-container.hidden {
+    display: none;
+}
+
+.schedule-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background-color: #38003c;
+}
+
+.schedule-league {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.schedule-league-img {
+    margin-right: 12px;
+    width: 2rem;
+    height: auto;
+    object-fit: cover;
+}
+
+.schedule-header-text {
+    font-size: 1.4rem;
+    color: #fff;
+}
+
+.schedule-league-text-sub {
+    display: flex;
+    align-items: center;
+    color: #fff;
+}
+
+.schedule-title {
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    height: 48px;
+    font-size: 1.4rem;
+    background-color: #ECF0FF;
+}
+
+@media (min-width: 800px) {
+    
+    .schedule-container {
+      max-width: 520px;
+      margin: 48px auto 96px;
+      border-radius: 12px;
+    }
+
+    .schedule-header {
+        border-radius: 12px 12px 0 0;
+    }
+  
+  }

@@ -1,0 +1,40 @@
+.schedule-tab {
+    display: flex;
+    align-items: baseline;
+    overflow-x: auto;
+    white-space: nowrap;
+    width: 100%;
+}
+
+.schedule-matchday {
+    margin: 0 10px;
+    color: #fff;
+    font-size: 1.4rem;
+    cursor: pointer;
+    opacity: 0.6;
+}
+
+.schedule-matchday.active {
+    font-weight: 700;
+    opacity: 1;
+}
+
+.schedule-tab::-webkit-scrollbar{
+    display: none;
+}
+
+.schedule-tab::-webkit-scrollbar-thumb{
+    background-color: rgba(255, 255, 255, 0.6);
+    border-radius: 50px;
+    width: 12px;
+}
+
+@media (min-width: 800px) {
+    
+    .schedule-tab::-webkit-scrollbar{
+        display: block;
+        width: 100%;
+        height: 6px;
+    }
+  
+}

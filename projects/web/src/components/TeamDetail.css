@@ -1,0 +1,157 @@
+.team-container {
+  width: 100%;
+  margin-bottom: 48px;
+  box-sizing: border-box;
+}
+
+.team-bg {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
+.team-profile {
+  display: flex;
+  flex-direction: column;
+}
+
+.team-profile-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content:space-between;
+  padding: 24px;
+}
+
+.team-profile-left {
+  display: flex;
+  align-items: center;
+  justify-content:center;
+}
+
+.team-profile-img {
+  width: 6rem;
+  height: 6rem;
+  object-fit: cover;
+  margin-right: 1rem;
+}
+
+.team-profile-block {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.team-profile-main {
+  display: flex;
+  align-items:center;
+  margin-bottom: 6px;
+}
+
+.team-name {
+  margin-right: 6px;
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: #fff;
+}
+
+.team-support-crest {
+  display: flex;
+  align-items: center;
+  width: 2rem;
+  height: 2rem;
+  object-fit: cover;
+}
+
+.team-profile-text-sub {
+  font-size: 1.2rem;
+  line-height: 1.4rem;
+  color: #fff;
+}
+
+.team-edit-icon {
+  padding: 4px;
+  width: 1.6rem;
+  height: auto;
+  background-color: #fff;
+  border-radius: 50px;
+  object-fit: cover;
+}
+
+.team-profile-detail {
+  margin-bottom: 24px;
+  padding: 24px 24px 6rem 24px;
+  width: 100%;
+  background-color: #fff;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
+.team-profile-item {
+  display: flex;
+  align-items:flex-start;
+  justify-content:left;
+  margin-bottom: 16px;
+}
+
+.team-profile-item-column {
+  min-width: 100px;
+  margin-right: 12px;
+  color: #888888;
+  font-size: 1.2rem;
+}
+
+.team-profile-text-team {
+  color: #3465FF;
+}
+
+.team-profile-text-pre {
+  display: flex;
+  align-items:flex-start;
+  white-space: pre-wrap;
+}
+
+.team-sns {
+  display: flex;
+  justify-content:end;
+  margin-bottom: 24px;    
+}
+
+.team-sns-icon {
+  width: 2rem;
+  height: auto;
+  object-fit: cover;
+}
+
+.team-support-crest, .team-edit-icon, .team-sns, .team-tablinks {
+  transition: opacity;
+}
+
+.team-support-crest:hover, .team-edit-icon:hover, .team-sns:hover, .team-tablinks:hover {
+  opacity: 0.8;
+}
+
+.team-profile-text-team {
+  transition: text-decoration;
+}
+
+.team-profile-text-team:hover {
+  text-decoration:underline;
+}
+
+@media (min-width: 800px) {
+
+  .team-container {
+    max-width: 520px;
+    margin: 52px auto;
+    border: none;
+  }
+
+  .team-profile {
+    border-radius: 12px 12px 0 0;
+  }
+
+  .team-activity {
+    border-radius: 0 0 12px 12px;
+  }
+}

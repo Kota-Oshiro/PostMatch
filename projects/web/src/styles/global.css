@@ -1,0 +1,294 @@
+@charset "UTF-8";
+@import url(https://fonts.googleapis.com/earlyaccess/notosansjp.css);
+
+* {
+    margin: 0;
+    padding: 0;
+  
+}
+
+body, pre, button, input, select, textarea {
+  font-family: 'Noto Sans JP', sans-serif;
+}
+
+a, button, input, select, textarea {
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+
+body {
+  font-size: 2.0em;
+  min-width: 320px;
+}
+  
+html {
+    font-size: 62.5%;
+}
+  
+h1 {
+    font-size: 2.0rem;
+    font-weight:700;
+    color: #000;
+}
+  
+h2 {
+    font-size: 1.8rem;
+    font-weight:700;
+    color: #000;
+}
+
+h3 {
+  font-size: 1.4rem;
+  font-weight:400;
+  color: #000;
+}
+  
+p, pre, span, ul, ol {
+  font-weight:400;
+  font-size: 1.2rem;
+  color: #000;
+}
+
+ul {
+  padding-inline-start: 20px;
+  list-style: disc;
+}
+
+ol {
+  padding-inline-start: 13px;
+}
+
+.add-paragraphs {
+  margin-left: 1rem;
+}
+
+.ol-bracketed {
+  padding-inline-start: 0;
+}
+
+li {
+  margin-bottom: 1rem;
+}
+
+.ol-bracketed > li {
+  list-style-type: none;
+	counter-increment: cnt;
+  margin-bottom: 1rem;
+}
+
+.ol-bracketed > li::before {
+	content: "(" counter(cnt) ") ";
+}
+
+a {
+  font-weight:700;
+  color: #3465FF;
+  font-size: 1.2rem;
+  text-decoration: none;
+}
+
+a:hover {
+  opacity: 0.8;
+}
+
+.error-message {
+  margin: 1rem 0;
+  color: #DF5656;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.container {
+  width: 100%;
+  background-color: #fff;
+  box-sizing: border-box;
+}
+
+.container-title {
+  padding: 24px 24px 0;
+}
+
+/* フォーム関連 */
+
+form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 0 auto;
+  width: 100%;
+  max-width: 480px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+label {
+  margin: 24px 0 12px;
+  font-size: 1.2rem;
+}
+
+input:not([type="submit"]), select, textarea {
+  padding: 12px;
+  width: 100%;
+  font-size: 1.6rem;
+  border: solid 1px #eeeeee;
+  border-radius: 6px;
+  box-sizing: border-box;
+  transition: border-color;
+}
+
+input:not([type="submit"]):focus, select:focus, textarea:focus {
+  outline: solid 2px #5D84FF;
+  border: none;
+}
+
+select {
+  cursor: pointer;
+}
+
+option {
+  justify-content: center;
+}
+
+textarea {
+  height: 300px;
+}
+
+input:not([type="submit"]):hover, textarea:hover, select:hover {
+  border-color: #888888;
+}
+
+input[type="text"]::placeholder, textarea::placeholder {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 1.6rem;
+  color: #cccccc;
+}
+
+input[type="submit"], button, .button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  width: auto;
+  height: 44px;
+  margin: 32px 0;
+  padding: 0 24px;
+  background-color: #3465FF;
+  color: #fff;
+  font-size: 1.4rem;
+  font-weight: 700;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: background-color;
+}
+
+input[type="submit"]:hover, button:hover, .button:hover  {
+  background-color:#5D84FF;
+}
+
+.button-text {
+  color: white;
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.form-annotation {
+  font-size: 1rem;
+  color: #888888;
+  margin-top: 12px;
+}
+
+.form-annotation-link-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  margin-top: 12px;
+}
+
+.form-annotation-link {
+  display: inline-block;
+}
+
+.form-annotation-link:hover {
+  opacity: 0.8;
+}
+
+.modal-title {
+  height: 24px;
+  line-height: 24px;
+}
+
+.modal-close {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 24px;
+  right: 24px;
+  width: 14px;
+  height: 14px;
+  cursor: pointer;
+}
+
+.modal-close-img {
+  width: auto;
+  height: 14px;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 9997;
+}
+
+.modal-overlay.hidden {
+  display: none;
+}  
+
+.cropper-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 9997;
+}
+
+.cropper-overlay.hidden {
+  display: none;
+}
+
+@media (min-width: 800px) {
+
+  .bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #f7f7f7;
+    z-index: -2;
+  }
+
+  .container, .container-index {
+    margin: 48px auto 96px;
+    border-radius: 12px;
+  }
+
+  .container {
+    max-width: 520px;
+  }
+
+  p, pre, span, ul, ol, a {
+    font-size: 1.4rem;
+  }
+  
+}

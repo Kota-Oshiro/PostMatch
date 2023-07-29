@@ -1,0 +1,73 @@
+.schedule {
+    display: flex;
+    flex-direction: column;
+    padding: 12px 24px;
+    border-bottom: solid 1px #eeeeee;
+    transition: background-color;
+}
+  
+.schedule:hover {
+    background-color: #EFF1F1;
+}
+  
+.schedule-block {
+    display: flex;
+    justify-content: space-between;
+}
+  
+.schedule-left, .schedule-right {
+    display: flex;
+    align-items: center;
+}
+  
+.schedule-crest {
+    width: 2.4rem;
+    height: auto;
+    object-fit: cover;
+}
+
+.schedule-text, .schedule-text-timed {
+    text-align: center;
+    width: 44px;
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin: 0 12px;
+}
+  
+  .schedule-text-timed {
+    color:#888888
+}
+  
+  .schedule-date, .schedule-status, .schedule-record-count {
+    font-size: 1rem;
+}
+  
+  .schedule-status {
+    padding: 2px 6px;
+    border: solid 2px #eeeeee;
+    border-radius: 50px;
+}
+  
+.schedule-record {
+    display: flex;
+    align-items: center;
+    margin-left: 12px;
+    padding-left: 12px;
+    border-left: solid 1px #eeeeee;
+}
+  
+.schedule-record-block {
+    display: flex;
+    align-items: center;
+}
+  
+.schedule-icon {
+    width: auto;
+    height: 15px;
+}
+
+.schedule-record-count {
+    text-align: center;
+    width: 24px;
+
+}

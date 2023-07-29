@@ -1,0 +1,98 @@
+.edit-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin: 0 auto 48px;
+  max-width: 520px;
+  padding: 48px 24px 24px;
+  background-color: #fff;
+  box-sizing: border-box;
+}
+
+.edit-image {
+  position: relative;
+  margin: 0 auto 44px;
+  width: 9rem;
+  height: 9rem;
+}
+
+.edit-icon, .edit-image-control {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.edit-icon {
+  width: 30%
+}
+
+.edit-image-control, .edit-icon {
+  pointer-events: none;
+}
+
+#id_profile_image {
+  display: none;
+}
+
+.edit-image-mat {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background-color: #000;
+}
+
+.edit-image-control {
+  background-color:#fff;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  opacity: 0.8;
+}
+
+.edit-text {
+  width: 100%;    
+}
+
+.edit-item {
+  margin-bottom: 24px;    
+}
+
+.edit-year-month {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.edit-year {
+  width: 30%;
+  margin-right: 12px;
+}
+
+.edit-month {
+  width: 20%;
+  margin: 0 12px;
+}
+
+.edit-textarea {
+  height: 220px;
+  font-size: 1.4rem;
+}
+
+.edit-image {
+  cursor: pointer;
+}
+
+#profile_image, .input-button {
+  display: none;
+}
+
+@media (min-width: 800px) {
+
+  .edit-container {
+    border-radius: 12px;
+    border: none;
+  }
+}
