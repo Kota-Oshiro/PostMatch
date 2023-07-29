@@ -10,6 +10,8 @@ ENV = os.environ.get('ENV')
 if ENV != 'production':
     from dotenv import load_dotenv
     load_dotenv()
+    INSTALLED_APPS.append('debug_toolbar')
+    MIDDLEWARE.append('debug_toolbar.middleware.DebugToolbarMiddleware')
 
 # 開発環境以外でDEBUGを無効にする
 DEBUG = ENV != 'production'
@@ -55,7 +57,6 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.humanize",
-    "debug_toolbar",
     'corsheaders',
     'rest_framework',
     'rest_framework.authtoken',
@@ -79,7 +80,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 SESSION_COOKIE_SECURE = False
