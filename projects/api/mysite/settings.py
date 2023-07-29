@@ -70,7 +70,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'myapp.middleware.SecurityHeadersMiddleware', # googleログイン用にテスト追加
+    'render.middleware.SecurityHeadersMiddleware', # googleログイン用にテスト追加
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -167,7 +167,7 @@ DATABASES = {
     }
 }
 
-AUTH_USER_MODEL = 'myapp.Account'
+AUTH_USER_MODEL = 'render.Account'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -206,7 +206,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' # コンソー�
 
 
 # staticフォルダへの絶対パスを定義
-STATIC_DIR = BASE_DIR / "myapp" / "static"
+STATIC_DIR = BASE_DIR / "render" / "static"
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [STATIC_DIR,]
 STATIC_ROOT = BASE_DIR / 'staticfiles'
