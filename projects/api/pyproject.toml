@@ -49,8 +49,9 @@ WTForms = "^3.0.1"
 django-cors-headers = "^3.10.0"
 djoser = "^2.1.0"
 django-rest-framework-social-oauth2 = "^1.1.0"
-social-auth-app-django = "^4.0.0"
+social-auth-app-django = "^5.2.0"
 django-oauth-toolkit = "^1.5.0"
+djangorestframework-simplejwt = "^5.2.2"
 
 [build-system]
 requires = ["poetry-core"]
@@ -61,11 +62,3 @@ django-debug-toolbar = "^4.0.0"
 pipenv = "^2023.6.2"
 virtualenv = "^20.23.0"
 virtualenv-clone = "0.5.7"
-
-
-
-
-
-
-
-
