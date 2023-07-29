@@ -130,7 +130,7 @@ REST_FRAMEWORK = {
     ]
 }
 
-ROOT_URLCONF = "config.urls"
+ROOT_URLCONF = "mysite.urls"
 
 TEMPLATES = [
     {
@@ -152,7 +152,7 @@ TEMPLATES = [
     }
 ]
 
-WSGI_APPLICATION = "config.wsgi.application"
+WSGI_APPLICATION = "mysite.wsgi.application"
 
 MAX_CONN_AGE = 600
 
