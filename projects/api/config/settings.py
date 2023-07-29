@@ -6,14 +6,18 @@ from pathlib import Path
 from dotenv import load_dotenv
 from decouple import config
 
-load_dotenv()
+ENV = os.environ.get('ENV')
+
+# 開発環境でのみ.envファイルを読み込む
+if ENV != 'production':
+    load_dotenv()
+
+# 開発環境以外でDEBUGを無効にする
+DEBUG = ENV != 'production'
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get('SECRET_KEY', default='your secret key')
-
-# 環境変数にRENDERがある場合にDEBUGを無効にする
-DEBUG = 'RENDER' not in os.environ
 
 #HTTP リクエストの Host: ヘッダーを検証するために使用
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(',')
