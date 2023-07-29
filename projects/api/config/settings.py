@@ -62,6 +62,8 @@ INSTALLED_APPS = [
     'djoser',
 
     #googleログイン用にインストール
+    'drf_social_oauth2',
+    'social_django',
     'oauth2_provider',
 
     'cloudinary',
