@@ -25,8 +25,6 @@ RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 if RENDER_EXTERNAL_HOSTNAME:
     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
-
-
 #CORS設定
 
 #cookieをクロスオリジンのHTTPリクエストに含める
@@ -208,6 +206,14 @@ USE_L10N = True
 #メール送信
 DEFAULT_FROM_EMAIL = 'info@post-match.com'
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' # コンソールログでメールテキストを送信する
+
+
+
+# staticフォルダへの絶対パスを定義
+STATIC_DIR = BASE_DIR / "myapp" / "static"
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [STATIC_DIR,]
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 MEDIA_URL = '/media/'
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
