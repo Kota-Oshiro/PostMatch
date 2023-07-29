@@ -62,8 +62,6 @@ INSTALLED_APPS = [
     'djoser',
 
     #googleログイン用にインストール
-    'drf_social_oauth2',
-    'social_django',
     'oauth2_provider',
 
     'cloudinary',
@@ -108,9 +106,6 @@ AUTHENTICATION_BACKENDS = (
     # Google OAuth2 の認証バックエンド
     'social_core.backends.google.GoogleOAuth2',
 
-    # Django REST framework の認証バックエンド
-    'drf_social_oauth2.backends.DjangoOAuth2',
-
     # Django の認証バックエンド
     'django.contrib.auth.backends.ModelBackend',
 )
@@ -132,7 +127,6 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
         'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
-        'drf_social_oauth2.authentication.SocialAuthentication',
     ]
 }
 
