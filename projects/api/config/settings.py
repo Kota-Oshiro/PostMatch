@@ -57,8 +57,6 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.humanize",
-    'cloudinary_storage',
-    'cloudinary',
     "debug_toolbar",
     'corsheaders',
     'rest_framework',
@@ -69,6 +67,10 @@ INSTALLED_APPS = [
     'drf_social_oauth2',
     'social_django',
     'oauth2_provider',
+
+    'cloudinary',
+    'cloudinary_storage',
+
 ]
 
 MIDDLEWARE = [
@@ -218,19 +220,6 @@ STATIC_DIR = BASE_DIR / "myapp" / "static"
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [STATIC_DIR,]
 
-MEDIA_DIR = BASE_DIR / "myapp" / "media"
-MEDIA_URL = '/media/'
-MEDIA_ROOT = MEDIA_DIR
-
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-
-#CDN
-CLOUDINARY_STORAGE  = {
-  'CLOUD_NAME': os.getenv('CLOUDINARY_NAME'),
-  'API_KEY': os.getenv('CLOUDINARY_API_KEY'),
-  'API_SECRET': os.getenv('CLOUDINARY_API_SECRET'),
-}
-
 #外部API
 FOOTBALLDATA_API_URL = os.getenv('FOOTBALLDATA_API_URL')
 FOOTBALLDATA_API_TOKEN = os.getenv('FOOTBALLDATA_API_TOKEN')
@@ -259,4 +248,15 @@ INTERNAL_IPS = [
 
 DEBUG_TOOLBAR_CONFIG = {
     "SHOW_TOOLBAR_CALLBACK" : lambda request: True,
+}
+
+
+MEDIA_URL = '/media/'
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+#CDN
+CLOUDINARY_STORAGE  = {
+  'CLOUD_NAME': os.getenv('CLOUDINARY_NAME'),
+  'API_KEY': os.getenv('CLOUDINARY_API_KEY'),
+  'API_SECRET': os.getenv('CLOUDINARY_API_SECRET'),
 }
