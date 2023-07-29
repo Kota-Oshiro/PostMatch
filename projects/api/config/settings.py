@@ -3,13 +3,13 @@ import os
 from datetime import timedelta
 from django.test.runner import DiscoverRunner
 from pathlib import Path
-from dotenv import load_dotenv
 from decouple import config
 
 ENV = os.environ.get('ENV')
 
 # 開発環境でのみ.envファイルを読み込む
 if ENV != 'production':
+    from dotenv import load_dotenv
     load_dotenv()
 
 # 開発環境以外でDEBUGを無効にする
