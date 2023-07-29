@@ -64,8 +64,6 @@ INSTALLED_APPS = [
     'djoser',
 
     #googleログイン用にインストール
-    'drf_social_oauth2',
-    'social_django',
     'oauth2_provider',
 
     'cloudinary',
@@ -207,7 +205,6 @@ USE_L10N = True
 
 
 
-
 #メール送信
 DEFAULT_FROM_EMAIL = 'info@post-match.com'
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' # コンソールログでメールテキストを送信する
@@ -218,6 +215,16 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' # コンソー�
 STATIC_DIR = BASE_DIR / "myapp" / "static"
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [STATIC_DIR,]
+
+MEDIA_URL = '/media/'
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+#CDN
+CLOUDINARY_STORAGE  = {
+  'CLOUD_NAME': os.getenv('CLOUDINARY_NAME'),
+  'API_KEY': os.getenv('CLOUDINARY_API_KEY'),
+  'API_SECRET': os.getenv('CLOUDINARY_API_SECRET'),
+}
 
 #外部API
 FOOTBALLDATA_API_URL = os.getenv('FOOTBALLDATA_API_URL')
@@ -247,15 +254,4 @@ INTERNAL_IPS = [
 
 DEBUG_TOOLBAR_CONFIG = {
     "SHOW_TOOLBAR_CALLBACK" : lambda request: True,
-}
-
-
-MEDIA_URL = '/media/'
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-
-#CDN
-CLOUDINARY_STORAGE  = {
-  'CLOUD_NAME': os.getenv('CLOUDINARY_NAME'),
-  'API_KEY': os.getenv('CLOUDINARY_API_KEY'),
-  'API_SECRET': os.getenv('CLOUDINARY_API_SECRET'),
 }
