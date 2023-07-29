@@ -209,13 +209,6 @@ USE_L10N = True
 DEFAULT_FROM_EMAIL = 'info@post-match.com'
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' # コンソールログでメールテキストを送信する
 
-
-
-# staticフォルダへの絶対パスを定義
-STATIC_DIR = BASE_DIR / "myapp" / "static"
-STATIC_URL = '/static/'
-STATICFILES_DIRS = [STATIC_DIR,]
-
 MEDIA_URL = '/media/'
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
