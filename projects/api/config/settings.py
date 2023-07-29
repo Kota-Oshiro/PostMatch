@@ -3,7 +3,6 @@ import os
 from datetime import timedelta
 from django.test.runner import DiscoverRunner
 from pathlib import Path
-from decouple import config
 
 ENV = os.environ.get('ENV')
 
