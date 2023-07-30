@@ -111,6 +111,10 @@ def api_logout(request):
     response.delete_cookie('refresh')
     return response
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 #Googleログイン
 class GoogleLoginView(APIView):
 
@@ -125,10 +129,15 @@ class GoogleLoginView(APIView):
                 'client_id': settings.SOCIAL_AUTH_GOOGLE_OAUTH2_CLIENTID,
                 'client_secret': settings.SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET,
                 'redirect_uri': settings.HOST_URL,
+                'response_type': 'token',
+                'scope': 'https://www.googleapis.com/auth/drive.metadata.readonly',
+                'include_granted_scopes': 'true',
+                'state': 'pass-through value',
                 'grant_type': 'authorization_code',
-            }
+            };
             response = requests.post('https://oauth2.googleapis.com/token', data=data)
             token_data = response.json()
+            logger.info(token_data)
 
             headers = {'Authorization': 'Bearer ' + token_data['access_token']}
             response = requests.get('https://www.googleapis.com/oauth2/v1/userinfo', headers=headers)
