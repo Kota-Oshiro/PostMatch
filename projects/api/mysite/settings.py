@@ -85,10 +85,12 @@ if ENV != 'production':
     INSTALLED_APPS.append('debug_toolbar')
     MIDDLEWARE.append('debug_toolbar.middleware.DebugToolbarMiddleware')
 
-if os.getenv('ENV') == 'production':
-    SESSION_COOKIE_SECURE = True
-else:
+# 開発環境でのみdebug_toolbarを読み込む
+if ENV != 'production':
     SESSION_COOKIE_SECURE = False
+else:
+    SESSION_COOKIE_SECURE = True
+    SESSION_COOKIE_DOMAIN = os.getenv('DOMAIN')
 
 
 SIMPLE_JWT = {
