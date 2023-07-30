@@ -165,8 +165,8 @@ class GoogleLoginView(APIView):
             }
 
             response = Response(response_data, status=status.HTTP_200_OK)
-            response.set_cookie(key='refresh', value=str(refresh), httponly=True, samesite='Strict', secure=True)
-            response.set_cookie(key='access', value=str(access), httponly=True, samesite='Strict', secure=True)
+            response.set_cookie(key='refresh', value=str(refresh), httponly=True, samesite='None', secure=True)
+            response.set_cookie(key='access', value=str(access), httponly=True, samesite='None', secure=True)
 
             return response
         else:
