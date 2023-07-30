@@ -204,14 +204,14 @@ function UserDetail() {
       <div className='bg'></div>
       {account && (
       <div className='user-container'>
-        <div className='user-profile' style={{backgroundColor: account.supported_at ? account.support_team?.club_color_code_first : '#3465FF'}}>
+        <div className='user-profile' style={{backgroundColor: account.support_team ? account.support_team.club_color_code_first : '#3465FF'}}>
           <div className='user-profile-top'>
             <div className='user-profile-left'>
               <img src={ account.profile_image } className='user-profile-img' style={{transition: 'none'}}/>
               <div className='user-profile-block'>
                 <div className='user-profile-main'>
                   <span className='user-name'>{ account.name }</span>
-                  { account.supported_at && account.support_team &&
+                  { account.support_team && 
                   <Link to={`/team/${account.support_team.id}`}>
                     <img src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/crest-${account.support_team.tla}.webp`} className='user-support-crest'/>
                   </Link>}
@@ -253,7 +253,7 @@ function UserDetail() {
             </div>
             <div className='user-profile-item'>
               <h3 className='user-profile-item-column'>サポーター歴</h3>
-              { account.support_team &&
+              { account.support_team && account.supported_at &&
               <span>
                 { support_years !== 0 &&
                   `${support_years}年`

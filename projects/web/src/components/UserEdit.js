@@ -56,16 +56,24 @@ function UserEditForm() {
               setCroppedImage(data.profile_image);
     
               // UI用にsupported_atを分割
-              let supportedAt = new Date(data.supported_at);
-              setSupportedAtYear(supportedAt.getFullYear());
-              setSupportedAtMonth(supportedAt.getMonth() + 1);  // getMonth() is 0-indexed
-    
-              // 初期表示時のデータを保存して変更後に比較
-              setInitialAccount({
-                ...data,
-                support_team: data.support_team,
-                supported_at: supportedAt.toISOString()
-              });
+              if (data.supported_at) {
+                let supportedAt = new Date(data.supported_at);
+                setSupportedAtYear(supportedAt.getFullYear());
+                setSupportedAtMonth(supportedAt.getMonth() + 1);  // getMonth() is 0-indexed
+                setInitialAccount({
+                  ...data,
+                  support_team: data.support_team,
+                  supported_at: supportedAt.toISOString()
+                });
+              } else {
+                setSupportedAtYear(null);
+                setSupportedAtMonth(null);
+                setInitialAccount({
+                  ...data,
+                  support_team: data.support_team,
+                  supported_at: null
+                });
+              }
     
               // 各テキストデータの初期表示セット
               if (data.name) setName(data.name);
@@ -176,9 +184,13 @@ function UserEditForm() {
     }
   
     // 分割した年月を送信時にISO形式で送信
-    let updatedSupportedAt = new Date(supportedAtYear, supportedAtMonth - 1, 1);
-    if (initialAccount.supported_at !== updatedSupportedAt.toISOString()) {
-      formData.append('supported_at', updatedSupportedAt.toISOString());
+    if (supportTeam && supportedAtYear && supportedAtMonth) {
+      let updatedSupportedAt = new Date(supportedAtYear, supportedAtMonth - 1, 1);
+      if (initialAccount.supported_at !== updatedSupportedAt.toISOString()) {
+        formData.append('supported_at', updatedSupportedAt.toISOString());
+      }
+    } else if (initialAccount.supported_at !== null) {
+      formData.append('supported_at', null);
     }
 
     axios.put(`${process.env.REACT_APP_API_BASE_URL}/user/${currentUser.id}/edit/`, formData, {withCredentials: true})
@@ -265,7 +277,7 @@ function UserEditForm() {
           <label htmlFor="description">自己紹介</label>
           <textarea
             value={description}
-            placeholder="応援しているチームの好きなところやあなたのサッカー好きが伝わる情報を書こう！"
+            placeholder="応援しているチームの好きなところやあなたのサッカー好きが伝わる自己紹介を書こう！"
             onChange={handleInputChange(setDescription, setDescriptionError, 900)}></textarea>
           <label htmlFor="twtter_id">ツイッターID</label>
           <input
