@@ -184,21 +184,29 @@ class Index(APIView):
         else:
             current_account = None
 
-        all_matches = Match.objects.select_related('home_team', 'away_team').filter(started_at__lte=timezone.now()).order_by('-started_at')
-        recent_matches = all_matches[:10]
-        matches = list(reversed(recent_matches))
+        all_matches_past = Match.objects.select_related('home_team', 'away_team').filter(started_at__lte=timezone.now()).order_by('-started_at')
+        recent_matches_past = all_matches_past[:10]
 
-        # 注目の試合取得
+        if not recent_matches_past:
+            all_matches_future = Match.objects.select_related('home_team', 'away_team').filter(started_at__gte=timezone.now()).order_by('started_at')
+            recent_matches_future = all_matches_future[:10]
+            matches = list(recent_matches_future)
+        else:
+            matches = list(reversed(recent_matches_past))
+
         if current_account and current_account.support_team is not None:
-            # ユーザーがサポートチームを持っている場合、そのチームの最近の試合
-            featured_match = all_matches.filter(Q(home_team=current_account.support_team) | Q(away_team=current_account.support_team)).first()
+            # ユーザーがサポートチームを持っている場合、そのチームの過去直近の試合
+            featured_match = all_matches_past.filter(Q(home_team=current_account.support_team) | Q(away_team=current_account.support_team)).first()
 
             if not featured_match:
                 # ユーザーのサポートチームの最近の試合がnullの場合、最近の試合の中で最もPOSTが多い試合
-                featured_match = max(recent_matches, key=lambda match: match.total_post_count, default=None)
+                featured_match = max(matches, key=lambda match: match.total_post_count, default=None)
         else:
             # サポートチームがないユーザーまたは非ログインユーザーは最近の試合の中で最もPOSTが多い試合
-            featured_match = max(recent_matches, key=lambda match: match.total_post_count, default=None)
+            featured_match = max(matches, key=lambda match: match.total_post_count, default=None)
+
+        if not featured_match:
+            featured_match = Match.objects.select_related('home_team', 'away_team').filter(started_at__gte=timezone.now()).order_by('started_at').first()
 
         #ログイン情報取得&リターン
         if current_account:

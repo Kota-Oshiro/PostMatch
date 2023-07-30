@@ -72,7 +72,7 @@ function Index() {
           <span className='top-text'>熱狂を残そう、サッカーファンのための観戦記録サービス</span>
           <LogoText className='top-logo' />
           <div className='top-textarea'>
-            <span className='top-text'>タップして最新試合をいますぐ記録</span>
+            <span className='top-text'>最新の試合を観たらタップして記録しよう</span>
             <FireIcon className='top-emoji' />
           </div>
           {data && <MatchCard match={data} /> }
