@@ -40,29 +40,6 @@ const queryClient = new QueryClient();
 
 function Index() {
 
-  const { currentUser, authRestored } = useContext(AuthContext);
-
-  // 初期レンダリング
-  const fetchFeatureMatch = async () => {
-    const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/index/`, {withCredentials: true});
-    return res.data.featured_match;
-  };
-    
-  const { data, isLoading, isError, error } = useQuery(
-    ['match', currentUser?.support_team], 
-    fetchFeatureMatch,
-    { enabled: authRestored }
-  );
-
-  // 初回レンダリング時にmatchのレンダリングまでLoaderを表示
-  if (!authRestored || isLoading) {
-    return <Loader />;
-  }
-
-  if (isError) {
-    return <div>{error.message}</div>;
-  }
-
   return (
     <>
     <div className='top-container'>
