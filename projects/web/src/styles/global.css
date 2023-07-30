@@ -86,10 +86,6 @@ a {
   text-decoration: none;
 }
 
-a:hover {
-  opacity: 0.8;
-}
-
 .error-message {
   margin: 1rem 0;
   color: #DF5656;

@@ -25,6 +25,7 @@
 
 .activity-tab-column {
   width: calc(50% - 12px);
+  height: 21px;
 }
 
 .activity-tab-column-user, .activity-tab-column-team {

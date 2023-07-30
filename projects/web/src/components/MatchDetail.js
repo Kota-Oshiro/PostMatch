@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { formatUsing, formats } from '../DateFormat.js';
 
 import './MatchDetail.css';
+
+import { ReactComponent as NaitonEngIcon } from '../icons/nation_eng.svg';
 import { ReactComponent as CalenderIcon } from '../icons/calender.svg';
 
 function MatchDetail({ match }) {
@@ -12,10 +14,7 @@ function MatchDetail({ match }) {
       <div className='match'>
         <div className='match-top'>
           <div className='match-content'>
-            <img
-              src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Icon/ENG.webp`}
-              className='match-icon'
-            />
+            <NaitonEngIcon className='match-icon' />
             <Link to='/schedule/2021/1564' className='match-text-league'>プレミアリーグ</Link>
           </div>
           <span className='match-text'>マッチデイ { match.matchday }</span>

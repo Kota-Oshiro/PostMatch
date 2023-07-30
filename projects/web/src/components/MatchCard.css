@@ -20,6 +20,7 @@
 
 .pickup:hover {
   background-color: #EFF1F1;
+  opacity: 1;
 }
 
 .pickup-top-content, .pickup-crest {

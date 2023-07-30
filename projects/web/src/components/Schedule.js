@@ -5,6 +5,7 @@ import { useSwipeable } from 'react-swipeable';
 import { Helmet } from 'react-helmet';
 
 import './Schedule.css';
+import { ReactComponent as NaitonEngIcon } from '../icons/nation_eng.svg';
 
 import { Loader } from './Loader';
 
@@ -87,7 +88,7 @@ function Schedule() {
         <div className='schedule-container'>
           <div className='schedule-header'>
             <div className='schedule-league'>
-              <img src='https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Icon/ENG.webp' className='schedule-league-img' />
+              <NaitonEngIcon className='schedule-league-img' />
               <h2 className='schedule-header-text'>イングランドプレミアリーグ</h2>
             </div>
             <ScheduleTab currentMatchday={currentMatchday} setCurrentMatchday={setCurrentMatchday} />
