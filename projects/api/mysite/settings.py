@@ -85,7 +85,11 @@ if ENV != 'production':
     INSTALLED_APPS.append('debug_toolbar')
     MIDDLEWARE.append('debug_toolbar.middleware.DebugToolbarMiddleware')
 
-SESSION_COOKIE_SECURE = False
+if os.getenv('ENV') == 'production':
+    SESSION_COOKIE_SECURE = True
+else:
+    SESSION_COOKIE_SECURE = False
+
 
 SIMPLE_JWT = {
     #トークンの時間設定
