@@ -46,6 +46,12 @@ function Index() {
     <>
     <div className='top-container'>
       <IndexBackground />
+      <div className='top'>
+        <div className='top-content'>
+          <span className='top-text'>熱狂を残そう、サッカーファンのための観戦記録サービス</span>
+          <LogoText className='top-logo' />
+        </div>
+      </div>
     </div>
     <div className='bg'></div>
     </>
@@ -70,14 +76,9 @@ function App() {
         <AuthProvider>
           <Router>
             <div>
-              <Header />
               <ToastHandler />
               <Routes>
                 <Route path='/' element={<Index />} />
-                <Route path='/user/:id' element={<UserDetail />} />
-                <Route path='/user/edit' element={<UserEdit />} />
-                <Route path='/privacy' element={<Privacy />} />
-                <Route path='/terms' element={<Term />} />
                 <Route path='*' element={<NotFoundPage />} />
               </Routes>
             </div>

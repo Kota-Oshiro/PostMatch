@@ -189,8 +189,6 @@ function UserEditForm() {
       if (initialAccount.supported_at !== updatedSupportedAt.toISOString()) {
         formData.append('supported_at', updatedSupportedAt.toISOString());
       }
-    } else if (initialAccount.supported_at !== null) {
-      formData.append('supported_at', null);
     }
 
     axios.put(`${process.env.REACT_APP_API_BASE_URL}/user/${currentUser.id}/edit/`, formData, {withCredentials: true})
