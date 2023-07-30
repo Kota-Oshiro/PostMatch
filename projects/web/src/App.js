@@ -40,6 +40,8 @@ const queryClient = new QueryClient();
 
 function Index() {
 
+  const { currentUser, authRestored } = useContext(AuthContext);
+
   return (
     <>
     <div className='top-container'>
@@ -74,10 +76,17 @@ function App() {
                 <Route path='/' element={<Index />} />
                 <Route path='/user/:id' element={<UserDetail />} />
                 <Route path='/user/edit' element={<UserEdit />} />
+                <Route path='/team/:competition_id/:season_id' element={<TeamList />} />
+                <Route path='/team/:id' element={<TeamDetail />} />
+                <Route path='/match/:id' element={<Match />} />
+                <Route path='/schedule/:competition_id/:season_id' element={<Schedule />} />
+                <Route path='/posts/' element={<Posts />} />
+                <Route path='/post/:id' element={<PostDetail />} />
                 <Route path='/privacy' element={<Privacy />} />
                 <Route path='/terms' element={<Term />} />
                 <Route path='*' element={<NotFoundPage />} />
               </Routes>
+              <BottomNavigation />
             </div>
           </Router>
         </AuthProvider>
