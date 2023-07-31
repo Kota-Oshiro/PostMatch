@@ -76,14 +76,9 @@ function App() {
         <AuthProvider>
           <Router>
             <div>
-              <Header />
               <ToastHandler />
               <Routes>
                 <Route path='/' element={<Index />} />
-                <Route path='/user/:id' element={<UserDetail />} />
-                <Route path='/user/edit' element={<UserEdit />} />
-                <Route path='/privacy' element={<Privacy />} />
-                <Route path='/terms' element={<Term />} />
                 <Route path='*' element={<NotFoundPage />} />
               </Routes>
             </div>
