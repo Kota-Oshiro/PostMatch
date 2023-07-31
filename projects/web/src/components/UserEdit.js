@@ -45,6 +45,8 @@ function UserEditForm() {
   const [errorMessage, setErrorMessage] = useState(null);
   
   const [supportTeamError, setSupportTeamError] = useState(null);
+  const [supportYearError, setSupportYearError] = useState(null);
+  const [supportMonthError, setSupportMonthError] = useState(null);
 
   useEffect(() => {
     const loadingAccountEdit = async () => {
@@ -169,6 +171,16 @@ function UserEditForm() {
 
     if (!supportTeam && (supportedAtYear || supportedAtMonth)) {
       setSupportTeamError('応援しているチームを選択してください');
+      isValid = false;
+    }
+
+    if (supportTeam && !supportedAtYear && supportedAtMonth) {
+      setSupportYearError('年を選択してください');
+      isValid = false;
+    }
+
+    if (supportTeam && supportedAtYear && !supportedAtMonth) {
+      setSupportMonthError('月を選択してください');
       isValid = false;
     }
         
@@ -302,6 +314,8 @@ function UserEditForm() {
             </select>
             <span>月</span>            
           </div>
+          {supportYearError && <div className='error-message'>{supportYearError}</div>}
+          {supportMonthError && <div className='error-message'>{supportMonthError}</div>}
           <label htmlFor="description">自己紹介</label>
           <textarea
             value={description}

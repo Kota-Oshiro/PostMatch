@@ -198,7 +198,7 @@ function Match() {
             {data.match && <span className='total-post-count'>{ data.match.total_post_count }</span>}
           </div>
           <div className={`activity-tab-column ${currentTab === 'motms' ? 'active' : ''}`} onClick={() => openForm('motms')}>
-            <span>マンオブザマッチ</span>
+            <span>MOTM</span>
           </div>
         </div>
         <div {...handlers}>

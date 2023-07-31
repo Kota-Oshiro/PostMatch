@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
+import { useMutation, useQueryClient } from 'react-query';
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -15,6 +16,8 @@ function MatchPostForm({
     postPlayerList, setPostPlayerList, postPlayerId, setPostPlayerId,
     refetchPosts
   }) {
+
+  const queryClient = useQueryClient();
 
   const { setToastId, setToastMessage, setToastType } = useContext(AuthContext);
 
@@ -77,6 +80,31 @@ function MatchPostForm({
     };
   }, []);
 
+  // データ送信のためのMutationの作成
+  const mutation = useMutation(
+    postData => axios.post(`${process.env.REACT_APP_API_BASE_URL}/match/${matchId}/post_create/`, postData, {withCredentials: true}),
+    {
+      onSuccess: async () => {
+        setLoaderInButton(false)
+        setPostModalVisible(false);
+        setToastId(uuidv4());
+        setToastMessage('投稿が完了しました')
+        setToastType('postSuccess')
+        await refetchPosts();
+        // 送信が成功したら親のクエリを再取得する
+        queryClient.invalidateQueries(['match', matchId, currentUser]);
+      },
+      onError: (error) => {
+        console.error(error);
+        setLoaderInButton(false)
+        setPostModalVisible(false);
+        setToastId(uuidv4());
+        setToastMessage('エラーが発生しました')
+        setToastType('error')
+      },
+    }
+  );
+  
   const handleSubmit = async (event) => {
     event.preventDefault();
   
@@ -93,25 +121,8 @@ function MatchPostForm({
       player_id: postPlayerId,
       content: postContent
     };
-  
-    try {
-      await axios.post(`${process.env.REACT_APP_API_BASE_URL}/match/${matchId}/post_create/`, postData, {withCredentials: true});
-      setLoaderInButton(false)
-      setPostModalVisible(false);
-      setToastId(uuidv4());
-      setToastMessage('投稿が完了しました')
-      setToastType('postSuccess')
-      await refetchPosts();
 
-
-    } catch (error) {
-      console.error(error);
-      setLoaderInButton(false)
-      setPostModalVisible(false);
-      setToastId(uuidv4());
-      setToastMessage('エラーが発生しました')
-      setToastType('error')
-    }
+    mutation.mutate(postData);
   }
 
   return (
@@ -122,7 +133,7 @@ function MatchPostForm({
         </div>
         <h2 className='modal-title'>ポストの作成</h2>
         <form onSubmit={handleSubmit}>
-          <label htmlFor='pulldown'>あなたが選ぶマンオブザマッチ</label>
+          <label htmlFor='pulldown'>マンオブザマッチ投票</label>
           <select className='player-select' name='player_id' onChange={e => setPostPlayerId(e.target.value)}>
             <option value=''>プレイヤーを選んでください</option>
             <optgroup label={match.home_team.name_ja}>
