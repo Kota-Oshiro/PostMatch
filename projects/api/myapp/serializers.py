@@ -53,6 +53,7 @@ class AccountEditTeamSerializer(serializers.ModelSerializer):
 class AccountEditSerializer(serializers.ModelSerializer):
     support_team = serializers.PrimaryKeyRelatedField(queryset=Team.objects.all(), allow_null=True)
     support_team_name_ja = serializers.SerializerMethodField()
+    supported_at = serializers.DateTimeField(allow_null=True)
 
     class Meta:
         model = Account

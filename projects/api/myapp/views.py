@@ -1,6 +1,7 @@
 import json
 import pandas as pd
 import http.client
+from datetime import datetime, timezone
 
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404
@@ -339,6 +340,10 @@ def user_edit(request, pk):
     elif request.method == 'PUT':
         serializer = AccountEditSerializer(account, data=request.data)
         if serializer.is_valid():
+            validated_data = serializer.validated_data
+            if 'supported_at' in validated_data:
+                if validated_data['supported_at'] == datetime(1800, 1, 1, tzinfo=timezone.utc):
+                    validated_data['supported_at'] = None
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

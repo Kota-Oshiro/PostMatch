@@ -43,6 +43,8 @@ function UserEditForm() {
   const inputRef = useRef();
   
   const [errorMessage, setErrorMessage] = useState(null);
+  
+  const [supportTeamError, setSupportTeamError] = useState(null);
 
   useEffect(() => {
     const loadingAccountEdit = async () => {
@@ -161,11 +163,20 @@ function UserEditForm() {
     }
   };
 
-  const handleSubmit = async e => {  // 非同期関数として定義
-    e.preventDefault();
-  
-    setLoaderInButton(true)
-  
+  //バリデーションチェック
+  const validateForm = () => {
+    let isValid = true;
+
+    if (!supportTeam && (supportedAtYear || supportedAtMonth)) {
+      setSupportTeamError('応援しているチームを選択してください');
+      isValid = false;
+    }
+        
+    return isValid;
+  };
+
+  const submitForm = async () => {  // 非同期関数として定義
+
     const formData = new FormData();
   
     if (initialAccount.profile_image !== croppedImage) {
@@ -184,13 +195,16 @@ function UserEditForm() {
     }
   
     // 分割した年月を送信時にISO形式で送信
+    let updatedSupportedAt = initialAccount.supported_at;
+  
     if (supportTeam && supportedAtYear && supportedAtMonth) {
-      let updatedSupportedAt = new Date(supportedAtYear, supportedAtMonth - 1, 1);
-      if (initialAccount.supported_at !== updatedSupportedAt.toISOString()) {
-        formData.append('supported_at', updatedSupportedAt.toISOString());
-      }
+      updatedSupportedAt = new Date(supportedAtYear, supportedAtMonth - 1, 1).toISOString();
+    } else {
+      updatedSupportedAt = '1800-01-01T00:00:00.000Z'; // 初期値を1800年に設定
     }
-
+  
+    formData.append('supported_at', updatedSupportedAt);
+  
     axios.put(`${process.env.REACT_APP_API_BASE_URL}/user/${currentUser.id}/edit/`, formData, {withCredentials: true})
     .then(response => {
       setAccount(response.data);
@@ -205,9 +219,24 @@ function UserEditForm() {
       }
       navigation(`/user/${currentUser.id}`,{state: { from: 'userEdit', message: '更新に失敗しました', type: 'error' }});
       setLoaderInButton(false)
+    })
+    .finally(() => {
+      setLoaderInButton(false)
     });
   }
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
   
+    setLoaderInButton(true)
+  
+    const isValid = validateForm();
+    if (isValid) {
+      submitForm();
+    } else {
+      setLoaderInButton(false)
+    }
+  };
 
   if (loadingAccountEdit) {
     return <Loader />;
@@ -253,10 +282,11 @@ function UserEditForm() {
               <option key={team.id} value={team.id}>{team.name_ja}</option>
             ))}
           </select>
+          {supportTeamError && <div className='error-message'>{supportTeamError}</div>}
           <label htmlFor="supported_at">いつから応援してる？</label>
           <div className="edit-year-month">
             <select className="edit-year" onChange={event => setSupportedAtYear(event.target.value)}>
-              {account.support_team && <option value={supportedAtYear}>{supportedAtYear}</option> }
+              {account.supported_at && <option value={supportedAtYear}>{supportedAtYear}</option> }
               <option value="">----</option>
               {[...Array(100)].map((_, i) => (
                 <option key={new Date().getFullYear() - i} value={new Date().getFullYear() - i}>{new Date().getFullYear() - i}</option>
@@ -264,7 +294,7 @@ function UserEditForm() {
             </select>            
             <span>年</span>
             <select className="edit-month" onChange={event => setSupportedAtMonth(event.target.value)}>
-              {account.support_team && <option value={supportedAtMonth}>{supportedAtMonth}</option> }
+              {account.supported_at && <option value={supportedAtMonth}>{supportedAtMonth}</option> }
               <option value="">--</option>
               {[...Array(12)].map((_, i) => (
                 <option key={i + 1} value={i + 1}>{i + 1}</option>
