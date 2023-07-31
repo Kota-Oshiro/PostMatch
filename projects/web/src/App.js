@@ -1,69 +1,32 @@
-import React, { useContext } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import { useQuery, QueryClient, QueryClientProvider } from 'react-query';
-import axios from 'axios';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
 import { AuthProvider } from './AuthContext';
-
-import Toast from './components/Toast';
-
-import Header from './components/Header';
-import Footer from './components/Footer';
-import BottomNavigation from './components/BottomNavigation.js';
-
-import UserDetail from './components/UserDetail';
-import UserEdit from './components/UserEdit';
-import TeamList from './components/TeamList';
-import TeamDetail from './components/TeamDetail';
-import Match from './components/Match';
-import Schedule from './components/Schedule';
-import Posts from './components/Posts';
-import PostDetail from './components/PostDetail';
-
-import Privacy from './components/article/Privacy';
-import Term from './components/article/Terms';
-
-import IndexBackground from './components/IndexBackground';
-import MatchCard from './components/MatchCard';
 
 import ErrorBoundary from './components/error/ErrorBoundary';
 import NotFoundPage from './components/error/NotFoundPage';
 
-import { AuthContext } from './AuthContext';
-import { Loader } from './components/Loader';
+import './components/teaser/Teaser.css';
+import IndexBackgroundTeaser from './components/teaser/IndexBackgroundTeaser';
 
-import './App.css';
 import { ReactComponent as LogoText } from './logos/logo_text_white.svg';
-import { ReactComponent as FireIcon } from './icons/fire.svg';
 
 const queryClient = new QueryClient();
 
 function Index() {
 
-  const { currentUser, authRestored } = useContext(AuthContext);
-
   return (
     <>
-    <div className='top-container'>
-      <IndexBackground />
-      <div className='top'>
-        <div className='top-content'>
-          <span className='top-text'>熱狂を残そう、サッカーファンのための観戦記録サービス</span>
-          <LogoText className='top-logo' />
-        </div>
+    <div className='teaser-container'>
+      <IndexBackgroundTeaser />
+      <div className='teaser-top'>
+        <LogoText className='teaser-logo' />
+        <span className='teaser-title'>近 日 公 開 予 定</span>
       </div>
+      <span className='teaser-rights'>© POST MATCH</span>
     </div>
     <div className='bg'></div>
-    </>
-  );
-}
-
-function ToastHandler() {
-  const { toastId, toastMessage, toastType } = useContext(AuthContext);
-
-  return (
-    <>
-      <Toast id={toastId} message={toastMessage} type={toastType} />
     </>
   );
 }
@@ -76,7 +39,6 @@ function App() {
         <AuthProvider>
           <Router>
             <div>
-              <ToastHandler />
               <Routes>
                 <Route path='/' element={<Index />} />
                 <Route path='*' element={<NotFoundPage />} />
