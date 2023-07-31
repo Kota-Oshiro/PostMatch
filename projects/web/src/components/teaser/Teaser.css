@@ -45,7 +45,7 @@
 
 .teaser-rights {
   position: absolute;
-  bottom: 48px;
+  bottom: 120px;
   left: 50%;
   transform: translate(-50%);
   z-index: 2;
