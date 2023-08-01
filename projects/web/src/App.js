@@ -1,7 +1,9 @@
-import React, { useContext } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import React, { useEffect, useContext } from 'react';
+import { BrowserRouter as Router, Routes, Route, useLocation, Link } from 'react-router-dom';
 import { useQuery, QueryClient, QueryClientProvider } from 'react-query';
 import axios from 'axios';
+
+import ReactGA4 from 'react-ga4';
 
 import { AuthProvider } from './AuthContext';
 
@@ -40,7 +42,22 @@ import { ReactComponent as XIcon } from './icons/x_white.svg';
 import './components/teaser/Teaser.css';
 import IndexBackgroundTeaser from './components/teaser/IndexBackgroundTeaser';
 
+
 const queryClient = new QueryClient();
+
+const ga4Id = process.env.REACT_APP_GA4_ID;
+ReactGA4.initialize(ga4Id);
+
+function UsePageViews() {
+
+  let location = useLocation();
+
+  useEffect(() => {
+    ReactGA4.send('pageview');
+  }, [location]);
+
+  return null;
+}
 
 function Index() {
 
@@ -62,12 +79,12 @@ function Index() {
 }
 
 function App() {
-  
   return (
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
           <Router>
+          <UsePageViews />
             <div>
               <Routes>
                 <Route path='/' element={<Index />} />
