@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { ReportForm } from './GoogleForm';
+
 import { ReactComponent as ThreeDotLeaderIcon } from '../icons/three_dot_leader.svg';
-import { ReactComponent as TwitterIcon } from '../icons/twitter_blue.svg';
+import { ReactComponent as XIcon } from '../icons/x_blue.svg';
 import { ReactComponent as CopyIcon } from '../icons/copy.svg';
-import { ReactComponent as AlartIcon } from '../icons/alart.svg';
 
 const PostCardHeader = ({ post }) => {
 
@@ -63,15 +64,13 @@ const PostCardHeader = ({ post }) => {
         </div>
         <div className='ellipsis-menu' style={{display: isMenuVisible ? 'flex' : 'none'}} onClick={(e) => e.stopPropagation()}>
           <a href={`https://twitter.com/share?url=https://post-match.com/posts/${post.id}&hashtags=ポストマッチ&via=postmatch_jp&text=${post.user.name}さんの観戦記録（${post.match.home_team.name_ja} vs ${post.match.away_team.name_ja}）`} target='_blank' className='ellipsis-menu-block'>
-            <TwitterIcon className='ellipsis-menu-icon' />
+            <XIcon className='ellipsis-menu-icon' />
           </a>
           <div id='copy-link-post' className='ellipsis-menu-block' onClick={handleCopyClick}>
             <CopyIcon className='ellipsis-menu-icon' />
           </div>
           <div className='copy-success-message' style={{display: isLinkCopied ? 'block' : 'none'}}>リンクをコピーしました</div>
-            <div className='ellipsis-menu-block' onClick={(e) => {e.stopPropagation(); navigation('/'); }} >
-              <AlartIcon className='ellipsis-menu-icon' />
-            </div>
+          <ReportForm post={post.id} />
         </div>
       </div>
     </div>

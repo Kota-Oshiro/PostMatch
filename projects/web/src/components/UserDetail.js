@@ -12,7 +12,7 @@ import { formatUsing, formats } from '../DateFormat.js';
 import './UserDetail.css';
 import './TabContent.css';
 import { ReactComponent as SettingIcon } from '../icons/setting.svg';
-import { ReactComponent as TwitterIcon } from '../icons/twitter.svg';
+import { ReactComponent as XIcon } from '../icons/x_black.svg';
 
 import { Loader, LoaderInTabContent } from './Loader';
 import NotFoundPage from './error/NotFoundPage';
@@ -270,7 +270,7 @@ function UserDetail() {
             </div>
             { account.twitter_id &&
             <a href={`https://twitter.com/${account.twitter_id}`} className='user-sns' target='_blank' rel='noopener noreferrer'>
-              <TwitterIcon className='user-sns-icon'/>
+              <XIcon className='user-sns-icon'/>
             </a>
             }
           </div>

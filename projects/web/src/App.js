@@ -1,16 +1,44 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import React, { useContext } from 'react';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { useQuery, QueryClient, QueryClientProvider } from 'react-query';
+import axios from 'axios';
 
 import { AuthProvider } from './AuthContext';
+
+import Toast from './components/Toast';
+
+import Header from './components/Header';
+import Footer from './components/Footer';
+import BottomNavigation from './components/BottomNavigation.js';
+
+import UserDetail from './components/UserDetail';
+import UserEdit from './components/UserEdit';
+import TeamList from './components/TeamList';
+import TeamDetail from './components/TeamDetail';
+import Match from './components/Match';
+import Schedule from './components/Schedule';
+import Posts from './components/Posts';
+import PostDetail from './components/PostDetail';
+
+import Privacy from './components/article/Privacy';
+import Term from './components/article/Terms';
+
+import IndexBackground from './components/IndexBackground';
+import MatchCard from './components/MatchCard';
 
 import ErrorBoundary from './components/error/ErrorBoundary';
 import NotFoundPage from './components/error/NotFoundPage';
 
+import { AuthContext } from './AuthContext';
+import { Loader } from './components/Loader';
+
+import './App.css';
+import { ReactComponent as LogoText } from './logos/logo_text_white.svg';
+import { ReactComponent as XIcon } from './icons/x_white.svg';
+
+
 import './components/teaser/Teaser.css';
 import IndexBackgroundTeaser from './components/teaser/IndexBackgroundTeaser';
-
-import { ReactComponent as LogoText } from './logos/logo_text_white.svg';
 
 const queryClient = new QueryClient();
 
@@ -24,9 +52,11 @@ function Index() {
         <LogoText className='teaser-logo' />
         <span className='teaser-title'>近 日 公 開 予 定</span>
       </div>
+      <a href='https://twitter.com/postmatch_jp' target='_blank' rel='noopener noreferrer'>
+        <XIcon  className='teaser-sns' />
+      </a>
       <span className='teaser-rights'>© POST MATCH</span>
     </div>
-    <div className='bg'></div>
     </>
   );
 }

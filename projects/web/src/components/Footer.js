@@ -5,7 +5,7 @@ import { AuthContext } from '../AuthContext';
 import { Inquiryform } from './GoogleForm';
 
 import './Footer.css';
-import { ReactComponent as TwitterIcon } from '../icons/twitter_grey.svg';
+import { ReactComponent as XIcon } from '../icons/x_grey.svg';
 
 function Footer() {
 
@@ -21,7 +21,7 @@ function Footer() {
       <div className='footer-menu'>
         <span className='footer-text'>公式SNS</span>
         <a href='https://twitter.com/postmatch_jp' className='footer-sns' target='_blank' rel='noopener noreferrer'>
-          <TwitterIcon className='footer-sns-icon' />
+          <XIcon className='footer-sns-icon' />
         </a>
       </div>
       <div className='footer-menu'>
