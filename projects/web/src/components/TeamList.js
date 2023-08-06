@@ -5,7 +5,7 @@ import { Helmet } from 'react-helmet';
 import axios from 'axios';
 
 import './TeamList.css';
-import { Loader } from './Loader';
+import { Loader, SkeletonScreenTeam } from './Loader';
 import TeamCard from './TeamCard';
 import NotFoundPage from './error/NotFoundPage';
 
@@ -23,7 +23,18 @@ function TeamList() {
   });
   
   if (isLoading) {
-    return <Loader />; // データがロード中の場合はLoaderを表示
+    return (
+      <>
+        <div className='bg'></div>
+        <div className='team-list-container'>
+          <div className='team-list-league'>
+          <img src='https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Icon/ENG.webp' className='schedule-league-img' />
+          <h2 className='schedule-header-text'>イングランドプレミアリーグ</h2>
+          </div>
+          <SkeletonScreenTeam />
+        </div>
+      </>
+    )
   }
 
   if (isError) {
@@ -39,17 +50,17 @@ function TeamList() {
       <div className='bg'></div>
       <div className='team-list-container'>
         <div className='team-list-league'>
-          <img src='https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Icon/ENG.webp' className='schedule-league-img' />
-          <h2 className='schedule-header-text'>イングランドプレミアリーグ</h2>
+        <img src='https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Icon/ENG.webp' className='schedule-league-img' />
+        <h2 className='schedule-header-text'>イングランドプレミアリーグ</h2>
         </div>
         <div className='team-cards'>
-          {data && data.map(team => (
-            <TeamCard 
-              key={team.id} 
-              team={team}
-            />
-          ))}  
-        </div>   
+        {data && data.map(team => (
+          <TeamCard 
+            key={team.id} 
+            team={team}
+          />
+        ))} 
+        </div>
       </div>
     </>
   );

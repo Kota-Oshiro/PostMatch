@@ -7,7 +7,7 @@ import { Helmet } from 'react-helmet';
 import './Schedule.css';
 import { ReactComponent as NaitonEngIcon } from '../icons/nation_eng.svg';
 
-import { Loader } from './Loader';
+import { SkeletonScreenSchedule, SkeletonScreenScheduleList } from './Loader';
 
 import ScheduleCard from './ScheduleCard';
 import ScheduleTab from './ScheduleTab';
@@ -83,7 +83,7 @@ function Schedule() {
       <FetchContext.Provider value={{ fetchData, setLoading, setLoadingTab }}>
         <div className='bg'></div>
         {isLoading ? (
-          <Loader />
+          <SkeletonScreenSchedule />
         ) : (
         <div className='schedule-container'>
           <div className='schedule-header'>
@@ -94,7 +94,7 @@ function Schedule() {
             <ScheduleTab currentMatchday={currentMatchday} setCurrentMatchday={setCurrentMatchday} />
           </div>
           <div {...handlers}>
-            {isLoadingTab ? <Loader /> : matches.map(match => (
+            {isLoadingTab ? <SkeletonScreenScheduleList /> : matches.map(match => (
             <ScheduleCard key={match.id} match={match} />
           ))}
           </div>

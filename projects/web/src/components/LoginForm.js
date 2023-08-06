@@ -65,9 +65,9 @@ function LoginForm({ isLoginModalVisible, setLoginModalVisible }) {
         <p className='login-modal-text'>ポストマッチはサッカー観戦記録サービスです。ログインすると試合の感想を投稿や観戦リストの作成がご利用いただけます。</p>
         <GoogleAuth/>
         <p className='login-modal-text'>
-          <Link to='/terms'>利用規約</Link>
+          <Link to='/terms' onClick={ handleMenuClose } >利用規約</Link>
           、
-          <Link to='/privacy'>プライバシーポリシー</Link>
+          <Link to='/privacy' onClick={ handleMenuClose } >プライバシーポリシー</Link>
           に同意したうえでログインしてください。
         </p>
       </div>

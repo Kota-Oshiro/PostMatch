@@ -8,19 +8,30 @@
 }
 
 .article-section {
-  padding: 1rem 0;
+  padding: 12px 0;
 }
 
 .article-container > h1 {
   font-size: 1.8rem;
 }
 
+.article-date {
+  color: #888;
+}
+
+.article-container > img {
+  margin: 12px 0;
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+}
+
 .article-section > h2 {
   font-size: 1.6rem;
 }
 
-.article-section > h2, .article-section > h3, .article-section > p, .article-section > ul, .article-section > ol, .article-link {
-  margin-bottom: 1rem;
+.article-section > h2, .article-section > h3, .article-section > p, .article-section > ul, .article-section > ol, .article-link, .article-date {
+  margin-bottom: 12px;
   line-height: 2rem;
 }
 
@@ -28,6 +39,27 @@
   display:block;
   word-break: break-all;
   text-decoration: underline;
+}
+
+.article-user {
+  display: flex;
+  align-items: center;
+  margin: 12px 0;
+}
+
+.article-user-icon {
+  vertical-align: middle;
+  width: 3.2rem;
+  height: 3.2rem;
+  border-radius: 50%;
+}
+
+.article-user-name {
+  margin-left: 12px;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #000;
+  cursor: pointer;
 }
 
 @media (min-width: 800px) {

@@ -1,32 +1,30 @@
-.loader-container, .loader-tab-container, .loader-in-content-container {
+
+
+
+.loader, .loader-index, .loader-tab-content, .loader-posts, .load-spinner, .loader-teamcards, .loader-schedule-index, .loader-schedule {
+    display: flex;
+    justify-content: center;
+    background-color: #fff;
     width: 100%;
     box-sizing: border-box;
 }
 
-.loader-container, .loader-tab-container {
-    padding: 24px 0 390px;
+.loader {
+    margin-top: 24px;
 }
 
-.loader-in-content-container {
-    padding: 24px;
-    height: 160px;
+.loader-index {
+    align-items: center;
+    height: 100vh;
+}
+
+.loader-tab-content {
+    padding: 24px 0 390px;
 }
 
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
-}
-
-.loader {
-    position: relative;
-    top: 5%;
-    margin: 0 auto;
-    border: 5px solid #f7f7f7;
-    border-top: 5px solid #3465FF;
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    animation: spin 1s linear infinite;
 }
 
 .loader-in-button {
@@ -38,19 +36,54 @@
     animation: spin 1s linear infinite;
 }
 
+.loader-posts {
+    flex-direction: column;
+    align-items: center;
+    padding: 24px;
+}
+
+.load-spinner {
+    padding: 24px;
+    height: 160px;
+}
+
+.loader-schedule-index, .loader-schedule {
+    flex-direction: column;
+    align-items: center;
+    padding: 0 24px 24px;
+}
+
+.loader-schedulecard {
+    height: 50px;
+    box-sizing: border-box;
+}
+
+.loader-teamcards {
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 24px;
+    background-color: #fff;
+}
+
+.loader-teamcard {
+    margin-bottom: 24px;
+    width: calc(50% - 12px);
+    height: 120px;
+}
 
 @media (min-width: 800px) {
     
-    .loader-container, .loader-tab-container {
+    .loader-post-container, .loader-teamcards, .loader-schedule-index, .loader-schedule, .loader-tab-content {
         max-width: 520px;
         border-radius: 12px;
         margin-left: auto;
         margin-right: auto;
     }
 
-    .loader-container {
-        margin-top: 52px;
-      }
+    .loader, .loader-schedule-index {
+        margin: 48px auto 92px;
+        padding-top: 24px;
+    }
 
 }
 

@@ -22,26 +22,24 @@ import Schedule from './components/Schedule';
 import Posts from './components/Posts';
 import PostDetail from './components/PostDetail';
 
+import News from './components/article/News';
+import NewsArticle  from './components/article/NewsArticle';
 import Privacy from './components/article/Privacy';
 import Term from './components/article/Terms';
 
-import IndexBackground from './components/IndexBackground';
+import IndexBackgroundTeaser from './components/teaser/IndexBackgroundTeaser';
 import MatchCard from './components/MatchCard';
 
 import ErrorBoundary from './components/error/ErrorBoundary';
 import NotFoundPage from './components/error/NotFoundPage';
 
 import { AuthContext } from './AuthContext';
-import { Loader } from './components/Loader';
-
-import './App.css';
-import { ReactComponent as LogoText } from './logos/logo_text_white.svg';
-import { ReactComponent as XIcon } from './icons/x_white.svg';
-
+import { LoaderIndex } from './components/Loader';  
 
 import './components/teaser/Teaser.css';
-import IndexBackgroundTeaser from './components/teaser/IndexBackgroundTeaser';
-
+import { ReactComponent as LogoText } from './logos/logo_text_white.svg';
+import { ReactComponent as XIcon } from './icons/x_white.svg';
+import { ReactComponent as FireIcon } from './icons/fire.svg';
 
 const queryClient = new QueryClient();
 

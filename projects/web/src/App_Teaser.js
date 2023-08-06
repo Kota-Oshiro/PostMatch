@@ -1,7 +1,9 @@
-import React, { useContext } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import React, { useEffect, useContext } from 'react';
+import { BrowserRouter as Router, Routes, Route, useLocation, Link } from 'react-router-dom';
 import { useQuery, QueryClient, QueryClientProvider } from 'react-query';
 import axios from 'axios';
+
+import ReactGA4 from 'react-ga4';
 
 import { AuthProvider } from './AuthContext';
 
@@ -20,27 +22,40 @@ import Schedule from './components/Schedule';
 import Posts from './components/Posts';
 import PostDetail from './components/PostDetail';
 
+import News from './components/article/News';
+import NewsArticle  from './components/article/NewsArticle';
 import Privacy from './components/article/Privacy';
 import Term from './components/article/Terms';
 
-import IndexBackground from './components/IndexBackground';
+import IndexBackgroundTeaser from './components/teaser/IndexBackgroundTeaser';
 import MatchCard from './components/MatchCard';
 
 import ErrorBoundary from './components/error/ErrorBoundary';
 import NotFoundPage from './components/error/NotFoundPage';
 
 import { AuthContext } from './AuthContext';
-import { Loader } from './components/Loader';
-
-import './App.css';
-import { ReactComponent as LogoText } from './logos/logo_text_white.svg';
-import { ReactComponent as XIcon } from './icons/x_white.svg';
-
+import { LoaderIndex } from './components/Loader';  
 
 import './components/teaser/Teaser.css';
-import IndexBackgroundTeaser from './components/teaser/IndexBackgroundTeaser';
+import { ReactComponent as LogoText } from './logos/logo_text_white.svg';
+import { ReactComponent as XIcon } from './icons/x_white.svg';
+import { ReactComponent as FireIcon } from './icons/fire.svg';
 
 const queryClient = new QueryClient();
+
+const ga4Id = process.env.REACT_APP_GA4_ID;
+ReactGA4.initialize(ga4Id);
+
+function UsePageViews() {
+
+  let location = useLocation();
+
+  useEffect(() => {
+    ReactGA4.send('pageview');
+  }, [location]);
+
+  return null;
+}
 
 function Index() {
 
@@ -62,12 +77,12 @@ function Index() {
 }
 
 function App() {
-  
   return (
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
           <Router>
+          <UsePageViews />
             <div>
               <Routes>
                 <Route path='/' element={<Index />} />

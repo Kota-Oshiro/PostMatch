@@ -1,11 +1,20 @@
 import React, { useEffect } from 'react';
 
-import { Loader, LoaderInContent } from './Loader';
+import { Loader, LoaderSpinner } from './Loader';
 
 import PlayerCard from './PlayerCard';
+import NoContent from './NoContent';
 
 function PlayerList({ data, isLoading, isFetchingNextPage, ignitionPage }) {
   
+  const totalCount = data?.pages.reduce((sum, page) => sum + page.results.length, 0);
+  
+  if (totalCount === 0 && !isLoading) {
+    return (
+      <NoContent />
+    )
+  }
+
   return (
     <>
       {isLoading ? (
@@ -21,7 +30,7 @@ function PlayerList({ data, isLoading, isFetchingNextPage, ignitionPage }) {
           ))}
         </>
       )}
-      {isFetchingNextPage && <LoaderInContent />}
+      {isFetchingNextPage && <LoaderSpinner />}
       <div ref={ignitionPage} style={{ height: '20px' }} />
     </>
   );

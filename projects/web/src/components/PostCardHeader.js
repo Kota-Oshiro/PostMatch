@@ -43,8 +43,8 @@ const PostCardHeader = ({ post }) => {
   return (
     <div className='post-header'>
       <div className='post-header-left'>
-        <div onClick={(e) => {e.stopPropagation(); navigation(`/user/${post.user.id}`)}}>
-          <img src={post.user.profile_image} className='post-user-icon'/>
+        <div onClick={(e) => {e.stopPropagation(); navigation(`/user/${post.user.id}`)}} className='post-user-icon' >
+          <img src={post.user.profile_image}/>
         </div> 
         <div className='post-header-user'>
           <div className='post-header-block'>

@@ -41,9 +41,10 @@ class Player(models.Model):
     name = models.CharField(max_length=255)
     nationality = models.CharField(max_length=255)
     position = models.CharField(max_length=255)
-    birthday = models.DateField()
+    birthday = models.DateField(null=True)
     last_updated_at = models.DateTimeField()
-
+    name_ja = models.CharField(max_length=255, null=True)
+    is_active = models.BooleanField(default=True)
     class Meta:
         db_table = 'players'
 

@@ -35,7 +35,7 @@ function Header() {
   const isFold = scrollDepth > 70;
 
   const classMapping = {
-    addClass: `${isIndex ? '-index' : ''}${isIndex && isFold ? ' fold' : ''}`
+    addClass: `${isIndex ? '-index' : ''}${isFold ? ' fold' : ''}`
   };
 
   useEffect(() => {

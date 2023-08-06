@@ -1,6 +1,5 @@
 .team-list-container {
   width: 100%;
-  background-color: #fff;
   box-sizing: border-box;
 }
 
@@ -29,6 +28,10 @@
     max-width: 520px;
     margin: 48px auto 96px;
     border-radius: 12px;
+  }
+
+  .team-cards {
+    background-color: #fff;
   }
 
   .team-list-league {

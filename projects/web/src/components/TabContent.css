@@ -29,7 +29,7 @@
 }
 
 .activity-tab-column-user, .activity-tab-column-team {
-  width: calc(25% - 24px);
+  width: calc(25% - 18px);
   background-color: transparent;
 }
   

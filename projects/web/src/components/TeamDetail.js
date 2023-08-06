@@ -9,7 +9,7 @@ import axios from 'axios';
 import './TeamDetail.css';
 import './TabContent.css';
 
-import { Loader, LoaderInTabContent } from './Loader';
+import { Loader, LoaderInTabContent, SkeletonScreenPost } from './Loader';
 import NotFoundPage from './error/NotFoundPage';
 
 // 初期表示で遅延読み込み対象
@@ -228,7 +228,7 @@ function TeamDetail() {
           </>
         ) : currentTab === 'posts' ? (
           isLoadingPosts ? (
-          <LoaderInTabContent />
+          <SkeletonScreenPost />
           ) : (
           <>
             <h2 className='activity-title'>{dataPosts.pages[0].count}件のポスト</h2>

@@ -1,11 +1,20 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import { Loader, LoaderInContent } from './Loader';
+import { Loader, LoaderSpinner } from './Loader';
 
 import './SupporterList.css';
+import NoContent from './NoContent';
 
 function SupporterList({ data, isLoading, isFetchingNextPage, ignitionPage }) {
+
+  const totalCount = data?.pages.reduce((sum, page) => sum + page.results.length, 0);
+  
+  if (totalCount === 0 && !isLoading) {
+    return (
+      <NoContent />
+    )
+  }
 
   return (
     <>
@@ -28,7 +37,7 @@ function SupporterList({ data, isLoading, isFetchingNextPage, ignitionPage }) {
           ))}
         </>
       )}
-      {isFetchingNextPage && <LoaderInContent />}
+      {isFetchingNextPage && <LoaderSpinner />}
       <div ref={ignitionPage} style={{ height: '20px' }} />
     </>
   );

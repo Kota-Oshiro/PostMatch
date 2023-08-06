@@ -1,0 +1,19 @@
+.nocontent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+.nocontent-icon {
+  max-width: 200px;
+  padding: 24px;
+  width: 80%;
+  height: auto;
+}
+
+.nocontent-text{
+  font-size: 1.4rem;
+  color: #888;
+}

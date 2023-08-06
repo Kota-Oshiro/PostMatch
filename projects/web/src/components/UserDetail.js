@@ -14,7 +14,7 @@ import './TabContent.css';
 import { ReactComponent as SettingIcon } from '../icons/setting.svg';
 import { ReactComponent as XIcon } from '../icons/x_black.svg';
 
-import { Loader, LoaderInTabContent } from './Loader';
+import { Loader, LoaderInTabContent, SkeletonScreenPost } from './Loader';
 import NotFoundPage from './error/NotFoundPage';
 
 // 初期表示で遅延読み込み対象
@@ -305,7 +305,7 @@ function UserDetail() {
           )
         ) : (
           isLoadingPosts ? (
-            <LoaderInTabContent />
+            <SkeletonScreenPost />
           ) : (
           <>
           <h2 className='activity-title'>{ account.total_post_count }件のポスト</h2>

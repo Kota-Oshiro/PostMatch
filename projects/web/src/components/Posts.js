@@ -6,9 +6,13 @@ import { Helmet } from 'react-helmet';
 import './TabContent.css';
 import PostList from './PostList';
 
-import { Loader } from './Loader';
+import { SkeletonScreenPost } from './Loader';
 
 function Posts() {
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const ignitionPage = useRef(null);
 
@@ -46,7 +50,15 @@ function Posts() {
   }, [observer, status, ignitionPage]);
   
   if (isLoading) {
-    return <Loader />;
+    return(
+      <>
+        <div className='bg'></div>
+          <div className='container'>
+          <h2 className='container-title'>みんなの観戦記録</h2>
+          <SkeletonScreenPost />
+        </div>
+      </>
+    )
   }
 
   if (isError) {
@@ -60,6 +72,7 @@ function Posts() {
         <meta property='og:title' content='みんなのポスト - ポストマッチ' />
       </Helmet>
 
+      <>
       <div className='bg'></div>
       <div className='container'>
         <h2 className='container-title'>みんなの観戦記録</h2>
@@ -70,6 +83,7 @@ function Posts() {
           ignitionPage={ignitionPage}
         />}
       </div>
+      </>
     </>
   )
 }
