@@ -38,7 +38,7 @@ class PlayerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Player
-        fields = ['id', 'name', 'nationality', 'team']
+        fields = ['id', 'name_ja', 'nationality', 'team']
 
 class AccountHeaderSerializer(serializers.ModelSerializer):
     class Meta:
@@ -91,7 +91,7 @@ class PostPlayerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Player
-        fields = ['id', 'name']
+        fields = ['id', 'name_ja']
 
 class PostSerializer(serializers.ModelSerializer):
     user = PostAccountSerializer()
@@ -115,7 +115,7 @@ class MotmPlayerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Player
-        fields = ['id', 'name', 'team', 'post_count']
+        fields = ['id', 'name_ja', 'team', 'post_count']
 
 #マッチページ
 
@@ -137,7 +137,7 @@ class MatchPostPlayerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Player
-        fields = ['id', 'name']
+        fields = ['id', 'name_ja']
 
 class WatchSerializer(serializers.ModelSerializer):
     match = MatchSerializer()   

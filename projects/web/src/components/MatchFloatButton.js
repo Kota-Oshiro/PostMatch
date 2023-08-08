@@ -1,5 +1,4 @@
 import React, { useContext } from 'react';
-import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 
 import './MatchFloatButton.css';
@@ -12,7 +11,7 @@ import { ReactComponent as WatchedIcon } from '../icons/watched.svg';
 
 function MatchFloatButton({ matchId, isAuthenticated, currentUser, hasWatched, setHasWatched, setPostModalVisible }) {
 
-  const { setToastId, setToastMessage, setToastType } = useContext(AuthContext);
+  const { apiBaseUrl, setToastId, setToastMessage, setToastType } = useContext(AuthContext);
 
   const handleWatchCreate = async (event) => {
     event.preventDefault();
@@ -28,7 +27,7 @@ function MatchFloatButton({ matchId, isAuthenticated, currentUser, hasWatched, s
       setToastMessage('観戦記録に追加しました');
       setToastType('success');
       try {
-        await axios.post(`${process.env.REACT_APP_API_BASE_URL}/match/${matchId}/watch_create/${currentUser.id}/`, watchData, {withCredentials: true});
+        await apiBaseUrl.post(`/match/${matchId}/watch_create/${currentUser.id}/`, watchData);
       } catch (error) {
         if (process.env.NODE_ENV !== 'production') {
           console.error('Error create watched data:', error);
@@ -44,7 +43,7 @@ function MatchFloatButton({ matchId, isAuthenticated, currentUser, hasWatched, s
       setToastMessage('観戦記録から削除しました');
       setToastType('delete');
       try {
-        await axios.delete(`${process.env.REACT_APP_API_BASE_URL}/match/${matchId}/watch_create/${currentUser.id}/`, {withCredentials: true});
+        await apiBaseUrl.delete(`/match/${matchId}/watch_create/${currentUser.id}/`);
       } catch (error) {
         if (process.env.NODE_ENV !== 'production') {
           console.error('Error delete watched data:', error);

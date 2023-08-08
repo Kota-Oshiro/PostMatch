@@ -3,12 +3,14 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 from . import views
-from .views import ObtainTokenPairWithColorView, GoogleLoginView, Index, UserDetail, UserMotm, UserWatch, UserPost, UserEditTeamList, TeamList, TeamSupporter, TeamDetail, TeamPost, TeamMotm, MatchList, MatchDetail, MatchPost, MatchMotm, MatchPostPlayerList, MatchPostCreateView, MatchWatchCreateView, ScheduleList, ScheduleMatchdayList, PostList, PostDetail
+from .views import ObtainTokenPairWithColorView, CustomTokenRefresh, GoogleLoginView, Index, UserDetail, UserMotm, UserWatch, UserPost, UserEditTeamList, TeamList, TeamSupporter, TeamDetail, TeamPost, TeamMotm, MatchList, MatchDetail, MatchPost, MatchMotm, MatchPostPlayerList, MatchPostCreateView, MatchWatchCreateView, ScheduleList, ScheduleMatchdayList, PostList, PostDetail
 
 urlpatterns = [
 
     path('api/user_auth_restore/', views.user_auth_restore, name='user_auth_restore'),
     path('api/v1/auth/', include('djoser.urls.jwt')),
+    path('api/get_refresh_token/', views.get_refresh),
+    path('api/set_new_token/', CustomTokenRefresh.as_view()),
     path('api/logout/', views.api_logout, name='logout'),
 
    # googleLogin

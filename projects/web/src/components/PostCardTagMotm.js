@@ -7,7 +7,7 @@ const PostCardTagMotm = ({ post }) => {
   return (
     <div className='post-tag-motm'>
         <TrophyIcon className='post-match-icon' />
-        <span className='post-match-text-motm'>{ post.player.name }</span>
+        <span className='post-match-text-motm'>{ post.player.name_ja }</span>
     </div>
   );
 };

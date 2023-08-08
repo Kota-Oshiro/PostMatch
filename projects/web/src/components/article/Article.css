@@ -1,3 +1,34 @@
+
+.article-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding: 12px 0;
+  width: 100%;
+}
+
+.article-card-left {
+  max-width: calc(70% - 24px);
+  overflow-wrap: break-word;
+}
+
+.article-card-title {
+  font-size: 1.6rem;
+  margin-bottom: 6px;
+}
+
+.article-card-date {
+  font-size: 1.2rem;
+  color: #888888;
+}
+
+.article-card-img {
+  width: 30%;
+  height: auto;
+  border-radius: 9px;
+}
+
 .article-container {
   margin-bottom: 48px;
   padding: 24px;
@@ -30,9 +61,13 @@
   font-size: 1.6rem;
 }
 
+.article-section > p, .article-section > ul, .article-section > ol, .article-link {
+  font-size: 1.4rem;
+}
+
 .article-section > h2, .article-section > h3, .article-section > p, .article-section > ul, .article-section > ol, .article-link, .article-date {
   margin-bottom: 12px;
-  line-height: 2rem;
+  line-height: 2.4rem;
 }
 
 .article-link {

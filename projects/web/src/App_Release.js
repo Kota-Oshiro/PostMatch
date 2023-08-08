@@ -23,6 +23,7 @@ import Posts from './components/Posts';
 import PostDetail from './components/PostDetail';
 
 import News from './components/article/News';
+import NewsArticleFormat  from './components/article/NewsArticleFormat';
 import NewsArticle  from './components/article/NewsArticle';
 import Privacy from './components/article/Privacy';
 import Term from './components/article/Terms';
@@ -58,11 +59,11 @@ function UsePageViews() {
 
 function Index() {
 
-  const { currentUser, authRestored } = useContext(AuthContext);
+  const { currentUser, authRestored, apiBaseUrl } = useContext(AuthContext);
 
   // 初期レンダリング
   const fetchFeatureMatch = async () => {
-    const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/index/`, {withCredentials: true});
+    const res = await apiBaseUrl.get(`/index/`);
     return res.data.featured_match;
   };
     
@@ -71,6 +72,15 @@ function Index() {
     fetchFeatureMatch,
     { enabled: authRestored }
   );
+
+  const sortedNewsArticle = NewsArticle.sort((a, b) => {
+    const dateA = new Date(a.date);
+    const dateB = new Date(b.date);
+
+    return dateB - dateA;
+  });
+
+  const latestNews = sortedNewsArticle[0];
 
   // 初回レンダリング時にmatchのレンダリングまでLoaderを表示
   if (!authRestored || isLoading) {
@@ -99,8 +109,8 @@ function Index() {
     </div>
     <div className='bg'></div>
     <div className='news'>
-      <span className='news-text'>2023/12/12</span>
-      <Link to='' className='news-text'>サービスをリリースしました！</Link>
+      <span className='news-text'>{latestNews.date}</span>
+      <Link to={`/news/${latestNews.path}`} className='news-text'>{latestNews.title}</Link>
     </div>
     <div className='container-how-to-use'>
       <h2 className='index-title'>ポストマッチの使い方</h2>
@@ -174,7 +184,7 @@ function App() {
                 <Route path='/privacy' element={<Privacy />} />
                 <Route path='/terms' element={<Term />} />
                 <Route path='/news' element={<News />} />
-                <Route path='/news/:path' element={<NewsArticle />} />                
+                <Route path='/news/:path' element={<NewsArticleFormat />} />                
                 <Route path='*' element={<NotFoundPage />} />
               </Routes>
               <BottomNavigation />

@@ -9,8 +9,9 @@ footer {
 
 .footer-menu {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
-  height: 36px;
+  align-content: stretch;
 }
 
 .footer-text, .footer-sns {

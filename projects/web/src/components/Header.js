@@ -184,18 +184,20 @@ function Header() {
             </div>
 
             <div className='menu-block'>
+              <Link to='/news' onClick={handleNavMenuCloseClick} className= 'menu-item'>運営ブログ</Link>
+            </div>
+
+            <div className='menu-block'>
               <SuggestionBox currentUser={currentUser ? currentUser.id : null} className='menu-item' />
               <Inquiryform currentUser={currentUser ? currentUser.id : null} className='menu-item' />
             </div>
-            <div className='menu-block'>
-              <Link onClick={handleNavMenuCloseClick} className= 'menu-item' to='#'>使い方</Link>
-              <Link onClick={handleNavMenuCloseClick} className= 'menu-item' to='#'>運営ブログ</Link>
-            </div>
+
             {isAuthenticated &&
             <div className='menu-block'>
               <Link onClick={handleLogoutClick} className= 'menu-item'>ログアウト</Link>
             </div>
             }
+            
             </div>
           }
 

@@ -96,9 +96,15 @@ function renderMatchStatusBottom(match) {
     return (
         <span className='match-text'>{formatUsing(match.started_at, formats.DATE)} --:--</span>
     );
-  } else {
+  }
+  else if (match.status === 'POSTPONED') {
     return (
-        <span className='match-text'>未定</span>
+        <span className='match-text'>延期 日時未定</span>
+    );
+  }
+  else {
+    return (
+        <span className='match-text'>日時未定</span>
     );
   }
 }

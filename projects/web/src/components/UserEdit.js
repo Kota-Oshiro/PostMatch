@@ -7,12 +7,11 @@ import UserEditCropper from './UserEditCropper';
 
 import { Loader, LoaderInButton } from './Loader';
 
-import axios from 'axios';
 import { AuthContext } from '../AuthContext';
 
 function UserEditForm() {
   
-  const { isAuthenticated, currentUser, updateSupportTeam, updateUserImg } = useContext(AuthContext);
+  const { isAuthenticated, currentUser, apiBaseUrl, updateSupportTeam, updateUserImg } = useContext(AuthContext);
   const navigation = useNavigate();
 
   const [loadingAccountEdit, setLoadingAccountEdit] = useState(true);
@@ -52,7 +51,7 @@ function UserEditForm() {
     const loadingAccountEdit = async () => {
       try {
         if(isAuthenticated && currentUser) {
-          axios.get(`${process.env.REACT_APP_API_BASE_URL}/user/${currentUser.id}/edit/`, {withCredentials: true})
+          apiBaseUrl.get(`/user/${currentUser.id}/edit/`)
           .then(response => {
               const data = response.data;
               // アカウントデータの取得
@@ -105,7 +104,7 @@ function UserEditForm() {
   }, [isAuthenticated, currentUser]);
   
   useEffect(() => {
-    axios.get(`${process.env.REACT_APP_API_BASE_URL}/user/edit/teams/`, {withCredentials: true})
+    apiBaseUrl.get(`/user/edit/teams/`)
       .then(response => {
         setTeams(response.data);
       })
@@ -217,7 +216,7 @@ function UserEditForm() {
   
     formData.append('supported_at', updatedSupportedAt);
   
-    axios.put(`${process.env.REACT_APP_API_BASE_URL}/user/${currentUser.id}/edit/`, formData, {withCredentials: true})
+    apiBaseUrl.put(`/user/${currentUser.id}/edit/`, formData)
     .then(response => {
       setAccount(response.data);
       updateSupportTeam(response.data.support_team) //AuthContextへ渡す

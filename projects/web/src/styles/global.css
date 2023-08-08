@@ -99,6 +99,10 @@ a {
   box-sizing: border-box;
 }
 
+.container.add-padding {
+  padding: 24px;
+}
+
 .container-title {
   padding: 24px 24px 0;
 }

@@ -23,7 +23,7 @@ const PlayerList = React.lazy(() => import('./PlayerList'));
 
 function Match() {
 
-  const { isAuthenticated, currentUser } = useContext(AuthContext);
+  const { isAuthenticated, currentUser, apiBaseUrl } = useContext(AuthContext);
   const { id } = useParams();
 
   // infinityLoadの発火地点管理
@@ -64,7 +64,7 @@ function Match() {
 
   // matchのフェッチ
   const fetchMatch = async () => {
-    const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/match/${id}/`, {withCredentials: true});
+    const res = await apiBaseUrl.get(`/match/${id}/`);
     return res.data;
   };
 

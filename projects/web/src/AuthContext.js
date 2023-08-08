@@ -18,32 +18,89 @@ export const AuthProvider = ({ children }) => {
   const [toastMessage, setToastMessage] = useState(null);
   const [toastType, setToastType] = useState(null);
 
-
   // 初期化時にクッキーからトークンを読み出す
   useEffect(() => {
     const initAuth = async () => {
-      // ユーザー情報の取得
-      try {
-        const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/user_auth_restore/`, {withCredentials: true});
-        
-        if (response.data && !response.data.error && !response.data.message) {
-          setCurrentUser(response.data);
-          setIsAuthenticated(true);
+        const response = await apiBaseUrl.get(`/user_auth_restore/`, {
+            validateStatus: function (status) {
+                return status >= 200 && status < 500;
+            }
+        });
+
+        if (response.status === 200 && response.data && !response.data.error && !response.data.message) {
+            setCurrentUser(response.data);
+            setIsAuthenticated(true);
+        } else if (response.status === 401 && response.data.error === 'Invalid token') {
+            // accessTokenが無効な場合、refreshTokenを取得して新しいaccessTokenをセット
+            const refreshTokenResponse = await apiBaseUrl.get(`/get_refresh_token/`);
+
+            if (refreshTokenResponse.data && refreshTokenResponse.data.refresh) {
+                const newTokenResponse = await apiBaseUrl.post(`/set_new_token/`, {
+                    refresh: refreshTokenResponse.data.refresh
+                }, {
+                    withCredentials: true,
+                    headers: {
+                        "Content-Type": "application/json; charset=utf-8"
+                    }
+                });
+
+                if (newTokenResponse.data && newTokenResponse.data.access) {
+                    const userResponse = await apiBaseUrl.get(`/user_auth_restore/`);
+
+                    if (userResponse.data && !userResponse.data.error && !userResponse.data.message) {
+                        setCurrentUser(userResponse.data);
+                        setIsAuthenticated(true);
+                    } else {
+                        setIsAuthenticated(false);
+                        setCurrentUser(null);
+                    }
+                }
+            } else {
+                setIsAuthenticated(false);
+                setCurrentUser(null);
+            }
         } else {
-          setIsAuthenticated(false);
-          setCurrentUser(null);
+            setIsAuthenticated(false);
+            setCurrentUser(null);
         }
-        
-      } catch (error) {
-        setIsAuthenticated(false);
-        setCurrentUser(null);
-      } finally {
+
         setAuthRestored(true);
-      }
     };
+
     initAuth();
-  }, []);
-  
+}, []);
+
+// APIリクエストの共通部分をインスタンス化
+const apiBaseUrl = axios.create({
+  baseURL: process.env.REACT_APP_API_BASE_URL,
+  withCredentials: true
+});
+
+// レスポンスをインターセプト
+apiBaseUrl.interceptors.response.use(response => {
+  // 成功レスポンスはそのまま返す
+  return response;
+}, async error => {
+  if (error.response.status === 401) {
+      const refreshTokenResponse = await apiBaseUrl.get(`/get_refresh_token/`);
+
+      if (refreshTokenResponse.data && refreshTokenResponse.data.refresh) {
+          const newTokenResponse = await apiBaseUrl.post(`/set_new_token/`, {
+              refresh: refreshTokenResponse.data.refresh
+          });
+
+          if (newTokenResponse.data && newTokenResponse.data.access) {
+              // 新しいトークンをヘッダーにセット
+              apiBaseUrl.defaults.headers.common['Authorization'] = `Bearer ${newTokenResponse.data.access}`;
+
+              // 元のリクエストを再実行
+              return apiBaseUrl(error.config);
+          }
+      }
+  }
+
+  return Promise.reject(error);
+});
 
   // ログイン状態を更新する関数
   const login = (user) => {
@@ -53,7 +110,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      await axios.get(`${process.env.REACT_APP_API_BASE_URL}/logout/`, {withCredentials: true});
+      await apiBaseUrl.get(`/logout/`);
 
       // Authorizationヘッダーを削除
       delete axios.defaults.headers.common['Authorization'];
@@ -88,7 +145,7 @@ export const AuthProvider = ({ children }) => {
   
   return (
     <AuthContext.Provider value={{
-      isAuthenticated, authRestored, currentUser,
+      isAuthenticated, currentUser, authRestored, apiBaseUrl,
       login, logout,
       toastId, setToastId,
       toastMessage, setToastMessage,

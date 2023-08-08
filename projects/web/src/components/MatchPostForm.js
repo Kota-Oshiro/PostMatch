@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
-import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 
 import './MatchPostForm.css';
@@ -19,7 +18,7 @@ function MatchPostForm({
 
   const queryClient = useQueryClient();
 
-  const { setToastId, setToastMessage, setToastType } = useContext(AuthContext);
+  const { apiBaseUrl, setToastId, setToastMessage, setToastType } = useContext(AuthContext);
 
   const [postContent, setPostContent] = useState('');
   const [validateErrorMessage, setValidateErrorMessage] = useState('');
@@ -43,9 +42,7 @@ function MatchPostForm({
   useEffect(() => {
     if (isPostModalVisible && !fetchedMatchPlayers.includes(matchId)) {
       const fetchMatchPlayerList = async () => {
-        // ローカルストレージからトークンを取得
-        const token = localStorage.getItem('access');
-        const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/match/${matchId}/posts/players/`, {withCredentials: true});
+        const res = await apiBaseUrl.get(`/match/${matchId}/posts/players/`);
         if (res.data.home_team_players && res.data.away_team_players) {
           setPostPlayerList({ 
             home_team_players: res.data.home_team_players,
@@ -82,7 +79,7 @@ function MatchPostForm({
 
   // データ送信のためのMutationの作成
   const mutation = useMutation(
-    postData => axios.post(`${process.env.REACT_APP_API_BASE_URL}/match/${matchId}/post_create/`, postData, {withCredentials: true}),
+    postData => apiBaseUrl.post(`/match/${matchId}/post_create/`, postData),
     {
       onSuccess: async () => {
         setLoaderInButton(false)
@@ -138,12 +135,12 @@ function MatchPostForm({
             <option value=''>プレイヤーを選んでください</option>
             <optgroup label={match.home_team.name_ja}>
               {postPlayerList.home_team_players.map(player => (
-                <option key={player.id} value={player.id}>{player.name}</option>
+                <option key={player.id} value={player.id}>{player.name_ja}</option>
               ))}
             </optgroup>
             <optgroup label={match.away_team.name_ja}>
               {postPlayerList.away_team_players.map(player => (
-                <option key={player.id} value={player.id}>{player.name}</option>
+                <option key={player.id} value={player.id}>{player.name_ja}</option>
               ))}
             </optgroup>
           </select>

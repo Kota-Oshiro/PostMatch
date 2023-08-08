@@ -1,16 +1,17 @@
 import json
 import pandas as pd
 import http.client
+import requests
 from datetime import datetime, timezone
 
-from django.http import Http404, HttpResponse
+from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.conf import settings
 from django.utils import timezone
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 from django.utils.decorators import method_decorator
-from django.db.models import Count, Min, Q
+from django.db.models import Count, Min, Q, Case, When, Value, IntegerField
 
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt #一部のviewでCSRF保護を無効にする（開発環境でだけ使う）
@@ -29,9 +30,11 @@ from django.contrib.auth import get_user_model
 
 from rest_framework import generics, status, exceptions
 from rest_framework.permissions import IsAuthenticated, AllowAny
+
+from rest_framework_simplejwt import views as jwt_views, exceptions as jwt_exceptions
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from rest_framework_simplejwt.tokens import RefreshToken, UntypedToken
+from rest_framework_simplejwt.tokens import RefreshToken, UntypedToken, TokenError
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 
@@ -46,18 +49,6 @@ from .models import Account, Team, Player, Match, Post, Watch
 from .serializers import MyTokenObtainPairSerializer, AccountSerializer, AccountHeaderSerializer, AccountEditSerializer, AccountEditTeamSerializer, TeamSerializer, TeamListSerializer, TeamSupporterSerializer, PlayerSerializer, MatchSerializer, PostSerializer, MotmPlayerSerializer, MatchPostPlayerSerializer, WatchSerializer
 
 
-
-#googleログインのテスト
-
-from django.http import JsonResponse
-import requests
-
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from django.contrib.auth import get_user_model
-from rest_framework_simplejwt.tokens import RefreshToken
-from .serializers import AccountHeaderSerializer
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
@@ -104,6 +95,28 @@ def user_auth_restore(request):
         return Response({'error': 'User not found'}, status=status.HTTP_401_UNAUTHORIZED)
     except:
         return Response({'error': 'Unexpected error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+# リフレッシュトークンを取得
+def get_refresh(request):
+    try:
+        refresh_token = request.COOKIES["refresh"]
+        return JsonResponse({"refresh": refresh_token}, safe=False)
+    except Exception as e:
+        return JsonResponse({"error": "Unable to fetch refresh token"}, status=400)
+
+# 新しいトークンリフレッシュビュー
+class CustomTokenRefresh(jwt_views.TokenRefreshView):
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        try:
+            serializer.is_valid(raise_exception=True)
+        except jwt_exceptions.TokenError as e:
+            raise jwt_exceptions.InvalidToken(e.args[0])
+
+        response_obj = Response(serializer.validated_data, status=status.HTTP_200_OK)
+        response_obj.set_cookie(key="access", value=serializer.validated_data["access"], httponly=True, samesite='Strict')
+
+        return response_obj
 
 #ログアウト
 def api_logout(request):
@@ -297,7 +310,7 @@ class UserMotm(UserBase, generics.ListAPIView):
 
         players = Player.objects.annotate(
             post_count=Count('player_posts', filter=Q(player_posts__user_id=account_id))
-        ).select_related('team').filter(post_count__gt=0).order_by('-post_count', 'name')
+        ).select_related('team').filter(post_count__gt=0).order_by('-post_count', 'name_ja')
 
         return players
 
@@ -396,7 +409,7 @@ class MatchMotm(generics.ListAPIView):
 
         players = Player.objects.annotate(
             post_count=Count('player_posts', filter=Q(player_posts__match_id=match_id))
-        ).select_related('team').filter(post_count__gt=0).order_by('-post_count', 'name')
+        ).select_related('team').filter(post_count__gt=0).order_by('-post_count', 'name_ja')
 
         return players
 
@@ -418,7 +431,19 @@ class MatchPostPlayerList(generics.ListAPIView):
     def get(self, request, pk, format=None):
 
         match = get_object_or_404(Match.objects.select_related('home_team', 'away_team'), pk=pk)
-        players = Player.objects.filter(team__in=[match.home_team, match.away_team])
+
+        # position のソート順序を定義
+        position_order = Case(
+            When(position='Goalkeeper', then=Value(1)),
+            When(position='Defence', then=Value(2)),
+            When(position='Midfield', then=Value(3)),
+            When(position='Offence', then=Value(4)),
+            default=Value(9999),
+            output_field=IntegerField()
+        )
+
+        # 上記のソート順序に基づいて選手をソート
+        players = Player.objects.filter(team__in=[match.home_team, match.away_team]).annotate(sort_order=position_order).order_by('sort_order', 'name')
 
         home_team_players = players.filter(team=match.home_team)
         away_team_players = players.filter(team=match.away_team)
@@ -591,7 +616,7 @@ class TeamMotm(TeamBase, generics.ListAPIView):
         team_id = self.kwargs['pk']
         players = Player.objects.annotate(
             post_count=Count('player_posts', filter=Q(team_id=team_id))
-        ).select_related('team').filter(post_count__gt=0).order_by('-post_count', 'name')
+        ).select_related('team').filter(post_count__gt=0).order_by('-post_count', 'name_ja')
         return players
 
 #ここからPOST
