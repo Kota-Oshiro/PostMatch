@@ -84,7 +84,6 @@ function App() {
           <Router>
           <UsePageViews />
             <div>
-              <Header />
               <Routes>
                 <Route path='/' element={<Index />} />
                 <Route path='*' element={<NotFoundPage />} />
