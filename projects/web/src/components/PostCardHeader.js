@@ -63,7 +63,7 @@ const PostCardHeader = ({ post }) => {
           <ThreeDotLeaderIcon className='ellipsis-icon' />
         </div>
         <div className='ellipsis-menu' style={{display: isMenuVisible ? 'flex' : 'none'}} onClick={(e) => e.stopPropagation()}>
-          <a href={`https://twitter.com/intent/tweet?url=https://post-match.com/posts/${post.id}&hashtags=ポストマッチ&via=postmatch_jp&text=${post.user.name}さんの観戦記録（${post.match.home_team.name_ja} vs ${post.match.away_team.name_ja}）`} target='_blank' className='ellipsis-menu-block'>
+          <a href={`https://twitter.com/intent/tweet?url=https://post-match.com/post/${post.id}&hashtags=ポストマッチ&via=postmatch_jp&text=${post.user.name}さんの観戦記録（${post.match.home_team.name_ja} vs ${post.match.away_team.name_ja}）`} target='_blank' className='ellipsis-menu-block'>
             <XIcon className='ellipsis-menu-icon' />
           </a>
           <div id='copy-link-post' className='ellipsis-menu-block' onClick={handleCopyClick}>
