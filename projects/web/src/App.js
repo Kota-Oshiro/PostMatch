@@ -60,6 +60,10 @@ function Index() {
 
   const { currentUser, authRestored, apiBaseUrl } = useContext(AuthContext);
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+  
   // 初期レンダリング
   const fetchFeatureMatch = async () => {
     const res = await apiBaseUrl.get(`/index/`);
