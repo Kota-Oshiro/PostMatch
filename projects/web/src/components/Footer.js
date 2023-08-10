@@ -14,7 +14,7 @@ function Footer() {
   return (
     <footer>
       <div className='footer-menu'>
-        <Link to='/news' className='footer-text footer-link'>運営ブログ</Link>
+        <Link to='/blog' className='footer-text footer-link'>運営ブログ</Link>
         <Inquiryform currentUser={currentUser ? currentUser.id : null} className='footer-text footer-link' />
         <SuggestionBox currentUser={currentUser ? currentUser.id : null} className='footer-text footer-link' />
       </div>

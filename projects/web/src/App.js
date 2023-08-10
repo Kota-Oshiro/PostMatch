@@ -1,7 +1,6 @@
 import React, { useEffect, useContext } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation, Link } from 'react-router-dom';
 import { useQuery, QueryClient, QueryClientProvider } from 'react-query';
-import axios from 'axios';
 
 import ReactGA4 from 'react-ga4';
 
@@ -23,11 +22,12 @@ import Posts from './components/Posts';
 import PostDetail from './components/PostDetail';
 
 import News from './components/article/News';
+import NewsArticleFormat  from './components/article/NewsArticleFormat';
 import NewsArticle  from './components/article/NewsArticle';
 import Privacy from './components/article/Privacy';
 import Term from './components/article/Terms';
 
-import IndexBackgroundTeaser from './components/teaser/IndexBackgroundTeaser';
+import IndexBackground from './components/IndexBackground';
 import MatchCard from './components/MatchCard';
 
 import ErrorBoundary from './components/error/ErrorBoundary';
@@ -36,9 +36,8 @@ import NotFoundPage from './components/error/NotFoundPage';
 import { AuthContext } from './AuthContext';
 import { LoaderIndex } from './components/Loader';  
 
-import './components/teaser/Teaser.css';
+import './App.css';
 import { ReactComponent as LogoText } from './logos/logo_text_white.svg';
-import { ReactComponent as XIcon } from './icons/x_white.svg';
 import { ReactComponent as FireIcon } from './icons/fire.svg';
 
 const queryClient = new QueryClient();
@@ -59,24 +58,109 @@ function UsePageViews() {
 
 function Index() {
 
+  const { currentUser, authRestored, apiBaseUrl } = useContext(AuthContext);
+
+  // 初期レンダリング
+  const fetchFeatureMatch = async () => {
+    const res = await apiBaseUrl.get(`/index/`);
+    return res.data.featured_match;
+  };
+    
+  const { data, isLoading, isError, error } = useQuery(
+    ['match', currentUser?.support_team], 
+    fetchFeatureMatch,
+    { enabled: authRestored }
+  );
+
+  const sortedNewsArticle = NewsArticle.sort((a, b) => {
+    const dateA = new Date(a.date);
+    const dateB = new Date(b.date);
+
+    return dateB - dateA;
+  });
+
+  const latestNews = sortedNewsArticle[0];
+
+  // 初回レンダリング時にmatchのレンダリングまでLoaderを表示
+  if (!authRestored || isLoading) {
+    return <LoaderIndex />;
+  }
+
+  if (isError) {
+    return <div>{error.message}</div>;
+  }
+
   return (
     <>
-    <div className='teaser-container'>
-      <IndexBackgroundTeaser />
-      <div className='teaser-top'>
-        <LogoText className='teaser-logo' />
-        <span className='teaser-title'>近 日 公 開 予 定</span>
+    <div className='top-container'>
+      <IndexBackground />
+      <div className='top'>
+        <div className='top-content'>
+          <span className='top-text'>熱狂を残そう、サッカーファンのための観戦記録サービス</span>
+          <LogoText className='top-logo' />
+          <div className='top-textarea'>
+            <span className='top-text'>最新の試合を観たらタップして記録</span>
+            <FireIcon className='top-emoji' />
+          </div>
+          {data && <MatchCard match={data} /> }
+        </div>
       </div>
-      <a href='https://twitter.com/postmatch_jp' target='_blank' rel='noopener noreferrer'>
-        <XIcon  className='teaser-sns' />
-      </a>
-      <span className='teaser-rights'>© POST MATCH</span>
     </div>
+    <div className='bg'></div>
+    <div className='news'>
+      <span className='news-text'>{latestNews.date}</span>
+      <Link to={`/blog/${latestNews.path}`} className='news-text'>{latestNews.title}</Link>
+    </div>
+    <div className='container-how-to-use'>
+      <h2 className='index-title'>ポストマッチの使い方</h2>
+      <div className='how-to-use'>
+        <div className='how-to-use-step'>
+          <div className='how-to-use-text'>
+            <h3 className='how-to-use-title'>試合を選ぶ</h3>
+            <p className='how-to-use-description'>スケジュールから記録する試合ページを開きます。</p>
+          </div>
+          <img className='how-to-use-img' src='https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Image/how-to-use-1.webp'/>
+        </div>
+        <div className='how-to-use-step'>
+          <div className='how-to-use-text'>
+            <h3 className='how-to-use-title'>観戦を記録</h3>
+            <p className='how-to-use-description'>記録ボタンを押すと観戦記録に追加されます。</p>
+          </div>
+          <img className='how-to-use-img' src='https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Image/how-to-use-2.webp'/>
+        </div>
+        <div className='how-to-use-step'>
+          <div className='how-to-use-text'>
+            <h3 className='how-to-use-title'>感想をポスト</h3>
+            <p className='how-to-use-description'>試合の感想とマンオブザマッチを投稿できます。</p>
+          </div>
+          <img className='how-to-use-img' src='https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Image/how-to-use-3.webp'/>
+        </div>
+        <div className='how-to-use-step'>
+          <div className='how-to-use-text'>
+            <h3 className='how-to-use-title'>熱狂を残そう！</h3>
+            <p className='how-to-use-description'>過去の記録とポストがマイページに残ります。</p>
+          </div>
+          <img className='how-to-use-img' src='https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Image/how-to-use-4.webp'/>
+        </div>
+      </div>
+    </div>
+    <Footer />
+    </>
+  );
+}
+
+function ToastHandler() {
+  const { toastId, toastMessage, toastType } = useContext(AuthContext);
+
+  return (
+    <>
+      <Toast id={toastId} message={toastMessage} type={toastType} />
     </>
   );
 }
 
 function App() {
+  
   return (
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
@@ -84,10 +168,25 @@ function App() {
           <Router>
           <UsePageViews />
             <div>
+              <Header />
+              <ToastHandler />
               <Routes>
                 <Route path='/' element={<Index />} />
+                <Route path='/user/:id' element={<UserDetail />} />
+                <Route path='/user/edit' element={<UserEdit />} />
+                <Route path='/team/:competition_id/:season_id' element={<TeamList />} />
+                <Route path='/team/:id' element={<TeamDetail />} />
+                <Route path='/match/:id' element={<Match />} />
+                <Route path='/schedule/:competition_id/:season_id' element={<Schedule />} />
+                <Route path='/posts/' element={<Posts />} />
+                <Route path='/post/:id' element={<PostDetail />} />
+                <Route path='/privacy' element={<Privacy />} />
+                <Route path='/terms' element={<Term />} />
+                <Route path='/blog' element={<News />} />
+                <Route path='/blog/:path' element={<NewsArticleFormat />} />                
                 <Route path='*' element={<NotFoundPage />} />
               </Routes>
+              <BottomNavigation />
             </div>
           </Router>
         </AuthProvider>

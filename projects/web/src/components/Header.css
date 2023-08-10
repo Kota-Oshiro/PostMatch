@@ -185,6 +185,11 @@ body.no-scroll-header, body.no-scroll-header-pc {
     box-sizing: border-box;
     box-shadow: none;
   }
+  
+  .header-index.fold {
+    background-color: transparent;
+    box-shadow: none;
+  }
 
   .header-bg-block {
     height: 72px;
@@ -259,6 +264,18 @@ body.no-scroll-header, body.no-scroll-header-pc {
 
   .nav-login-index {
     line-height: 34px;
+  }
+
+  .nav-login-index.fold {
+    line-height: 30px;
+    background-color: transparent;
+    color: #fff;
+    border: 2px solid #fff;
+    box-sizing: border-box;
+  }
+    
+  .nav-login-index.fold:hover {
+    background-color: #ffffff33;
   }
 
   @keyframes fadeIn {

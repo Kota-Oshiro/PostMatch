@@ -443,7 +443,7 @@ class MatchPostPlayerList(generics.ListAPIView):
         )
 
         # 上記のソート順序に基づいて選手をソート
-        players = Player.objects.filter(team__in=[match.home_team, match.away_team]).annotate(sort_order=position_order).order_by('sort_order', 'name')
+        players = Player.objects.filter(team__in=[match.home_team, match.away_team] ,is_active=True).annotate(sort_order=position_order).order_by('sort_order', 'name')
 
         home_team_players = players.filter(team=match.home_team)
         away_team_players = players.filter(team=match.away_team)
