@@ -54,8 +54,8 @@ function renderMatchCardStatus(match) {
           <span className='pickup-status '>試合終了</span>
         </>
       );
-    case 'LIVE':
     case 'IN_PLAY':
+    case 'PAUSED':
       return (
         <>
           <span className='pickup-score-text'>{match.home_score} - {match.away_score}</span>
