@@ -62,7 +62,7 @@ function LoginForm({ isLoginModalVisible, setLoginModalVisible }) {
           <CloseIcon className='modal-close-img'/>
         </div>
         <LogoText className='login-modal-logo' />
-        <p className='login-modal-text'>ポストマッチはサッカー観戦記録サービスです。ログインすると試合の感想を投稿や観戦リストの作成がご利用いただけます。</p>
+        <p className='login-modal-text'>ポストマッチはサッカー観戦記録サービスです。ログインすると試合の感想の投稿や観戦済リストの作成がご利用いただけます。</p>
         <GoogleAuth/>
         <p className='login-modal-text'>
           <Link to='/terms' onClick={ handleMenuClose } >利用規約</Link>

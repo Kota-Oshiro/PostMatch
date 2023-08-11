@@ -64,7 +64,7 @@ function renderMatchStatus(match) {
         <span className='match-status'>試合終了</span>
       </div>
     );
-  } else if (match.status === 'LIVE' || match.status === 'IN_PLAY') {
+  } else if (match.status === 'PAUSED' || match.status === 'IN_PLAY') {
     return (
       <div className='match-content-middle'>
         <span className='match-score-text'>{match.home_score} - {match.away_score}</span>
@@ -88,7 +88,7 @@ function renderMatchStatus(match) {
 
 // 試合日程表示の定義
 function renderMatchStatusBottom(match) {
-  if (['FINISHED', 'LIVE', 'IN_PLAY', 'TIMED'].includes(match.status)) {
+  if (['FINISHED', 'PAUSED', 'IN_PLAY', 'TIMED'].includes(match.status)) {
     return (
         <span className='match-text'>{formatUsing(match.started_at, formats.DATE_TIME)}</span>
     );

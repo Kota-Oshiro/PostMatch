@@ -44,7 +44,7 @@ function ScheduleCard({ match }) {
 }
 
 function renderMatchScoreOrTime(match) {
-    if (match.status === 'FINISHED' || match.status === 'LIVE' || match.status === 'IN_PLAY') {
+    if (match.status === 'FINISHED' || match.status === 'PAUSED' || match.status === 'IN_PLAY') {
         return <span className='schedule-text'>{match.home_score} - {match.away_score}</span>;
     } else if (match.status === 'TIMED') {
         return <span className='schedule-text-timed'>{formatUsing(match.started_at, formats.HOUR_MINUTE)}</span>;
@@ -55,7 +55,7 @@ function renderMatchScoreOrTime(match) {
 
 // 試合日程表示の定義
 function renderMatchDateTime(match) {
-    if (['FINISHED', 'LIVE', 'IN_PLAY', 'TIMED'].includes(match.status)) {
+    if (['FINISHED', 'PAUSED', 'IN_PLAY', 'TIMED'].includes(match.status)) {
       return (
           <span className='schedule-date'>{formatUsing(match.started_at, formats.DATE_TIME)}</span>
       );
