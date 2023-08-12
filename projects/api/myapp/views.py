@@ -465,12 +465,15 @@ class MatchPostCreateView(APIView):
         return match
 
     def create_object(self, match, user_id, player_id, content):
-        if match is None and player_id is None:
+        # player_idが空文字列の場合、Noneに変換する
+        player_id = None if player_id == "" else player_id
+
+        if player_id is None and content is None:
             raise ValueError('マンオブザマッチとレビューのどちらかは入力必須です')
 
         user = Account.objects.get(pk=user_id)
-        player = Player.objects.get(id=player_id)
-    
+        player = None if player_id is None else Player.objects.get(id=player_id)
+        
         Post.objects.create(
             match=match,
             user=user,
