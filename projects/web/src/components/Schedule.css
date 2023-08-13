@@ -19,6 +19,12 @@
 
 .schedule-league {
     display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.schedule-league-name {
+    display: flex;
     align-items: center;
 }
 

@@ -11,6 +11,7 @@ import { SkeletonScreenSchedule, SkeletonScreenScheduleList } from './Loader';
 
 import ScheduleCard from './ScheduleCard';
 import ScheduleTab from './ScheduleTab';
+import ScoreVisibleSwitcher from './ScoreVisibleSwitcher'
 
 export const FetchContext = createContext();
 
@@ -22,6 +23,8 @@ function Schedule() {
   const [isLoadingTab, setLoadingTab] = useState(false);
   
   const [matches, setMatches] = useState([]);
+
+  const [isScoreVisible, setScoreVisible] = useState(false);
 
   const [competition, setCompetition] = useState(competition_id);
   const [season, setSeason] = useState(season_id);
@@ -85,20 +88,25 @@ function Schedule() {
         {isLoading ? (
           <SkeletonScreenSchedule />
         ) : (
+        <>
         <div className='schedule-container'>
           <div className='schedule-header'>
             <div className='schedule-league'>
-              <NaitonEngIcon className='schedule-league-img' />
-              <h2 className='schedule-header-text'>イングランドプレミアリーグ</h2>
+              <div className='schedule-league-name'>
+                <NaitonEngIcon className='schedule-league-img' />
+                <h2 className='schedule-header-text'>プレミアリーグ</h2>
+              </div>
+              <ScoreVisibleSwitcher isScoreVisible={isScoreVisible} setScoreVisible={setScoreVisible} />
             </div>
             <ScheduleTab currentMatchday={currentMatchday} setCurrentMatchday={setCurrentMatchday} />
           </div>
           <div {...handlers}>
             {isLoadingTab ? <SkeletonScreenScheduleList /> : matches.map(match => (
-            <ScheduleCard key={match.id} match={match} />
+            <ScheduleCard key={match.id} match={match} isScoreVisible={isScoreVisible} />
           ))}
           </div>
         </div>
+        </>
         )}
       </FetchContext.Provider>
     </>

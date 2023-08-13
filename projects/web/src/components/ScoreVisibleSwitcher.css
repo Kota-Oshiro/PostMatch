@@ -1,0 +1,60 @@
+.switcher {
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 120px; 
+  height: 32px;
+  background: #e7e7e7;
+  border-radius: 6px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.switch-slider {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: calc(50% - 6px);
+  height: calc(100% - 6px);
+  background-color: #fff;
+  border-radius: 3px;
+  transition: all 0.3s ease;
+}
+
+.switch-slider.left {
+  box-shadow: 1px 0px 10px 0px rgba(0, 0, 0, 0.1);
+}
+
+.switch-slider.right {
+  left: calc(50% + 3px);
+  box-shadow: -1px 0px 10px 0px rgba(0, 0, 0, 0.1);
+}
+
+.switch-status{
+  display: flex;
+  margin: 0 3px;
+  width: 100%;
+}
+
+.switch-text {
+  width: 50%;
+  line-height: 26px;
+  text-align: center;
+  transition: color 0.3s ease;
+  color: #888;
+  font-weight: 700;
+  font-size: 1.2rem;
+  z-index: 2;
+}
+
+.switch-text.active {
+  color: #000;
+}
+
+@media (min-width: 800px) {
+
+
+}

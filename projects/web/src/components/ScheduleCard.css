@@ -16,6 +16,7 @@
 }
   
 .schedule-left, .schedule-right {
+    position: relative;
     display: flex;
     align-items: center;
 }
@@ -26,26 +27,35 @@
     object-fit: cover;
 }
 
-.schedule-text, .schedule-text-timed {
+.schedule-text, .schedule-text.schedule-timed {
     text-align: center;
+    margin: 0 12px;
     width: 44px;
+    line-height: 24px;
     font-size: 1.6rem;
     font-weight: 700;
-    margin: 0 12px;
 }
   
-  .schedule-text-timed {
+.schedule-text.schedule-timed {
     color:#888888
 }
-  
-  .schedule-date, .schedule-status, .schedule-record-count {
-    font-size: 1rem;
+
+.schedule-text.schedule-invisible {
+    font-size: 1.4rem;
 }
-  
-  .schedule-status {
-    padding: 2px 6px;
-    border: solid 2px #eeeeee;
-    border-radius: 50px;
+
+@keyframes blink {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+}
+
+.schedule-inplay {
+    color: #3465FF;
+    animation: blink 2s infinite;
+}
+
+.schedule-date, .schedule-record-count {
+    font-size: 1rem;
 }
   
 .schedule-record {
