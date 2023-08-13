@@ -91,16 +91,21 @@
 }
 
 .post-user-icon > img {
-  width: 100%;
-  height: 100%;
+  width: 3.8rem;
+  height: 3.8rem;
   object-fit: cover;
   border-radius: 50%;
 }
 
 .post-user-name {
+  max-width: 12.6rem;
   font-size: 1.4rem;
   font-weight: 700;
   color: #000;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: inline-block;  
   cursor: pointer;
 }
 
@@ -259,4 +264,12 @@
 
 .post.no-hover:hover {
   background-color: #fff;
+}
+
+@media (min-width: 800px) {
+
+  .post-user-name {
+    max-width: 22.4rem;
+  }
+
 }
