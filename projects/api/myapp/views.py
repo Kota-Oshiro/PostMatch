@@ -156,7 +156,7 @@ class GoogleLoginView(APIView):
                 user = User.objects.get(email=email)  
                 action = 'login' 
             except User.DoesNotExist:
-                username = user_data['name']
+                username = user_data['name'][:20]
                 user = User.objects.create_user(name=username, email=email)
                 user.is_active = True
                 user.save()

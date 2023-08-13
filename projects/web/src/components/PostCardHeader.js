@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 
 import { ReportForm } from './GoogleForm';
 
+import { formatUsing, formats } from '../DateFormat.js';
+
 import { ReactComponent as ThreeDotLeaderIcon } from '../icons/three_dot_leader.svg';
 import { ReactComponent as XIcon } from '../icons/x_blue.svg';
 import { ReactComponent as CopyIcon } from '../icons/copy.svg';
@@ -55,7 +57,7 @@ const PostCardHeader = ({ post }) => {
             </div>
             }
           </div>
-          <span className='post-created'>{new Date(post.created_at).toLocaleString()}</span>
+          <span className='post-created'>{formatUsing(post.created_at, formats.DATE_TIME)}</span>
         </div>
       </div>
       <div className='post-header-right' onMouseLeave={() => setMenuVisible(false)}>
