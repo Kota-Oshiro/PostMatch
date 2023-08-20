@@ -68,8 +68,8 @@ function Posts() {
   return (
     <>
       <Helmet>
-        <title>みんなのポスト - ポストマッチ</title>
-        <meta property='og:title' content='みんなのポスト - ポストマッチ' />
+        <title>みんなの観戦記録 - ポストマッチ</title>
+        <meta property='og:title' content='みんなの観戦記録 - ポストマッチ' />
       </Helmet>
 
       <>

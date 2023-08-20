@@ -2,11 +2,16 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import { v4 as uuidv4 } from 'uuid';
 
+import MotmSelectModal from './MotmSelectModal';
+
 import './MatchPostForm.css';
 import { ReactComponent as CloseIcon } from '../icons/close.svg';
 
 import { AuthContext } from '../AuthContext';
 import { LoaderInButton } from './Loader';
+
+import { ReactComponent as ArrowDownIcon } from '../icons/arrow_down.svg';
+import { ReactComponent as ArrowUpIcon } from '../icons/arrow_up.svg';
 
 function MatchPostForm({ 
     match, matchId, currentUser,
@@ -19,6 +24,9 @@ function MatchPostForm({
   const queryClient = useQueryClient();
 
   const { apiBaseUrl, setToastId, setToastMessage, setToastType } = useContext(AuthContext);
+
+  const [isMotmSelectModalVisible, setMotmSelectModalVisible] = useState(false);
+  const [postPlayerName, setPostPlayerName] =  useState('');
 
   const [postContent, setPostContent] = useState('');
   const [validateErrorMessage, setValidateErrorMessage] = useState('');
@@ -57,6 +65,7 @@ function MatchPostForm({
   }, [isPostModalVisible, matchId]);
 
   const handleMenuClose = () => {
+    setPostPlayerId('');
     setPostModalVisible(false);
   }
 
@@ -65,6 +74,38 @@ function MatchPostForm({
     const handleOutsideClick = (event) => {
       setPostModalVisible((currentIsVisible) => {
         if (currentIsVisible && !document.getElementById('post-modal').contains(event.target)) {
+          return false;
+        }
+        return currentIsVisible;
+      });
+    };
+    document.addEventListener('click', handleOutsideClick);
+  
+    return () => {
+      document.removeEventListener('click', handleOutsideClick);
+    };
+  }, []);
+
+  const handleMotmSelectModal = (e) => {
+    e.stopPropagation();
+    setMotmSelectModalVisible(prevState => !prevState);
+};
+
+  const handleModalClose = () => {
+    setMotmSelectModalVisible(false);
+  };
+
+  const handlePlayerClick = (playerId, playerName, e) => {
+    e.stopPropagation();
+    setPostPlayerId(playerId);
+    setPostPlayerName(playerName);
+    setMotmSelectModalVisible(false);
+  };
+
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      setMotmSelectModalVisible((currentIsVisible) => {
+        if (currentIsVisible && !document.getElementById('motm-select-modal').contains(event.target)) {
           return false;
         }
         return currentIsVisible;
@@ -131,19 +172,21 @@ function MatchPostForm({
         <h2 className='modal-title'>ポストの作成</h2>
         <form onSubmit={handleSubmit}>
           <label htmlFor='pulldown'>マンオブザマッチ投票</label>
-          <select className='player-select' name='player_id' onChange={e => setPostPlayerId(e.target.value)}>
-            <option value=''>プレイヤーを選んでください</option>
-            <optgroup label={match.home_team.name_ja}>
-              {postPlayerList.home_team_players.map(player => (
-                <option key={player.id} value={player.id}>{player.name_ja}</option>
-              ))}
-            </optgroup>
-            <optgroup label={match.away_team.name_ja}>
-              {postPlayerList.away_team_players.map(player => (
-                <option key={player.id} value={player.id}>{player.name_ja}</option>
-              ))}
-            </optgroup>
-          </select>
+          
+          <div className='custom-form' onClick={handleMotmSelectModal}>
+            {postPlayerName ? (
+              <span className='custom-form-text'>{postPlayerName}</span>
+            ) : (
+              <span className='custom-form-text'>プレイヤーを選んでください</span>
+            )}
+            {isMotmSelectModalVisible ? (
+              <ArrowUpIcon className='custom-form-arrow' />
+            ) : (
+              <ArrowDownIcon className='custom-form-arrow' />
+            )}
+            {isMotmSelectModalVisible && <MotmSelectModal match={match} postPlayerList={postPlayerList} handlePlayerClick={handlePlayerClick} handleModalClose={handleModalClose} />}
+          </div>
+
           <label htmlFor='content'>試合の感想</label>
           <textarea name='content' placeholder='（最大900文字）試合の感想を書いてみよう。 熱狂した瞬間、印象的だった選手やプレー、物足りなかったポイントなど何でもOK！' onChange={e => setPostContent(e.target.value)}></textarea>
           <button type='submit'>

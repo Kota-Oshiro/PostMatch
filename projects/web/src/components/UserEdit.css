@@ -4,7 +4,6 @@
   align-items: center;
   width: 100%;
   margin: 0 auto 48px;
-  max-width: 520px;
   padding: 48px 24px 24px;
   background-color: #fff;
   box-sizing: border-box;
@@ -60,6 +59,18 @@
   margin-bottom: 24px;    
 }
 
+.edit-support-name {
+  display: flex;
+  align-items: center;
+}
+
+.edit-support-crest {
+  margin-right: 6px;
+  width: 2.4rem;
+  height: auto;
+  object-fit: cover;
+}
+
 .edit-year-month {
   display: flex;
   align-items: center;
@@ -92,6 +103,8 @@
 @media (min-width: 800px) {
 
   .edit-container {
+    max-width: 520px;
+    margin: 48px auto;
     border-radius: 12px;
     border: none;
   }

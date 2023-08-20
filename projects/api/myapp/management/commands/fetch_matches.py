@@ -1,8 +1,8 @@
 from django.core.management.base import BaseCommand
-from myapp.views import fetch_and_store_matches_data  # 適切なインポートパスに変更してください
+from myapp.views import fetch_matches_from_competitions  # 適切なインポートパスに変更してください
 
 class Command(BaseCommand):
-    help = 'Fetches and stores matches data'
+    help = 'fetch_matches_from_competitions'
 
     def handle(self, *args, **options):
-        fetch_and_store_matches_data()
+        fetch_matches_from_competitions()

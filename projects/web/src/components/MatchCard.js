@@ -3,8 +3,20 @@ import { Link } from 'react-router-dom';
 import { formatUsing, formats } from '../DateFormat.js';
 
 import './MatchCard.css';
+import { ReactComponent as NationEngIcon } from '../icons/nation_eng.svg';
+import { ReactComponent as NationEspIcon } from '../icons/nation_esp.svg';
+import { ReactComponent as NationItaIcon } from '../icons/nation_ita.svg';
 
 function MatchCard({ match }) {
+
+  const competitionName = match.competition_id === 2021 ? 'プレミアリーグ' 
+    : match.competition_id === 2014 ? 'ラ・リーガ' 
+    : match.competition_id === 2019 ? 'セリエA'
+    : '';
+  const CompetitionIcon = match.competition_id === 2021 ? NationEngIcon
+    : match.competition_id === 2014 ? NationEspIcon 
+    : match.competition_id === 2019 ? NationItaIcon
+    : NationEngIcon;
 
   return (
     <div className='pickup-content'>
@@ -12,8 +24,8 @@ function MatchCard({ match }) {
       <div className='pickup'>
         <div className='pickup-top'>
           <div className='pickup-top-content'>
-            <img src='https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Icon/ENG.webp' className='pickup-icon' />
-            <span className='pickup-text'>プレミアリーグ</span>
+            <CompetitionIcon className='pickup-icon' />
+            <span className='pickup-text'>{ competitionName }</span>
           </div>
           <span className='pickup-text'>マッチデイ { match.matchday }  </span>
         </div>

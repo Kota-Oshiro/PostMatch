@@ -1,0 +1,55 @@
+.league-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.league-header.league-select-schedule {
+  padding: 0;
+  width: auto;
+}
+
+.league-header > div {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.league-header.league-select-schedule > div {
+  justify-content: unset;
+}
+
+.league-name {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.league-icon {
+  width: 2rem;
+  height: auto;
+  object-fit: cover;
+}
+
+.league-text {
+  margin: 0 6px 0 12px;
+  font-size: 1.4rem;
+  color: #fff;
+}
+
+.league-selecter {
+  width: 1.4rem;
+  height: auto;
+}
+
+@media (min-width: 800px) {
+
+  .league-header {
+      border-radius: 12px 12px 0 0;
+  }
+
+}

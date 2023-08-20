@@ -55,9 +55,9 @@ function Header() {
 
   const menus = [
     { key: 'home', link: '/', icon: HomeIcon, activeIcon: HomeIconActive, indexIcon:HomeIconIndex, text: 'トップ' },
-    { key: 'schedule', link: '/schedule/2021/1564', icon: ScheduleIcon, activeIcon: ScheduleIconActive, indexIcon:ScheduleIconIndex, text: 'スケジュール' },
+    { key: 'schedule', link: '/schedules', icon: ScheduleIcon, activeIcon: ScheduleIconActive, indexIcon:ScheduleIconIndex, text: 'スケジュール' },
     { key: 'post', link: '/posts', icon: PostIcon, activeIcon: PostIconActive, indexIcon:PostIconIndex, text: 'ポスト' },
-    { key: 'team', link: '/team/2021/1564', icon: TeamIcon, activeIcon: TeamIconActive, indexIcon:TeamIconIndex, text: 'チーム' }
+    { key: 'team', link: '/teams', icon: TeamIcon, activeIcon: TeamIconActive, indexIcon:TeamIconIndex, text: 'チーム' }
   ]
 
   const currentMenu = menus.find(menu => menu.link === location.pathname);

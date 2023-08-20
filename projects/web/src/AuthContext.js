@@ -12,6 +12,7 @@ export const AuthProvider = ({ children }) => {
   const queryClient = useQueryClient();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
+  
   const [authRestored, setAuthRestored] = useState(false); //インデックスのローダー処理のために使う（restored→indexフェッチの間ローダー表示）
 
   const [toastId, setToastId] = useState(null);
@@ -134,6 +135,14 @@ apiBaseUrl.interceptors.response.use(response => {
     setCurrentUser(current => ({ ...current, support_team: newSupportTeam }));
   };
 
+  const updateSupportTeamCompetition = (newSupportTeam) => {
+    setCurrentUser(current => ({ ...current, support_team_competition: newSupportTeam }));
+  };
+
+  const updateSupportTeamSeason = (newSupportTeam) => {
+    setCurrentUser(current => ({ ...current, support_team_season: newSupportTeam }));
+  };
+
   const updateUserImg = (newImgUrl) => {
     setCurrentUser(current => ({ ...current, profile_image: newImgUrl }));
   };
@@ -150,7 +159,7 @@ apiBaseUrl.interceptors.response.use(response => {
       toastId, setToastId,
       toastMessage, setToastMessage,
       toastType, setToastType,
-      updateSupportTeam, updateUserImg,
+      updateSupportTeam, updateSupportTeamCompetition, updateSupportTeamSeason, updateUserImg,
     }}>
       {children}
     </AuthContext.Provider>

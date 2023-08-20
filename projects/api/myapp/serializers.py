@@ -41,27 +41,63 @@ class PlayerSerializer(serializers.ModelSerializer):
         fields = ['id', 'name_ja', 'nationality', 'team']
 
 class AccountHeaderSerializer(serializers.ModelSerializer):
+    support_team_competition = serializers.SerializerMethodField()
+    support_team_season = serializers.SerializerMethodField()
+
     class Meta:
         model = Account
-        fields = ['id', 'support_team', 'profile_image']     
+        fields = ['id', 'support_team', 'profile_image', 'support_team_competition', 'support_team_season']
+
+    def get_support_team_competition(self, obj):
+        if obj.support_team is not None:
+            return obj.support_team.competition_id
+        else:
+            return None
+
+    def get_support_team_season(self, obj):
+        if obj.support_team is not None:
+            return obj.support_team.season_id
+        else:
+            return None
 
 class AccountEditTeamSerializer(serializers.ModelSerializer):
     class Meta:
         model = Team
-        fields = ['id', 'name_ja']
+        fields = ['competition_id', 'season_id', 'id', 'name_ja', 'tla']
 
 class AccountEditSerializer(serializers.ModelSerializer):
     support_team = serializers.PrimaryKeyRelatedField(queryset=Team.objects.all(), allow_null=True)
+    support_team_competition = serializers.SerializerMethodField()
+    support_team_season = serializers.SerializerMethodField()
     support_team_name_ja = serializers.SerializerMethodField()
+    support_team_tla = serializers.SerializerMethodField()
     supported_at = serializers.DateTimeField(allow_null=True)
 
     class Meta:
         model = Account
-        fields = ['id', 'name', 'profile_image', 'support_team', 'support_team_name_ja', 'supported_at', 'description', 'twitter_id']
-        
+        fields = ['id', 'name', 'profile_image', 'support_team', 'support_team_competition', 'support_team_season', 'support_team_name_ja', 'support_team_tla', 'supported_at', 'description', 'twitter_id']
+
+    def get_support_team_competition(self, obj):
+        if obj.support_team is not None:
+            return obj.support_team.competition_id
+        else:
+            return None
+
+    def get_support_team_season(self, obj):
+        if obj.support_team is not None:
+            return obj.support_team.season_id
+        else:
+            return None
+
     def get_support_team_name_ja(self, obj):
         if obj.support_team is not None:
             return obj.support_team.name_ja
+        else:
+            return None
+
+    def get_support_team_tla(self, obj):
+        if obj.support_team is not None:
+            return obj.support_team.tla
         else:
             return None
 
@@ -123,7 +159,7 @@ class MatchTeamSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Team
-        fields = ['id', 'name_ja', 'tla', 'crest_image']
+        fields = ['id', 'name_ja', 'tla', 'crest_image', 'club_color_code_first']
 
 class MatchSerializer(serializers.ModelSerializer):
     home_team = MatchTeamSerializer(read_only=True)
@@ -131,7 +167,7 @@ class MatchSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Match
-        fields = ['id', 'matchday', 'home_team', 'away_team', 'started_at', 'status', 'home_score', 'away_score', 'total_watch_count', 'total_post_count']
+        fields = ['id', 'competition_id', 'matchday', 'home_team', 'away_team', 'started_at', 'status', 'home_score', 'away_score', 'total_watch_count', 'total_post_count']
 
 class MatchPostPlayerSerializer(serializers.ModelSerializer):
 

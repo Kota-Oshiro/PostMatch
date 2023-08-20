@@ -4,18 +4,29 @@ import { formatUsing, formats } from '../DateFormat.js';
 
 import './MatchDetail.css';
 
-import { ReactComponent as NaitonEngIcon } from '../icons/nation_eng.svg';
 import { ReactComponent as CalenderIcon } from '../icons/calender.svg';
+import { ReactComponent as NationEngIcon } from '../icons/nation_eng.svg';
+import { ReactComponent as NationEspIcon } from '../icons/nation_esp.svg';
+import { ReactComponent as NationItaIcon } from '../icons/nation_ita.svg';
 
 function MatchDetail({ match }) {
+
+  const competitionName = match.competition_id === 2021 ? 'プレミアリーグ' 
+    : match.competition_id === 2014 ? 'ラ・リーガ' 
+    : match.competition_id === 2019 ? 'セリエA'
+    : '';
+  const CompetitionIcon = match.competition_id === 2021 ? NationEngIcon
+    : match.competition_id === 2014 ? NationEspIcon 
+    : match.competition_id === 2019 ? NationItaIcon
+    : NationEngIcon;
 
   return (
     <>
       <div className='match'>
         <div className='match-top'>
           <div className='match-content'>
-            <NaitonEngIcon className='match-icon' />
-            <Link to='/schedule/2021/1564' className='match-text-league'>プレミアリーグ</Link>
+            <CompetitionIcon className='match-icon' />
+            <Link to='/schedule/2021/1564' className='match-text-league'>{ competitionName }</Link>
           </div>
           <span className='match-text'>マッチデイ { match.matchday }</span>
         </div>

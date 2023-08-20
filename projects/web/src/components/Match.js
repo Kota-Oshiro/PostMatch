@@ -7,15 +7,14 @@ import axios from 'axios';
 
 import { AuthContext } from '../AuthContext';
 
-import './Match.css';
-import './TabContent.css';
-
 import MatchDetail from './MatchDetail';
 import MatchFloatButton from './MatchFloatButton';
 import MatchPostForm from './MatchPostForm';
 import Login from './Login';
 import NotFoundPage from './error/NotFoundPage';
 
+import './Match.css';
+import './TabContent.css';
 import { Loader } from './Loader';
 
 const PostList = React.lazy(() => import('./PostList.js'));

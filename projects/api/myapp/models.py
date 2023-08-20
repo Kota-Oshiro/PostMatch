@@ -40,7 +40,7 @@ class Player(models.Model):
     team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='players', db_column='team_id')
     name = models.CharField(max_length=255)
     nationality = models.CharField(max_length=255)
-    position = models.CharField(max_length=255)
+    position = models.CharField(max_length=255, null=True)
     birthday = models.DateField(null=True)
     last_updated_at = models.DateTimeField()
     name_ja = models.CharField(max_length=255, null=True)

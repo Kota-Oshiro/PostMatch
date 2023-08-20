@@ -10,7 +10,7 @@
 .post-modal {
   animation: slideInUp 0.2s ease-out; /* ここでアニメーションを指定 */
   position: fixed;
-  z-index: 9999;
+  z-index: 9998;
   top: 0;
   left: 50%;
   transform: translate(-50%);

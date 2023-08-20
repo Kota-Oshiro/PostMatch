@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation, Link } from 'react-router-dom';
 import { useQuery, QueryClient, QueryClientProvider } from 'react-query';
 
@@ -73,7 +73,7 @@ function Index() {
   const { data, isLoading, isError, error } = useQuery(
     ['match', currentUser?.support_team], 
     fetchFeatureMatch,
-    { enabled: authRestored }
+    {enabled: authRestored,}
   );
 
   const sortedNewsArticle = NewsArticle.sort((a, b) => {
@@ -178,10 +178,10 @@ function App() {
                 <Route path='/' element={<Index />} />
                 <Route path='/user/:id' element={<UserDetail />} />
                 <Route path='/user/edit' element={<UserEdit />} />
-                <Route path='/team/:competition_id/:season_id' element={<TeamList />} />
+                <Route path='/teams' element={<TeamList />} />
                 <Route path='/team/:id' element={<TeamDetail />} />
                 <Route path='/match/:id' element={<Match />} />
-                <Route path='/schedule/:competition_id/:season_id' element={<Schedule />} />
+                <Route path='/schedules' element={<Schedule />} />
                 <Route path='/posts/' element={<Posts />} />
                 <Route path='/post/:id' element={<PostDetail />} />
                 <Route path='/privacy' element={<Privacy />} />

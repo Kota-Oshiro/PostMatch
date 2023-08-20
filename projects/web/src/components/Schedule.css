@@ -14,30 +14,13 @@
     align-items: center;
     justify-content: center;
     padding: 24px;
-    background-color: #38003c;
 }
 
 .schedule-league {
+    position: relative;
     display: flex;
     justify-content: space-between;
     width: 100%;
-}
-
-.schedule-league-name {
-    display: flex;
-    align-items: center;
-}
-
-.schedule-league-img {
-    margin-right: 12px;
-    width: 2rem;
-    height: auto;
-    object-fit: cover;
-}
-
-.schedule-header-text {
-    font-size: 1.4rem;
-    color: #fff;
 }
 
 .schedule-league-text-sub {

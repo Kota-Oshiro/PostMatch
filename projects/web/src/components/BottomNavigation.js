@@ -16,9 +16,9 @@ function BottomNavigation() {
 
   const menus = [
     { key: 'home', link: '/', icon: HomeIcon, activeIcon: HomeIconActive, text: 'トップ' },
-    { key: 'schedule', link: '/schedule/2021/1564', icon: ScheduleIcon, activeIcon: ScheduleIconActive, text: 'スケジュール' },
+    { key: 'schedule', link: '/schedules', icon: ScheduleIcon, activeIcon: ScheduleIconActive, text: 'スケジュール' },
     { key: 'post', link: '/posts', icon: PostIcon, activeIcon: PostIconActive, text: 'ポスト' },
-    { key: 'team', link: '/team/2021/1564', icon: TeamIcon, activeIcon: TeamIconActive, text: 'チーム' }
+    { key: 'team', link: '/teams', icon: TeamIcon, activeIcon: TeamIconActive, text: 'チーム' }
   ]
 
   return (

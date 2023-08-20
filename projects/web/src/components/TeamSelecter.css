@@ -1,0 +1,34 @@
+.team-selecter-container {
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.team-selecter-item {
+  width: calc(50% - 12px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 24px;
+  padding: 12px;
+  border-radius: 8px;
+  border: solid 1px #eeeeee;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+.team-selecter-item:hover {
+  opacity: 0.8;
+}
+
+.team-selecter-img {
+  width: 2.8rem;
+  height: auto;
+  margin-bottom: 6px;
+}
+
+.team-selecter-text {
+  font-weight: 700;
+  font-size: 1rem;
+}

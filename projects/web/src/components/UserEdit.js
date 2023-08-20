@@ -1,26 +1,37 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import './UserEdit.css';
-import { ReactComponent as CameraIcon } from '../icons/camera.svg';
 import UserEditCropper from './UserEditCropper';
+
+import LeagueSelectModal from './LeagueSelectModal';
 
 import { Loader, LoaderInButton } from './Loader';
 
 import { AuthContext } from '../AuthContext';
 
+import './UserEdit.css';
+import { ReactComponent as CameraIcon } from '../icons/camera.svg';
+import { ReactComponent as ArrowDownIcon } from '../icons/arrow_down.svg';
+import { ReactComponent as ArrowUpIcon } from '../icons/arrow_up.svg';
+
 function UserEditForm() {
   
-  const { isAuthenticated, currentUser, apiBaseUrl, updateSupportTeam, updateUserImg } = useContext(AuthContext);
+  const { isAuthenticated, currentUser, apiBaseUrl, updateSupportTeam, updateSupportTeamCompetition, updateSupportTeamSeason, updateUserImg } = useContext(AuthContext);
   const navigation = useNavigate();
 
   const [loadingAccountEdit, setLoadingAccountEdit] = useState(true);
   const [loaderInButton, setLoaderInButton] = useState(false);
   const [isCropperVisible, setIsCropperVisible] = useState(false);
 
+  const [isLeagueSelectModalVisible, setLeagueSelectModalVisible] = useState(false);
+  const [isTeamSelecterVisible, setTeamSelecterVisible] = useState(false);
+
   const [account, setAccount] = useState({});
   const [initialAccount, setInitialAccount] = useState({}); //更新があった箇所を比較するために初期状態を保存
+
+  // support_teamの設定
   const [teams, setTeams] = useState([]);
+  const [filteredTeams, setFilteredTeams] = useState([]);
 
   const [image, setImage] = useState('');
   const [croppedImage, setCroppedImage] = useState(null);
@@ -30,6 +41,8 @@ function UserEditForm() {
   const [nameError, setNameError] = useState('');
 
   const [supportTeam, setSupportTeam] = useState('');
+  const [supportTeamTla, setSupportTeamTla] = useState('');
+  const [supportTeamName, setSupportTeamName] = useState('');
   const [supportedAtYear, setSupportedAtYear] = useState('');
   const [supportedAtMonth, setSupportedAtMonth] = useState('');
 
@@ -47,6 +60,7 @@ function UserEditForm() {
   const [supportYearError, setSupportYearError] = useState(null);
   const [supportMonthError, setSupportMonthError] = useState(null);
 
+  // 初期レンダリング
   useEffect(() => {
     const loadingAccountEdit = async () => {
       try {
@@ -81,6 +95,8 @@ function UserEditForm() {
               // 各テキストデータの初期表示セット
               if (data.name) setName(data.name);
               if (data.support_team) setSupportTeam(data.support_team);
+              if (data.support_team) setSupportTeamTla(data.support_team_tla);
+              if (data.support_team) setSupportTeamName(data.support_team_name_ja);
               if (data.description) setDescription(data.description);
               if (data.twitter_id) setTwitterId(data.twitter_id);
     
@@ -99,10 +115,10 @@ function UserEditForm() {
       }
     };
     
-  
     loadingAccountEdit();
   }, [isAuthenticated, currentUser]);
-  
+
+  // support_teamのfetch
   useEffect(() => {
     apiBaseUrl.get(`/user/edit/teams/`)
       .then(response => {
@@ -114,23 +130,42 @@ function UserEditForm() {
         }
         setErrorMessage("チームデータの取得に失敗しました");
       });
-  }, []);
+  }, [isLeagueSelectModalVisible]);
+
+  //モーダル表示時のスクロール制御
+  useEffect(() => {
+    if (isCropperVisible || isLeagueSelectModalVisible) {
+      // モーダルが開いているときにスクロールを無効化
+      document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.width = '100%';
+      document.body.style.height = '100%';
+    } else {
+      // モーダルが閉じているときにスクロールを有効化
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
+      document.body.style.height = '';
+    }
+  }, [isCropperVisible, isLeagueSelectModalVisible]);
 
   useEffect(() => {
-    if (isCropperVisible) {
-      // モーダルが開いている時はスクロールを無効にする
-      document.body.style.overflow = 'hidden';
-    } else {
-      // モーダルが閉じている時はスクロールを有効にする
-      document.body.style.overflow = 'visible';
-    }
+    const handleOutsideClick = (event) => {
+      if (document.getElementById('league-selecter-modal') && !document.getElementById('league-selecter-modal').contains(event.target)) {
+        // 外部をクリックした場合、両方のモーダルの表示をオフにする
+        setLeagueSelectModalVisible(false);
+        setTeamSelecterVisible(false);
+      }
+    };
+
+    document.addEventListener('click', handleOutsideClick);
 
     return () => {
-      // コンポーネントがアンマウントされたときはスクロールを再度有効にする
-      document.body.style.overflow = 'visible';
+      document.removeEventListener('click', handleOutsideClick);
     };
-  }, [isCropperVisible]);
+  }, []);
 
+//プロフィール画像登録関連
 
   // カメラアイコンをクリックするとファイルダイアログを開く
   const handleCropper = () => {
@@ -151,6 +186,44 @@ function UserEditForm() {
   const handleCroppedImage = async (imageData) => {
     setCroppedImage(URL.createObjectURL(imageData.blob)); // UI表示用
     setCroppedImageBlob(imageData.blob); // 送信用
+  };
+
+
+// ここからsupport_team関連
+
+  const handleLeagueSelectModal = (e) => {
+    e.stopPropagation();
+    setLeagueSelectModalVisible(true);
+  };
+
+  const handleModalClose = () => {
+    setLeagueSelectModalVisible(false);
+    setTeamSelecterVisible(false);
+  };
+
+  // support_teamを選ぶモーダル内でリーグがクリックされたときの関数
+  const handleLeagueClick = (menu) => {
+    const filtered = teams.filter(team => team.competition_id === menu.competition_id);
+    setFilteredTeams(filtered);
+    setTeamSelecterVisible(true);
+  };
+
+  // support_teamを選ぶモーダル内でリーグがクリックされたときの関数
+  const handleTeamClick = (team) => {
+    setSupportTeam(team.id);
+    setSupportTeamTla(team.tla);
+    setSupportTeamName(team.name);
+    setLeagueSelectModalVisible(false);
+    setTeamSelecterVisible(false);
+  };
+  
+  const handleClearSettingClick = () => {
+    setSupportTeam('');
+    setSupportTeamTla('');
+    setSupportTeamName('');
+    setSupportedAtYear('');
+    setSupportedAtMonth('');
+    setLeagueSelectModalVisible(false);
   };
 
   //テキスト情報のハンドル
@@ -219,8 +292,10 @@ function UserEditForm() {
     apiBaseUrl.put(`/user/${currentUser.id}/edit/`, formData)
     .then(response => {
       setAccount(response.data);
-      updateSupportTeam(response.data.support_team) //AuthContextへ渡す
-      updateUserImg(response.data.profile_image) //AuthContextへ渡す
+      updateSupportTeam(response.data.support_team); //AuthContextへ渡す
+      updateSupportTeamCompetition(response.data.support_team_competition);
+      updateSupportTeamSeason(response.data.support_team_season);
+      updateUserImg(response.data.profile_image);
       navigation(`/user/${currentUser.id}`,{state: { from: 'userEdit', message: '更新が完了しました', type: 'success' }});
       setLoaderInButton(false)
     })
@@ -259,7 +334,7 @@ function UserEditForm() {
     <div className={`edit-cropper-container ${isCropperVisible ? '' : 'hidden'}`} tabIndex="-1">
       <UserEditCropper image={image} setImage={setImage} handleCroppedImage={handleCroppedImage} isCropperVisible={isCropperVisible} setIsCropperVisible={setIsCropperVisible} />
     </div>
-    <div className={`cropper-overlay${isCropperVisible ? '' : 'hidden'}`}></div>
+    <div className={`modal-overlay ${isCropperVisible || isLeagueSelectModalVisible ? '' : 'hidden'}`}></div>
     <div className="edit-container">
       <form onSubmit={handleSubmit}>
         <div className="edit-image">
@@ -285,19 +360,49 @@ function UserEditForm() {
             onChange={handleInputChange(setName, setNameError, 20)}
             required
           />
-          <label htmlFor="support_team">応援しているチーム</label>
-          <select onChange={event => setSupportTeam(event.target.value)}>
-            {account.support_team && <option value={supportTeam}>{account.support_team_name_ja}</option> }
-            <option value="">--------</option>
-            {teams.map((team) => (
-              <option key={team.id} value={team.id}>{team.name_ja}</option>
-            ))}
-          </select>
+          <label htmlFor="support_team">応援しているチーム</label>  
+          <div className='custom-form' onClick={handleLeagueSelectModal}>
+            {supportTeam ? (
+              <>
+                <div className='edit-support-name'>
+                  <img src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/crest-${supportTeamTla}.webp`} className='edit-support-crest'/>
+                  <span className='custom-form-text'>{supportTeamName}</span>
+                </div>
+                {isLeagueSelectModalVisible ? (
+                  <ArrowUpIcon className='custom-form-arrow'/>
+                ) : (
+                  <ArrowDownIcon className='custom-form-arrow'/>
+                )}
+              </>
+            ) : (
+              <>
+                <span className='custom-form-text'>--------</span>
+                {isLeagueSelectModalVisible ? (
+                  <ArrowUpIcon className='custom-form-arrow'/>
+                ) : (
+                  <ArrowDownIcon className='custom-form-arrow'/>
+                )}
+              </>
+            )}
+          </div>
+          
+          {isLeagueSelectModalVisible &&
+            <LeagueSelectModal
+              handleLeagueClick={handleLeagueClick}
+              handleTeamClick={handleTeamClick}
+              handleModalClose={handleModalClose}
+              handleClearSettingClick={handleClearSettingClick}
+              isTeamSelecterVisible={isTeamSelecterVisible}
+              filteredTeams={filteredTeams}
+            />
+          }
+
           {supportTeamError && <div className='error-message'>{supportTeamError}</div>}
+
           <label htmlFor="supported_at">いつから応援してる？</label>
           <div className="edit-year-month">
             <select className="edit-year" onChange={event => setSupportedAtYear(event.target.value)}>
-              {account.supported_at && <option value={supportedAtYear}>{supportedAtYear}</option> }
+              {account.supported_at && supportedAtYear && <option value={supportedAtYear}>{supportedAtYear}</option> }
               <option value="">----</option>
               {[...Array(100)].map((_, i) => (
                 <option key={new Date().getFullYear() - i} value={new Date().getFullYear() - i}>{new Date().getFullYear() - i}</option>
@@ -305,7 +410,7 @@ function UserEditForm() {
             </select>            
             <span>年</span>
             <select className="edit-month" onChange={event => setSupportedAtMonth(event.target.value)}>
-              {account.supported_at && <option value={supportedAtMonth}>{supportedAtMonth}</option> }
+              {account.supported_at && supportedAtMonth && <option value={supportedAtMonth}>{supportedAtMonth}</option> }
               <option value="">--</option>
               {[...Array(12)].map((_, i) => (
                 <option key={i + 1} value={i + 1}>{i + 1}</option>

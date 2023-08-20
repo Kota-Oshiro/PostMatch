@@ -12,16 +12,6 @@
   box-sizing: border-box;
 }
 
-.team-list-league {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 24px;
-  width: 100%;
-  background-color: #38003c;
-  box-sizing: border-box;
-}
-
 @media (min-width: 800px) {
 
   .team-list-container {
@@ -32,10 +22,6 @@
 
   .team-cards {
     background-color: #fff;
-  }
-
-  .team-list-league {
-      border-radius: 12px 12px 0 0;
   }
 
 }

@@ -153,7 +153,7 @@ class GoogleLoginView(APIView):
             action = ''
 
             try:
-                user = User.objects.get(email=email)  
+                user = User.objects.select_related('support_team').get(email=email)  
                 action = 'login' 
             except User.DoesNotExist:
                 username = user_data['name'][:20]
@@ -172,7 +172,10 @@ class GoogleLoginView(APIView):
                 "current_user": {
                 "id": user.id,
                 "name": user.name,
-                "profile_image": user.profile_image.url
+                "profile_image": user.profile_image.url,
+                "support_team": user.support_team.id,
+                "support_team_competition": user.support_team.competition_id,
+                "support_team_season": user.support_team.season_id,
                 },
                 "refresh": str(refresh),
                 "access": str(access),
@@ -643,11 +646,10 @@ class PostDetail(RetrieveAPIView):
 
 # ▼ ここからTeamsのAPIデータ取得 ▼
 
-#既存team_idを取得して新規をbulk_createで作成、既存をbulk_updateで作成
-def fetch_and_store_teams_data():
+def fetch_teams_data(competition_code):
     connection = http.client.HTTPConnection(settings.FOOTBALLDATA_API_URL)
     headers = { 'X-Auth-Token': settings.FOOTBALLDATA_API_TOKEN }
-    connection.request('GET', '/v4/competitions/PL/teams', None, headers)
+    connection.request('GET', f'/v4/competitions/{competition_code}/teams', None, headers)
     response = json.loads(connection.getresponse().read().decode())
 
     competition_id = response['competition']['id']
@@ -695,13 +697,18 @@ def fetch_and_store_teams_data():
     ])
     Team.objects.bulk_create(new_teams)
 
+def fetch_teams_from_competitions():
+    competitions = ['PD', 'SA']
+    for competition in competitions:
+        fetch_teams_data(competition)
+
 # ▼ ここからPlayersのAPIデータ取得 ▼
 
 #既存player_idを取得して新規をbulk_createで作成、既存をbulk_updateで作成
-def fetch_and_store_players_data():
+def fetch_players_data(competition_code):
     connection = http.client.HTTPConnection(settings.FOOTBALLDATA_API_URL)
     headers = { 'X-Auth-Token': settings.FOOTBALLDATA_API_TOKEN }
-    connection.request('GET', '/v4/competitions/PL/teams', None, headers)
+    connection.request('GET', f'/v4/competitions/{competition_code}/teams', None, headers)
     response = json.loads(connection.getresponse().read().decode())
 
     season_id = response['season']['id']
@@ -770,16 +777,20 @@ def fetch_and_store_players_data():
 
     Player.objects.bulk_update(update_player_objects, ['season_id', 'team_id', 'name', 'nationality', 'position', 'birthday', 'last_updated_at'])
 
+def fetch_players_from_competitions():
+    competitions = ['PD', 'SA']
+    for competition in competitions:
+        fetch_players_data(competition)
+
 # ▼ ここからMatchesのAPIデータ取得 ▼
 
-def fetch_and_store_matches_data():
+def fetch_matches_data(competition_code):
     connection = http.client.HTTPConnection(settings.FOOTBALLDATA_API_URL)
     headers = { 'X-Auth-Token': settings.FOOTBALLDATA_API_TOKEN }
-    connection.request('GET', '/v4/competitions/PL/matches', None, headers)
+    connection.request('GET', f'/v4/competitions/{competition_code}/matches', None, headers)
     response = json.loads(connection.getresponse().read().decode())
 
     competition_id = response['competition']['id']   
-
     df_original = pd.DataFrame(response['matches'])
 
     get_matches_data = lambda row: pd.Series([
@@ -836,7 +847,10 @@ def fetch_and_store_matches_data():
     Match.objects.bulk_create(matches_to_create)
     Match.objects.bulk_update(matches_to_update, ['competition_id', 'season_id', 'matchday', 'home_team_id', 'away_team_id', 'started_at', 'status', 'winner', 'home_score', 'away_score', 'referees_id', 'referees_name', 'last_updated_at'])
 
-
+def fetch_matches_from_competitions():
+    competitions = ['PL', 'PD', 'SA']
+    for competition in competitions:
+        fetch_matches_data(competition)
 
 ''' メールログイン関連（廃止）
 

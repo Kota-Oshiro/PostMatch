@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import './PostCard.css';
 
@@ -12,6 +12,9 @@ import { ReactComponent as ReadMoreIconBelow } from '../icons/arrow_up_white.svg
 
 function PostCard({ post }) {
 
+  const location = useLocation();
+  const isPostDetail = location.pathname.includes("/post/") 
+
   const navigation  = useNavigate();
 
   const [isExpanded, setExpanded] = useState(false);
@@ -23,13 +26,14 @@ function PostCard({ post }) {
     const lineHeight = parseFloat(window.getComputedStyle(mainTextRef.current)['line-height']);
     const linesCount = Math.floor(mainTextRef.current.offsetHeight / lineHeight);
     
-    if (linesCount > 7) {
+    if (!isPostDetail && linesCount > 7) {
       setIsLong(true);
       setExpanded(false);
     } else {
       setIsLong(false);
       setExpanded(true);
     }
+
   }, [post]);
 
   const handleExpand = (e) => {
