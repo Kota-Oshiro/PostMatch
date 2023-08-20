@@ -170,17 +170,21 @@ class GoogleLoginView(APIView):
                 "action": action,
                 "message": "ログインに成功しました！",
                 "current_user": {
-                "id": user.id,
-                "name": user.name,
-                "profile_image": user.profile_image.url,
-                "support_team": user.support_team.id,
-                "support_team_competition": user.support_team.competition_id,
-                "support_team_season": user.support_team.season_id,
+                    "id": user.id,
+                    "name": user.name,
+                    "profile_image": user.profile_image.url,
                 },
                 "refresh": str(refresh),
                 "access": str(access),
             }
 
+            if user.support_team:  # support_teamが存在する場合のみ
+                response_data["current_user"].update({
+                    "support_team": user.support_team.id,
+                    "support_team_competition": user.support_team.competition_id,
+                    "support_team_season": user.support_team.season_id,
+                })
+            
             response = Response(response_data, status=status.HTTP_200_OK)
             response.set_cookie(key='refresh', value=str(refresh), httponly=True, samesite='Strict')
             response.set_cookie(key='access', value=str(access), httponly=True, samesite='Strict')
