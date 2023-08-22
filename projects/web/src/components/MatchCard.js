@@ -58,31 +58,31 @@ function renderMatchCardStatus(match) {
     case 'FINISHED':
       return (
         <>
-          <span className='match-card-status '>試合終了</span>
+          <span className='match-card-status'>試合終了</span>
         </>
       );
     case 'IN_PLAY':
     case 'PAUSED':
       return (
         <>
-          <span className='match-card-status '>試合中</span>
+          <span className='match-card-status'>試合中</span>
         </>
       );
     case 'TIMED':
       return (
         <>
-          <span className='match-card-status '>{formatUsing(match.started_at, formats.MONTH_DAY)}</span>
+          <span className='match-card-status'>{formatUsing(match.started_at, formats.MONTH_DAY)}</span>
         </>
       );
     case 'SCHEDULED':
       return (
         <>
-          <span className='match-card-status '>{formatUsing(match.started_at, formats.MONTH_DAY)}</span>
+          <span className='match-card-status'>{formatUsing(match.started_at, formats.MONTH_DAY)}</span>
         </>
       );
     default:
       return (
-        <span className='match-card-score-text'>-- : --</span>
+        <span className='match-card-status'>-- : --</span>
       );
   }
 }
