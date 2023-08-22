@@ -1,101 +1,89 @@
-.pickup-content {
+.match-card {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  margin: 24px 0;
-  width: 100%;
-}
-
-.pickup {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  margin-bottom: 24px;
   padding: 24px;
+  width: 264px;
   background-color: #fff;
   border: none;
   border-radius: 12px;
+  box-sizing: border-box;
   cursor: pointer;
 }
 
-.pickup:hover {
+.match-card.last-match-card {
+  margin-right: 48px;
+}
+
+.match-card:hover {
   background-color: #EFF1F1;
   opacity: 1;
 }
 
-.pickup-top-content, .pickup-crest {
+.match-card-top-league, .match-card-crest {
   display: flex;
   align-items: center;
 }
 
-.pickup-top, .pickup-middle {
+.match-card-top, .match-card-middle, .match-card-bottom {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 24px;
 }
 
-.pickup-middle {
-  margin: 0 24px;
+.match-card-middle {
+  padding: 18px 12px 12px;
 }
 
-.pickup-middle-content {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+.match-card-bottom {
+  padding: 0 12px;
 }
 
-.pickup-icon {
+.match-card-icon {
   width: 1.6rem;
   height: auto;
   object-fit: cover;
   margin-right: 6px;
 }
 
-.pickup-text {
-  text-align: center;
-}
-
-.pickup-crest {
-  margin-bottom: 12px;
+.match-card-crest {
   width: 5rem;
   height: auto;
-  object-fit: cover;
 }
 
-.pickup-score-text {
-  margin-bottom: 12px;
-  font-weight: 700;
-  font-size: 2.8rem;
+.match-card-versus-icon {
+  width: 2.6rem;
+  height: auto;
 }
 
-.pickup-status {
+.match-card-status {
   padding: 3px 9px;
   font-size: 1rem;
   border: solid 2px #eeeeee;
   border-radius: 50px;
 }
 
-body.no-scroll-post {
-  overflow: hidden;
-  position: fixed;
-  width: 100%;
-  height: 100%;
+.match-card-tla {
+  text-align: center;
+  width: 50px;
 }
 
 @media (min-width: 800px) {
 
-  .pickup-score-text {
+  .match-card.last-match-card {
+    margin-right: 0;
+  }
+
+  .match-card-score-text {
     font-size: 3.2rem;
   }
 
-  .pickup-text {
-    font-size: 1.4rem;
+  .match-card-text, .match-card-tla {
+    font-size: 1.2rem;
   }
 
-  .pickup-status {
-    font-size: 1.2rem;
+  .match-card-status {
+    font-size: 1rem;
   }
 
 }

@@ -12,7 +12,7 @@
   left: 0;
   right: 0;
   margin: 70px auto 0;
-  padding: 24px 24px;
+  padding: 24px 0px;
   max-width: 1000px;
   box-sizing: border-box;
   z-index: 99;
@@ -24,7 +24,6 @@
   justify-content: center;
   align-items: center;
   width: 100%;
-  max-width: 480px;
   box-sizing: border-box;
 }
 
@@ -36,8 +35,8 @@
 
 .top-logo {
   margin: 4rem 0;
-  max-width: 300px;
-  width: 60%;
+  max-width: 240px;
+  width: 50%;
   height: auto;
 }
 
@@ -50,6 +49,22 @@
   margin-left: 0.5rem;
   width: auto;
   height: 1.8rem;
+}
+
+.top-matchcards {
+  overflow: scroll;
+  scroll-snap-type: x mandatory;
+  margin: 24px 0;
+  width: 100%;
+}
+
+.top-matchcards::-webkit-scrollbar {
+  display: none;
+}
+
+.top-matchcards > .inner-container > * {
+  flex: 0 0 auto;
+  scroll-snap-align: start;
 }
 
 .news {
@@ -138,6 +153,10 @@
 
   .top-text {
     font-size: 1.6rem;
+  }
+
+  .top-matchcards {
+    margin-top: 48px;
   }
 
   .container-how-to-use {

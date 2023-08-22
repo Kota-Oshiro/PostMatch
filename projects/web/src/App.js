@@ -28,7 +28,7 @@ import Privacy from './components/article/Privacy';
 import Term from './components/article/Terms';
 
 import IndexBackground from './components/IndexBackground';
-import MatchCard from './components/MatchCard';
+import MatchCardList from './components/MatchCardList';
 
 import ErrorBoundary from './components/error/ErrorBoundary';
 import NotFoundPage from './components/error/NotFoundPage';
@@ -66,8 +66,8 @@ function Index() {
   
   // 初期レンダリング
   const fetchFeatureMatch = async () => {
-    const res = await apiBaseUrl.get(`/index/`);
-    return res.data.featured_match;
+    const res = await apiBaseUrl.get(`/featured_matches/`);
+    return res.data.featured_matches;
   };
     
   const { data, isLoading, isError, error } = useQuery(
@@ -106,7 +106,9 @@ function Index() {
             <span className='top-text'>最新の試合を観たらタップして記録</span>
             <FireIcon className='top-emoji' />
           </div>
-          {data && <MatchCard match={data} /> }
+          <div className='top-matchcards'>
+            {data && <MatchCardList data={data} />}
+          </div>
         </div>
       </div>
     </div>

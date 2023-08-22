@@ -193,7 +193,7 @@ class GoogleLoginView(APIView):
         else:
             return Response({'status': 'failed', 'error': 'No auth_code provided'}, status=status.HTTP_400_BAD_REQUEST)
 
-class Index(APIView):
+class FeaturedMatches(APIView):
 
     authentication_classes = [CustomJWTAuthentication]
     permission_classes = [AllowAny]
@@ -206,46 +206,44 @@ class Index(APIView):
             current_account = None
 
         all_matches_past = Match.objects.select_related('home_team', 'away_team').filter(started_at__lte=timezone.now()).order_by('-started_at')
-        recent_matches_past = all_matches_past[:10]
 
-        if not recent_matches_past:
-            all_matches_future = Match.objects.select_related('home_team', 'away_team').filter(started_at__gte=timezone.now()).order_by('started_at')
-            recent_matches_future = all_matches_future[:10]
-            matches = list(recent_matches_future)
+        featured_matches = []
+
+        if current_account and current_account.support_team:
+            # ユーザーがサポートチームを持っている場合、その最新の試合を取得
+            user_team_match = all_matches_past.filter(Q(home_team=current_account.support_team) | Q(away_team=current_account.support_team)).first()
+            if user_team_match:
+                featured_matches.append(user_team_match)
+
+            # サポートチームの試合を除外
+            matches_without_support_team = all_matches_past.exclude(Q(home_team=current_account.support_team) | Q(away_team=current_account.support_team))
+            recent_matches_past = list(matches_without_support_team)[:30]
+
+            # competition_idでフィルタリングして、ポスト数が多い順に2試合を取得
+            top_matches = matches_without_support_team.filter(home_team__competition_id=current_account.support_team.competition_id).order_by('-started_at', '-total_post_count', 'home_team')[:2]
+            featured_matches.extend(top_matches)
+
         else:
-            matches = list(reversed(recent_matches_past))
+            recent_matches_past = all_matches_past[:30]
+            top_matches = sorted(recent_matches_past, key=lambda match: (match.total_post_count, match.started_at), reverse=True)[:3]
+            featured_matches.extend(top_matches)
 
-        if current_account and current_account.support_team is not None:
-            # ユーザーがサポートチームを持っている場合、そのチームの過去直近の試合
-            featured_match = all_matches_past.filter(Q(home_team=current_account.support_team) | Q(away_team=current_account.support_team)).first()
+        if not featured_matches:
+            all_matches_future = Match.objects.select_related('home_team', 'away_team').filter(started_at__gte=timezone.now()).order_by('started_at', 'home_team')
+            upcoming_match = all_matches_future.first()
+            if upcoming_match:
+                featured_matches.append(upcoming_match)
 
-            if not featured_match:
-                # ユーザーのサポートチームの最近の試合がnullの場合、最近の試合の中で最もPOSTが多い試合
-                featured_match = max(matches, key=lambda match: match.total_post_count, default=None)
-        else:
-            # サポートチームがないユーザーまたは非ログインユーザーは最近の試合の中で最もPOSTが多い試合
-            featured_match = max(matches, key=lambda match: match.total_post_count, default=None)
+        # ログイン情報取得&リターン
+        response = {
+            'featured_matches': MatchSerializer(featured_matches, many=True).data,
+        }
 
-        if not featured_match:
-            featured_match = Match.objects.select_related('home_team', 'away_team').filter(started_at__gte=timezone.now()).order_by('started_at').first()
-
-        #ログイン情報取得&リターン
         if current_account:
-            has_watched = Watch.objects.select_related('user').filter(user=current_account, match=featured_match).exists()
-            
-            response = {
-                'user': AccountSerializer(current_account).data,
-                'has_watched': has_watched,
-                'featured_match': MatchSerializer(featured_match).data,
-            }            
-            return Response(response)
-        else:
-            response = {
-                'featured_match': MatchSerializer(featured_match).data,
-            }   
-            return Response(response)
+            response['user'] = AccountSerializer(current_account).data
+            response['has_watched'] = Watch.objects.select_related('user').filter(user=current_account, match__in=featured_matches).exists()
 
-
+        return Response(response)
 
 class CommonPagination(PageNumberPagination):
     page_size = 20

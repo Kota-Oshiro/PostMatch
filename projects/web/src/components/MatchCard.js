@@ -6,8 +6,9 @@ import './MatchCard.css';
 import { ReactComponent as NationEngIcon } from '../icons/nation_eng.svg';
 import { ReactComponent as NationEspIcon } from '../icons/nation_esp.svg';
 import { ReactComponent as NationItaIcon } from '../icons/nation_ita.svg';
+import { ReactComponent as VersusEngIcon } from '../icons/versus.svg';
 
-function MatchCard({ match }) {
+function MatchCard({ match, className }) {
 
   const competitionName = match.competition_id === 2021 ? 'プレミアリーグ' 
     : match.competition_id === 2014 ? 'ラ・リーガ' 
@@ -19,40 +20,35 @@ function MatchCard({ match }) {
     : NationEngIcon;
 
   return (
-    <div className='pickup-content'>
-      <Link to={`/match/${match.id}`}>    
-      <div className='pickup'>
-        <div className='pickup-top'>
-          <div className='pickup-top-content'>
-            <CompetitionIcon className='pickup-icon' />
-            <span className='pickup-text'>{ competitionName }</span>
+    <Link to={`/match/${match.id}`}>    
+      <div className={`match-card ${className}`}>
+        <div className='match-card-top'>
+          <div className='match-card-top-league'>
+            <CompetitionIcon className='match-card-icon' />
+            <span className='match-card-text'>{ competitionName }</span>
           </div>
-          <span className='pickup-text'>マッチデイ { match.matchday }  </span>
+          <span className='match-card-text'>マッチデイ { match.matchday }  </span>
         </div>
-        <div className='pickup-middle'>
-          <div className='pickup-middle-content'>
-            <img
-              src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/crest-${match.home_team.tla}.webp`}
-              className='pickup-crest'
-              alt={match.home_team.tla}
-            />
-            <span className='pickup-text'>{ match.home_team.tla }</span>
-          </div>
-          <div className='pickup-middle-content'>
-            {renderMatchCardStatus(match)}
-          </div>
-          <div className='pickup-middle-content'>
-            <img
-              src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/crest-${match.away_team.tla}.webp`}
-              className='pickup-crest'
-              alt={match.away_team.tla}
-            />
-            <span className='pickup-text'>{ match.away_team.tla }</span>
-          </div>
+        <div className='match-card-middle'>
+          <img
+            src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/crest-${match.home_team.tla}.webp`}
+            className='match-card-crest'
+            alt={match.home_team.tla}
+          />
+          <VersusEngIcon className='match-card-versus-icon'/>
+          <img
+            src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/crest-${match.away_team.tla}.webp`}
+            className='match-card-crest'
+            alt={match.away_team.tla}
+          />
+        </div>
+        <div className='match-card-bottom'>
+          <span className='match-card-tla'>{ match.home_team.tla }</span>
+          {renderMatchCardStatus(match)}
+          <span className='match-card-tla'>{ match.away_team.tla }</span>
         </div>
       </div>
-      </Link>
-    </div>
+    </Link>
   );
 }
 
@@ -62,35 +58,31 @@ function renderMatchCardStatus(match) {
     case 'FINISHED':
       return (
         <>
-          <span className='pickup-score-text'>{match.home_score} - {match.away_score}</span>
-          <span className='pickup-status '>試合終了</span>
+          <span className='match-card-status '>試合終了</span>
         </>
       );
     case 'IN_PLAY':
     case 'PAUSED':
       return (
         <>
-          <span className='pickup-score-text'>{match.home_score} - {match.away_score}</span>
-          <span className='pickup-status '>試合中</span>
+          <span className='match-card-status '>試合中</span>
         </>
       );
     case 'TIMED':
       return (
         <>
-          <span className='pickup-score-text'>{formatUsing(match.started_at, formats.HOUR_MINUTE)}</span>
-          <span className='pickup-status '>{formatUsing(match.started_at, formats.MONTH_DAY)}</span>
+          <span className='match-card-status '>{formatUsing(match.started_at, formats.MONTH_DAY)}</span>
         </>
       );
     case 'SCHEDULED':
       return (
         <>
-          <span className='pickup-score-text'>-- : --</span>
-          <span className='pickup-status '>{formatUsing(match.started_at, formats.MONTH_DAY)}</span>
+          <span className='match-card-status '>{formatUsing(match.started_at, formats.MONTH_DAY)}</span>
         </>
       );
     default:
       return (
-        <span className='pickup-score-text'>-- : --</span>
+        <span className='match-card-score-text'>-- : --</span>
       );
   }
 }
