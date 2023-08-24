@@ -700,7 +700,7 @@ def fetch_teams_data(competition_code):
     Team.objects.bulk_create(new_teams)
 
 def fetch_teams_from_competitions():
-    competitions = ['PD', 'SA']
+    competitions = ['PL', 'PD', 'SA']
     for competition in competitions:
         fetch_teams_data(competition)
 
@@ -780,7 +780,7 @@ def fetch_players_data(competition_code):
     Player.objects.bulk_update(update_player_objects, ['season_id', 'team_id', 'name', 'nationality', 'position', 'birthday', 'last_updated_at'])
 
 def fetch_players_from_competitions():
-    competitions = ['PD', 'SA']
+    competitions = ['PL', 'PD', 'SA']
     for competition in competitions:
         fetch_players_data(competition)
 

@@ -250,7 +250,7 @@ input[type="submit"]:hover, button:hover, .button:hover  {
   justify-content: center;
   align-items: center;
   top: 0;
-  padding: 24px;
+  padding: 24px 0;
   width: 100%;
   backdrop-filter: blur(6px);
   background-color: rgba(255, 255, 255, 0.8);
@@ -271,6 +271,10 @@ input[type="submit"]:hover, button:hover, .button:hover  {
   width: 14px;
   height: 14px;
   cursor: pointer;
+}
+
+.modal-close.modal-selecter {
+  right: 0;
 }
 
 .modal-close-img {

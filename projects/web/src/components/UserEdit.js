@@ -255,6 +255,22 @@ function UserEditForm() {
       setSupportMonthError('月を選択してください');
       isValid = false;
     }
+
+    let updatedSupportedAt;
+
+    if (supportTeam && supportedAtYear && supportedAtMonth) {
+      updatedSupportedAt = new Date(supportedAtYear, supportedAtMonth - 1, 1);
+    } else {
+      updatedSupportedAt = new Date('1800-01-01T00:00:00.000Z');
+    }
+
+    const currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0);
+  
+    if (updatedSupportedAt > currentDate) {
+      setSupportMonthError('未来の年月は設定できません');
+      isValid = false;
+    }
         
     return isValid;
   };

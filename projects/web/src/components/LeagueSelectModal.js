@@ -23,7 +23,7 @@ function LeagueSelectModal({ handleLeagueClick, handleTeamClick, handleModalClos
   return (
     <div id='league-selecter-modal'>
       <div className='modal-header'>
-        <div onClick={ handleModalClose } className='modal-close' >
+        <div onClick={ handleModalClose } className='modal-close modal-selecter' >
           <CloseIcon className='modal-close-img'/>
         </div>
         {!isTeamSelecterVisible ? (
