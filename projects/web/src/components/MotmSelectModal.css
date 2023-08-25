@@ -51,3 +51,11 @@
   font-style: italic;
   font-weight: 700;
 }
+
+@media (min-width: 800px) {
+
+  .player-lists-player-number {
+    width: 17px;
+  }
+
+}
