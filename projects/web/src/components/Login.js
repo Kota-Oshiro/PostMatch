@@ -25,7 +25,7 @@ function Register() {
     }
 
     <div className='register-container'>
-      <span className='register-text' >ログインすると記録と投稿ができます</span>
+      <span className='register-text' >ログインすると観戦記録をつけられます</span>
       <div className='register-button' onClick={handleLoginModal}>ログイン</div>
     </div>
     </>
