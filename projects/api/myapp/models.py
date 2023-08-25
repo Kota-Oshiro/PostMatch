@@ -36,15 +36,17 @@ class Team(models.Model):
 # プレイヤー情報
 class Player(models.Model):
     id = models.IntegerField(primary_key=True) 
-    season_id = models.IntegerField()
-    team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='players', db_column='team_id')
-    name = models.CharField(max_length=255)
-    nationality = models.CharField(max_length=255)
+    season_id = models.IntegerField(null=True)
+    team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='players', db_column='team_id', null=True)
+    name = models.CharField(max_length=255, null=True)
+    nationality = models.CharField(max_length=255, null=True)
     position = models.CharField(max_length=255, null=True)
     birthday = models.DateField(null=True)
-    last_updated_at = models.DateTimeField()
+    last_updated_at = models.DateTimeField(null=True)
     name_ja = models.CharField(max_length=255, null=True)
     is_active = models.BooleanField(default=True)
+    shirt_number = models.IntegerField(null=True)
+
     class Meta:
         db_table = 'players'
 

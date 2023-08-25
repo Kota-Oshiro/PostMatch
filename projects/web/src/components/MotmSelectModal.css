@@ -37,7 +37,17 @@
 }
 
 .player-lists-player {
-  padding: 6px 24px;
+  display: flex;
+  align-items: center;
+  padding: 6px 12px;
   font-size: 1.4rem;
   border-bottom: solid 1px #eeeeee;
+}
+
+.player-lists-player-number {
+  text-align: center;
+  margin-right: 6px;
+  width: 15px;
+  font-style: italic;
+  font-weight: 700;
 }

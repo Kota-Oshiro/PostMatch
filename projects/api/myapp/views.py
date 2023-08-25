@@ -448,7 +448,7 @@ class MatchPostPlayerList(generics.ListAPIView):
         )
 
         # 上記のソート順序に基づいて選手をソート
-        players = Player.objects.filter(team__in=[match.home_team, match.away_team] ,is_active=True).annotate(sort_order=position_order).order_by('sort_order', 'name')
+        players = Player.objects.filter(team__in=[match.home_team, match.away_team], is_active=True).exclude(shirt_number=None).annotate(sort_order=position_order).order_by('sort_order', 'shirt_number', 'name')
 
         home_team_players = players.filter(team=match.home_team)
         away_team_players = players.filter(team=match.away_team)
@@ -722,14 +722,15 @@ def fetch_players_data(competition_code):
         team_id = row['id']
         for player in row['squad']:
             player_data = {
-                'team_id': team_id,
                 'id': player['id'],
+                'team_id': team_id,
+                'season_id': season_id,
                 'name': player['name'],
                 'position': player['position'],
                 'birthday': player['dateOfBirth'],
                 'nationality': player['nationality'],
+                'shirt_number': player['shirtNumber'] if pd.notnull(player['shirtNumber']) else None,
                 'last_updated_at': row['lastUpdated'],
-                'season_id': season_id
             }
             players_data.append(player_data)
 
@@ -747,15 +748,21 @@ def fetch_players_data(competition_code):
 
     new_player_objects = []
     for index, row in new_player_data.iterrows():
+
+        shirt_number = row['shirt_number']
+        if pd.isna(row['shirt_number']):
+            continue
+
         new_player_objects.append(
             Player(
                 id=row['id'],
-                season_id=row['season_id'],
                 team_id=row['team_id'],
+                season_id=row['season_id'],
                 name=row['name'],
                 nationality=row['nationality'],
                 position=row['position'], 
                 birthday=row['birthday'],
+                shirt_number=row['shirt_number'],
                 last_updated_at=row['last_updated_at']
             )
         )
@@ -764,20 +771,26 @@ def fetch_players_data(competition_code):
 
     update_player_objects = []
     for index, row in update_player_data.iterrows():
+
+        shirt_number = row['shirt_number']
+        if pd.isna(row['shirt_number']):
+            continue
+
         update_player_objects.append(
             Player(
                 id=row['id'],
-                season_id=row['season_id'],
                 team_id=row['team_id'],
+                season_id=row['season_id'],
                 name=row['name'],
                 nationality=row['nationality'],
                 position=row['position'], 
                 birthday=row['birthday'],
+                shirt_number=row['shirt_number'],
                 last_updated_at=row['last_updated_at']
             )
         )
 
-    Player.objects.bulk_update(update_player_objects, ['season_id', 'team_id', 'name', 'nationality', 'position', 'birthday', 'last_updated_at'])
+    Player.objects.bulk_update(update_player_objects, ['team_id', 'season_id', 'name', 'nationality', 'position', 'birthday', 'shirt_number', 'last_updated_at'])
 
 def fetch_players_from_competitions():
     competitions = ['PL', 'PD', 'SA']

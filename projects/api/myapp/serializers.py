@@ -173,7 +173,7 @@ class MatchPostPlayerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Player
-        fields = ['id', 'name_ja']
+        fields = ['id', 'name_ja', 'shirt_number']
 
 class WatchSerializer(serializers.ModelSerializer):
     match = MatchSerializer()   
