@@ -1,7 +1,7 @@
 
 .match-container {
   width: 100%;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
   box-sizing: border-box;
 }
 
@@ -17,7 +17,7 @@
     
   .match-container {
     max-width: 520px;
-    margin: 48px auto 0;
+    margin: 48px auto 24px;
     border: none;
   }
 

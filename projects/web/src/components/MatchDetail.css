@@ -84,7 +84,7 @@
 @media (min-width: 800px) {
     
   .match {
-    border-radius: 12px 12px 0 0;
+    border-radius: 12px;
   }
 
 }

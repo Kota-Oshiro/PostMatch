@@ -87,7 +87,6 @@
   padding: 24px 24px 48px;
   width: 100%;
   max-width: 520px;
-  background-color: #fff;
   box-sizing: border-box;
 }
 
@@ -102,7 +101,7 @@
   padding: 24px 24px 0 24px;
   width: 100%;
   max-width: 520px;
-  background: linear-gradient(135deg, #edf1fd, #d0dbff);
+  background: linear-gradient(135deg, #fff, #DEE6FF);
   box-sizing: border-box;
   border-radius: 12px;
 }
