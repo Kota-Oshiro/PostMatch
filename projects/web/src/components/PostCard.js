@@ -28,11 +28,11 @@ function PostCard({ post }) {
     const linesCount = Math.floor(mainTextRef.current.offsetHeight / lineHeight);
     
     if (!isPostDetail && linesCount > 7) {
-      setIsLong(true);
       setExpanded(false);
+      setIsLong(true);
     } else {
-      setIsLong(false);
       setExpanded(true);
+      setIsLong(false);
     }
 
   }, [post]);
@@ -52,13 +52,7 @@ function PostCard({ post }) {
         }
       </div>
       <div className='post-content'>
-        <pre className='post-text' style={!isExpanded && isLong ? { display: '-webkit-box', WebkitLineClamp: '5', WebkitBoxOrient: 'vertical', overflow: 'hidden', textOverflow: 'ellipsis' }: {}} ref={mainTextRef}>{ post.content }</pre>
-        {post.is_highlight  &&
-        <div className='post-highlight'>
-          <HighlightIcon className='post-highlight-icon'/>
-          <span className='post-highlight-text' >ハイライト視聴</span>
-        </div>
-        }   
+          <pre className='post-text' style={!isExpanded && isLong ? { display: '-webkit-box', WebkitLineClamp: '5', WebkitBoxOrient: 'vertical', overflow: 'hidden', textOverflow: 'ellipsis' }: {}} ref={mainTextRef}>{ post.content }</pre> 
         <div className={`fade-out ${isExpanded || !isLong ? '' : 'show'}`}></div>
         <div className={`read-more ${isExpanded && isLong ? 'below' : ''}`} style={{display: isLong ? 'inline-flex' : 'none'}} onClick={handleExpand}>
           <span className='read-more-text'>{isExpanded ? '閉じる' : '続きを読む'}</span>
@@ -67,8 +61,14 @@ function PostCard({ post }) {
           :
           <ReadMoreIcon className='read-more-icon' />
           }
-        </div>  
-      </div> 
+        </div>
+      </div>
+      {post.is_highlight &&
+        <div className={`post-highlight ${(isExpanded && isLong) ? 'highlight-expand' : ''}`}>
+          <HighlightIcon className='post-highlight-icon'/>
+          <span className='post-highlight-text' >ハイライト視聴</span>
+        </div>
+      } 
     </div>
   );
 }

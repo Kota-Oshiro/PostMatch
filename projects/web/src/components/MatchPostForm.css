@@ -102,6 +102,7 @@
 
 .post-modal-highlight.highlighted {
   background-color: #484848;
+  border: none;
 }
 
 .post-modal-icon {
