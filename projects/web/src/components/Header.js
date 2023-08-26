@@ -176,7 +176,7 @@ function Header() {
             <div id='nav-modal'>
             
             <div onClick={handleNavMenuCloseClick} className='nav-modal-close'>
-              <CloseIcon className='modal-close-img' />
+              <CloseIcon className='modal-close-icon' />
             </div>
 
             <div className='menu-block'>
