@@ -6,12 +6,13 @@ import MotmSelectModal from './MotmSelectModal';
 
 import './MatchPostForm.css';
 import { ReactComponent as CloseIcon } from '../icons/close.svg';
+import { ReactComponent as ArrowDownIcon } from '../icons/arrow_down.svg';
+import { ReactComponent as ArrowUpIcon } from '../icons/arrow_up.svg';
+import { ReactComponent as HighlightIcon } from '../icons/highlight.svg';
+import { ReactComponent as HighlightFillIcon } from '../icons/highlight_fill_white.svg';
 
 import { AuthContext } from '../AuthContext';
 import { LoaderInButton } from './Loader';
-
-import { ReactComponent as ArrowDownIcon } from '../icons/arrow_down.svg';
-import { ReactComponent as ArrowUpIcon } from '../icons/arrow_up.svg';
 
 function MatchPostForm({ 
     match, matchId, currentUser,
@@ -28,7 +29,12 @@ function MatchPostForm({
   const [isMotmSelectModalVisible, setMotmSelectModalVisible] = useState(false);
   const [postPlayerName, setPostPlayerName] =  useState('');
 
+  const [isHighlightWatch, setHighlightWatch] = useState(false);
+  const CurrentHighlightIcon = isHighlightWatch ? HighlightFillIcon : HighlightIcon;
+
+  const [charCount, setCharCount] = useState(0);
   const [postContent, setPostContent] = useState('');
+
   const [validateErrorMessage, setValidateErrorMessage] = useState('');
   const [loaderInButton, setLoaderInButton] = useState(false);
 
@@ -89,7 +95,7 @@ function MatchPostForm({
   const handleMotmSelectModal = (e) => {
     e.stopPropagation();
     setMotmSelectModalVisible(prevState => !prevState);
-};
+  };
 
   const handleModalClose = () => {
     setMotmSelectModalVisible(false);
@@ -117,6 +123,17 @@ function MatchPostForm({
       document.removeEventListener('click', handleOutsideClick);
     };
   }, []);
+
+  // ハイライト視聴のセット
+  const handleHighlightClick = (e) => {
+    e.stopPropagation();
+    setHighlightWatch(prevState => !prevState);
+  };
+
+  const handleContentChange = (e) => {
+    setPostContent(e.target.value);
+    setCharCount(e.target.value.length);
+  }
 
   // データ送信のためのMutationの作成
   const mutation = useMutation(
@@ -157,7 +174,8 @@ function MatchPostForm({
       match: matchId,
       user: currentUser.id,
       player_id: postPlayerId,
-      content: postContent
+      content: postContent,
+      is_highlight: isHighlightWatch
     };
 
     mutation.mutate(postData);
@@ -165,19 +183,28 @@ function MatchPostForm({
 
   return (
     <div className='post-modal' id='post-modal'>
-      <div className='post-modal-content'>
-        <div onClick={ handleMenuClose } className='modal-close'>
-          <CloseIcon className='modal-close-img'/>
+      <form onSubmit={handleSubmit} className='post-modal-form'>
+
+        <div onClick={ handleMenuClose } className='post-modal-close'>
+          <CloseIcon className='modal-close-icon'/>
         </div>
-        <h2 className='modal-title'>ポストの作成</h2>
-        <form onSubmit={handleSubmit}>
-          <label htmlFor='pulldown'>マンオブザマッチ投票</label>
-          
-          <div className='custom-form' onClick={handleMotmSelectModal}>
+        <h2 className='post-modal-title'>観戦記録</h2>
+        <button type='submit' className='post-modal-submit'>
+          {!loaderInButton ? (
+            <span className='button-text'>投稿</span>
+          ) : (
+            <LoaderInButton />
+          )}
+        </button>
+        
+        {validateErrorMessage && <span className='error-message'>{validateErrorMessage}</span>}
+
+        <div className='post-modal-selecter' onClick={handleMotmSelectModal}>
+          <div className='post-modal-motm' onClick={handleMotmSelectModal}>
             {postPlayerName ? (
               <span className='custom-form-text'>{postPlayerName}</span>
             ) : (
-              <span className='custom-form-text'>プレイヤーを選んでください</span>
+              <span className='custom-form-text'>マンオブザマッチを選ぶ</span>
             )}
             {isMotmSelectModalVisible ? (
               <ArrowUpIcon className='custom-form-arrow' />
@@ -186,19 +213,21 @@ function MatchPostForm({
             )}
             {isMotmSelectModalVisible && <MotmSelectModal match={match} postPlayerList={postPlayerList} handlePlayerClick={handlePlayerClick} handleModalClose={handleModalClose} />}
           </div>
+          <div className={`post-modal-highlight ${isHighlightWatch ? 'highlighted' : ''}`} onClick={handleHighlightClick} >
+            <CurrentHighlightIcon className='post-modal-icon'/>
+            <span className={`post-modal-highlight-text ${isHighlightWatch ? 'highlighted' : ''}`}>ハイライト視聴</span>
+          </div>
+        </div>
 
-          <label htmlFor='content'>試合の感想</label>
-          <textarea name='content' placeholder='（最大900文字）試合の感想を書いてみよう。 熱狂した瞬間、印象的だった選手やプレー、物足りなかったポイントなど何でもOK！' onChange={e => setPostContent(e.target.value)}></textarea>
-          <button type='submit'>
-            {!loaderInButton ? (
-              <span className='button-text'>ポスト</span>
-            ) : (
-              <LoaderInButton />
-            )}
-          </button>
-          {validateErrorMessage && <span className='error-message'>{validateErrorMessage}</span>}
-        </form>
-      </div>
+        <textarea
+          name='content'
+          className='post-modal-textarea'
+          placeholder='試合の感想を書いてみよう。熱狂した瞬間、印象的だった選手やプレー、物足りなかったポイントなど何でもOK！'
+          onChange={handleContentChange}
+        >
+        </textarea>
+        <span className='post-modal-char-counter'>{charCount} / 900</span>
+      </form>
     </div>
   );
 }

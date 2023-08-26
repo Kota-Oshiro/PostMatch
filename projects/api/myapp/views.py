@@ -469,7 +469,7 @@ class MatchPostCreateView(APIView):
         match = get_object_or_404(Match, id=match_id)
         return match
 
-    def create_object(self, match, user_id, player_id, content):
+    def create_object(self, match, user_id, player_id, content, is_highlight):
         # player_idが空文字列の場合、Noneに変換する
         player_id = None if player_id == "" else player_id
 
@@ -483,14 +483,15 @@ class MatchPostCreateView(APIView):
             match=match,
             user=user,
             player=player,
-            content=content
+            content=content,
+            is_highlight = is_highlight,
         )
 
     def post(self, request, pk, *args, **kwargs):
         try:
             match = self.get_match(id=pk)
             data = request.data
-            self.create_object(match, data.get('user'), data.get('player_id'), data.get('content'))
+            self.create_object(match, data.get('user'), data.get('player_id'), data.get('content'), data.get('is_highlight'))
             return Response({'message': '投稿が完了しました'}, status=status.HTTP_201_CREATED)
         except ValueError as e:
             error_message = str(e)

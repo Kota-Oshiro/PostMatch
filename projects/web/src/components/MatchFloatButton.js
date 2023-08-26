@@ -24,7 +24,7 @@ function MatchFloatButton({ matchId, isAuthenticated, currentUser, hasWatched, s
     if (!hasWatched) {
       setHasWatched(true);
       setToastId(uuidv4());
-      setToastMessage('観戦記録に追加しました');
+      setToastMessage('観戦済みに追加しました');
       setToastType('success');
       try {
         await apiBaseUrl.post(`/match/${matchId}/watch_create/${currentUser.id}/`, watchData);
@@ -40,7 +40,7 @@ function MatchFloatButton({ matchId, isAuthenticated, currentUser, hasWatched, s
     } else {
       setHasWatched(false);
       setToastId(uuidv4());
-      setToastMessage('観戦記録から削除しました');
+      setToastMessage('観戦済みから削除しました');
       setToastType('delete');
       try {
         await apiBaseUrl.delete(`/match/${matchId}/watch_create/${currentUser.id}/`);

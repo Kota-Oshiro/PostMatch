@@ -171,6 +171,7 @@
   color: #000;
   font-size: 1.2rem;
   font-weight: 700;
+  line-height: 24px;
 }
 
 .post-content {
@@ -265,6 +266,28 @@
 
 .post.no-hover:hover {
   background-color: #fff;
+}
+
+.post-highlight {
+  display: flex;
+  align-self: flex-end;
+  align-items: center;
+  margin: 6px 0 0;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background-color: #f7f7f7;
+}
+
+.post-highlight-icon {
+  width: 1.4rem;
+  height: auto;
+  margin-right: 6px;
+}
+
+.post-highlight-text {
+  color: #888;
+  font-weight: 700;
+  font-size: 1rem;
 }
 
 @media (min-width: 800px) {

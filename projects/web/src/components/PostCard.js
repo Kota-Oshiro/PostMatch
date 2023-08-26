@@ -9,6 +9,7 @@ import PostCardTagMotm from './PostCardTagMotm';
 
 import { ReactComponent as ReadMoreIcon } from '../icons/arrow_down_white.svg';
 import { ReactComponent as ReadMoreIconBelow } from '../icons/arrow_up_white.svg';
+import { ReactComponent as HighlightIcon } from '../icons/highlight.svg';
 
 function PostCard({ post }) {
 
@@ -52,6 +53,12 @@ function PostCard({ post }) {
       </div>
       <div className='post-content'>
         <pre className='post-text' style={!isExpanded && isLong ? { display: '-webkit-box', WebkitLineClamp: '5', WebkitBoxOrient: 'vertical', overflow: 'hidden', textOverflow: 'ellipsis' }: {}} ref={mainTextRef}>{ post.content }</pre>
+        {post.is_highlight  &&
+        <div className='post-highlight'>
+          <HighlightIcon className='post-highlight-icon'/>
+          <span className='post-highlight-text' >ハイライト視聴</span>
+        </div>
+        }   
         <div className={`fade-out ${isExpanded || !isLong ? '' : 'show'}`}></div>
         <div className={`read-more ${isExpanded && isLong ? 'below' : ''}`} style={{display: isLong ? 'inline-flex' : 'none'}} onClick={handleExpand}>
           <span className='read-more-text'>{isExpanded ? '閉じる' : '続きを読む'}</span>
@@ -60,7 +67,7 @@ function PostCard({ post }) {
           :
           <ReadMoreIcon className='read-more-icon' />
           }
-        </div>        
+        </div>  
       </div> 
     </div>
   );

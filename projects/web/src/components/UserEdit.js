@@ -377,11 +377,11 @@ function UserEditForm() {
             required
           />
           <label htmlFor="support_team">応援しているチーム</label>  
-          <div className='custom-form' onClick={handleLeagueSelectModal}>
+          <div className='custom-form-selecter' onClick={handleLeagueSelectModal}>
             {supportTeam ? (
               <>
-                <div className='edit-support-name'>
-                  <img src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/crest-${supportTeamTla}.webp`} className='edit-support-crest'/>
+                <div className='custom-form-selecter-default'>
+                  <img src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/crest-${supportTeamTla}.webp`} className='custom-form-selecter-icon'/>
                   <span className='custom-form-text'>{supportTeamName}</span>
                 </div>
                 {isLeagueSelectModalVisible ? (

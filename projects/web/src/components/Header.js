@@ -140,7 +140,7 @@ function Header() {
 
           {!currentMenu ? 
             <div className='nav-left-back' onClick={handleBackClick}>
-              <BackIcon className='nav-left-back-icon' />
+              <BackIcon className='modal-close-icon' />
             </div>
             : currentMenu.key === 'home' ?
               null

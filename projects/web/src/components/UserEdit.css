@@ -59,18 +59,6 @@
   margin-bottom: 24px;    
 }
 
-.edit-support-name {
-  display: flex;
-  align-items: center;
-}
-
-.edit-support-crest {
-  margin-right: 6px;
-  width: 2.4rem;
-  height: auto;
-  object-fit: cover;
-}
-
 .edit-year-month {
   display: flex;
   align-items: center;

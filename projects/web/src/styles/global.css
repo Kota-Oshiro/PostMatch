@@ -87,7 +87,7 @@ a {
 }
 
 .error-message {
-  margin: 1rem 0;
+  margin: 12px 0;
   color: #DF5656;
   font-size: 1.2rem;
   font-weight: 700;
@@ -147,6 +147,8 @@ input:not([type="submit"]):focus, select:focus, textarea:focus {
 
 select {
   cursor: pointer;
+  background-color: #f7f7f7;
+  border: none;
 }
 
 option {
@@ -155,6 +157,7 @@ option {
 
 textarea {
   height: 300px;
+  resize: none;
 }
 
 input:not([type="submit"]):hover, textarea:hover, select:hover {
@@ -217,7 +220,7 @@ input[type="submit"]:hover, button:hover, .button:hover  {
   opacity: 0.8;
 }
 
-.custom-form {
+.custom-form-selecter {
   position: relative;
   display: flex;
   justify-content: space-between;
@@ -225,18 +228,29 @@ input[type="submit"]:hover, button:hover, .button:hover  {
   padding: 0 12px;
   width: 100%;
   height: 50px;
-  border: solid 1px #eeeeee;
+  background-color: #f7f7f7;
   border-radius: 6px;
   box-sizing: border-box;
   cursor: pointer;
 }
 
-.custom-form:hover {
-  border: solid 1px #888888;
+.custom-form-selecter-default {
+  display: flex;
+  align-items: center;
+}
+
+.custom-form-selecter-icon {
+  margin-right: 6px;
+  width: 24px;
+  height: auto;
 }
 
 .custom-form-text {
   font-size: 1.4rem;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: inline-block;  
 }
 
 .custom-form-arrow {
@@ -257,6 +271,7 @@ input[type="submit"]:hover, button:hover, .button:hover  {
 }
 
 .modal-title {
+  text-align: center;
   height: 24px;
   line-height: 24px;
 }
@@ -277,9 +292,9 @@ input[type="submit"]:hover, button:hover, .button:hover  {
   right: 0;
 }
 
-.modal-close-img {
+.modal-close-icon {
   width: auto;
-  height: 14px;
+  height: 20px;
 }
 
 .modal-overlay {

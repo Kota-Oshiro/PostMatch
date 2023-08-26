@@ -155,6 +155,7 @@ class Post(models.Model):
     user = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='user_posts', db_column='user_id')
     player = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='player_posts', db_column='player_id', null=True)
     content = models.TextField(max_length=900, null=True)
+    is_highlight = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
         # 初めて保存される（新規作成される）場合にTrueとなる
