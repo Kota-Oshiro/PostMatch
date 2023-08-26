@@ -43,7 +43,7 @@ function PostCard({ post }) {
   };
 
   return (
-    <div onClick={() => navigation(`/post/${post.id}`)} className={`post ${isExpanded && isLong ? 'expanded' : ''}`}>
+    <div onClick={() => navigation(`/post/${post.id}`)} className={`post ${ !post.is_highlight && isExpanded && isLong ? 'post-expand' : ''}`}>
       <PostCardHeader post={post} />
       <div className='post-tag'>
         <PostCardTagMatch post={post} />  

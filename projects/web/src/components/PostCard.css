@@ -189,6 +189,10 @@
   font-size: 1.4rem;
 }
 
+.post.post-expand {
+  padding-bottom: 60px;
+}
+
 .fade-out {
   position: absolute;
   display: none;
