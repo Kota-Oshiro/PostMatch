@@ -1,11 +1,14 @@
-.match-card {
+.match-card, .match-card-header, .match-card-content, .match-card-scoreboard, .match-card-result {
   display: flex;
+  align-items: center;
+}
+
+.match-card, .match-card-content {
   flex-direction: column;
-  justify-content: center;
-  padding: 24px;
+}
+
+.match-card {
   width: 264px;
-  background-color: #fff;
-  border: none;
   border-radius: 12px;
   box-sizing: border-box;
   cursor: pointer;
@@ -20,52 +23,101 @@
   opacity: 1;
 }
 
-.match-card-top-league, .match-card-crest {
-  display: flex;
-  align-items: center;
+.match-card-header {
+  justify-content: center;
+  padding: 8px 12px;
+  border-radius: 12px 12px 0 0;
+  box-sizing: border-box;
 }
 
-.match-card-top, .match-card-middle, .match-card-bottom {
-  display: flex;
-  align-items: center;
+.match-card-header, .match-card-content {
+  width: 100%;
+  background-color: #fff;
+}
+
+.match-card-content {
   justify-content: space-between;
+  padding: 16px 0;
+  border-radius: 0 0 12px 12px;
 }
 
-.match-card-middle {
-  padding: 18px 12px 12px;
+.match-card-scoreboard {
+  position: relative;
+  justify-content: space-between;
+  margin: 12px 0;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-.match-card-bottom {
-  padding: 0 12px;
+.match-card-crest-home, .match-card-crest-away {
+  position: absolute;
+  width: 4.8rem;
+  height: 4.8rem;
 }
 
-.match-card-icon {
-  width: 1.6rem;
-  height: auto;
-  object-fit: cover;
-  margin-right: 6px;
+.match-card-crest-home {
+  left: 12px;
 }
 
-.match-card-crest {
-  width: 5rem;
-  height: auto;
+.match-card-crest-away {
+  right: 12px;
 }
 
-.match-card-versus-icon {
-  width: 2.6rem;
-  height: auto;
+.match-card-team-home, .match-card-team-away {
+  text-align: center;
+  width: calc(50% - 52px);
+  height: 36px;
+  line-height: 36px;
+  color: #fff;
+  font-weight: 900;
+  font-size: 2rem;
+  border-radius: 6px;
+  box-sizing: border-box;
 }
 
-.match-card-status {
-  padding: 3px 9px;
-  font-size: 1rem;
-  border: solid 2px #eeeeee;
-  border-radius: 50px;
+.match-card-team-home {
+  margin-left: 36px;
+  padding-left: 18px;
+}
+
+.match-card-team-away {
+  margin-right: 36px;
+  padding-right: 18px;
 }
 
 .match-card-tla {
   text-align: center;
   width: 50px;
+}
+
+.match-card-icon {
+  width: 1.6rem;
+  height: auto;
+  margin-right: 6px;
+}
+
+.match-card-versus-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.match-card-text, .match-card-text-header, .match-card-status {
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.match-card-text-header {
+  color: #fff;
+}
+
+.match-card-text, .match-card-status {
+  color: #888888;
+}
+
+.match-card-status {
+  padding: 3px 6px;
+  border: solid 2px #eeeeee;
+  border-radius: 50px;
 }
 
 @media (min-width: 800px) {
@@ -74,15 +126,8 @@
     margin-right: 0;
   }
 
-  .match-card-score-text {
-    font-size: 3.2rem;
-  }
-
-  .match-card-text, .match-card-tla {
-    font-size: 1.2rem;
-  }
-
-  .match-card-status {
+  .match-card-text, .match-card-text-header, .match-card-status {
+    font-weight: 900;
     font-size: 1rem;
   }
 

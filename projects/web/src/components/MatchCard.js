@@ -6,7 +6,8 @@ import './MatchCard.css';
 import { ReactComponent as NationEngIcon } from '../icons/nation_eng.svg';
 import { ReactComponent as NationEspIcon } from '../icons/nation_esp.svg';
 import { ReactComponent as NationItaIcon } from '../icons/nation_ita.svg';
-import { ReactComponent as VersusEngIcon } from '../icons/versus.svg';
+import { ReactComponent as VersusEngIcon } from '../icons/versus_grey.svg';
+import { ReactComponent as CalenderIcon } from '../icons/calender_grey.svg';
 
 function MatchCard({ match, className }) {
 
@@ -14,38 +15,48 @@ function MatchCard({ match, className }) {
     : match.competition_id === 2014 ? 'ラ・リーガ' 
     : match.competition_id === 2019 ? 'セリエA'
     : '';
+
   const CompetitionIcon = match.competition_id === 2021 ? NationEngIcon
     : match.competition_id === 2014 ? NationEspIcon 
     : match.competition_id === 2019 ? NationItaIcon
     : NationEngIcon;
 
+    const CompetitionColor = match.competition_id === 2021 ? '#38003c'
+    : match.competition_id === 2014 ? '#FF4B44'
+    : match.competition_id === 2019 ? '#171D8D'
+    : '#3465FF';
+
   return (
+
     <Link to={`/match/${match.id}`}>    
       <div className={`match-card ${className}`}>
-        <div className='match-card-top'>
-          <div className='match-card-top-league'>
-            <CompetitionIcon className='match-card-icon' />
-            <span className='match-card-text'>{ competitionName }</span>
+        <div className='match-card-header' style={{backgroundColor: CompetitionColor}}>
+          <CompetitionIcon className='match-card-icon' />
+          <span className='match-card-text-header'>{ competitionName }</span>
+        </div>
+
+        <div className='match-card-content'>
+          <span className='match-card-text'>マッチデイ {match.matchday}</span>
+          <div className='match-card-scoreboard'>
+            <img
+              src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/crest-${match.home_team.tla}.webp`}
+              className='match-card-crest-home'
+              alt={match.home_team.tla}
+            />
+            <img
+              src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/crest-${match.away_team.tla}.webp`}
+              className='match-card-crest-away'
+              alt={match.away_team.tla}
+            />
+            <span className='match-card-team-home' style={{background: `linear-gradient( -90deg, ${match.home_team.club_color_code_first}, 90%, white)`}}>
+              { match.home_team.tla }
+            </span>
+            <VersusEngIcon className='match-card-versus-icon'/>
+            <span className='match-card-team-away' style={{background: `linear-gradient( 90deg, ${match.away_team.club_color_code_first}, 90%, white)`}}>
+              { match.away_team.tla }
+            </span>
           </div>
-          <span className='match-card-text'>マッチデイ { match.matchday }  </span>
-        </div>
-        <div className='match-card-middle'>
-          <img
-            src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/crest-${match.home_team.tla}.webp`}
-            className='match-card-crest'
-            alt={match.home_team.tla}
-          />
-          <VersusEngIcon className='match-card-versus-icon'/>
-          <img
-            src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/crest-${match.away_team.tla}.webp`}
-            className='match-card-crest'
-            alt={match.away_team.tla}
-          />
-        </div>
-        <div className='match-card-bottom'>
-          <span className='match-card-tla'>{ match.home_team.tla }</span>
           {renderMatchCardStatus(match)}
-          <span className='match-card-tla'>{ match.away_team.tla }</span>
         </div>
       </div>
     </Link>
@@ -62,10 +73,15 @@ function renderMatchCardStatus(match) {
         </>
       );
     case 'IN_PLAY':
-    case 'PAUSED':
       return (
         <>
           <span className='match-card-status'>試合中</span>
+        </>
+      );
+    case 'PAUSED':
+      return (
+        <>
+          <span className='match-card-status'>ハーフタイム</span>
         </>
       );
     case 'TIMED':

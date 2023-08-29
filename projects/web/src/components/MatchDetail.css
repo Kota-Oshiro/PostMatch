@@ -1,63 +1,62 @@
-.match, .match-content-middle {
+.match, .match-header, .match-content, .match-bottom, .match-scoreboard, .match-result {
   display: flex;
+  align-items: center;
+}
+
+.match, .match-content {
   flex-direction: column;
-  align-items: center;
 }
-  
-.match {
-  background-image: url('https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Image/match-bg.webp');
-  background-size: cover;
-  background-position: center;
-  padding: 48px;
-}
-  
-.match-content, .match-crest {
-  display: flex;
-  align-items: center;
-}
-  
-.match-top, .match-middle {
-  display: flex;
-  align-items: center;
+
+.match-scoreboard {
   justify-content: space-between;
-  margin-bottom: 48px;
   width: 100%;
-}
-  
-.match-bottom { 
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-  
-.match-icon {
-  width: 1.6rem;
-  height: auto;
-  object-fit: cover;
-  margin-right: 0.5rem;
-}
-  
-.match-text, .match-text-league {
-  text-align: center;
-  font-weight: 400;
-  color: #fff;
   box-sizing: border-box;
-  border-bottom: none;
 }
-  
-.match-text-league {
-  transition: text-decoration;
+
+.match-header, .match-bottom {
+  justify-content: center;
+  padding: 12px 24px;
+  width: 100%;
+  box-sizing: border-box;
 }
-  
-.match-text-league:hover {
-  text-decoration:underline;
+
+.match-header {
+  border-radius: 12px 12px 0 0;
 }
-  
+
+.match-bottom { 
+  background-color: #fff;
+  border-radius: 0 0 12px 12px;
+  border: solid 1px #eeeeee;
+}
+
+.match-content {
+  padding: 24px 0;
+  background-color: #fff;
+  border-left: solid 1px #eeeeee;
+  border-right: solid 1px #eeeeee;
+}
+
+.match-scoreboard {
+  position: relative;
+  margin: 12px 0;
+}
+
+.match-crest-home, .match-crest-away {
+  position: absolute;
+}
+
+.match-crest-home {
+  left: 12px;
+}
+
+.match-crest-away {
+  right: 12px;
+}
+
 .match-crest-img {
-  padding: 12px;
-  width: 6rem;
-  height: 6rem;
-  object-fit: cover;
+  width: 4.8rem;
+  height: 4.8rem;
   filter: brightnes(1);
   transform: filter;
 }
@@ -65,27 +64,203 @@
 .match-crest-img:hover {
   filter:brightness(1.1);
 }
-  
-.match-score-text {
-  margin-bottom: 12px;
+
+.match-team-home, .match-team-away {
+  text-align: center;
+  width: calc(50% - 72px);
+  height: 36px;
+  line-height: 36px;
+  color: #fff;
+  font-weight: 900;
+  font-size: 2rem;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
+.match-team-home {
+  margin-left: 36px;
+  padding-left: 12px;
+}
+
+.match-team-away {
+  margin-right: 36px;
+  padding-right: 12px;
+}
+
+.match-result {
+  display: flex;
+  justify-content: center;
+  width: 60px;
+  font-size: 2rem;
+  font-weight: 900;
+  height: 36px;
+  line-height: 36px;
+}
+
+.match-result.match-prematch {
+  color: #888888;
+}
+
+.match-tla {
+  height: 36px;
+  line-height: 36px;
+}
+
+.match-icon {
+  width: 1.6rem;
+  height: auto;
+  margin-right: 0.5rem;
+}
+
+.match-text, .match-status {
+  font-size: 1rem;
   font-weight: 700;
-  font-size: 2.8rem;
+  color: #888888;
+}
+
+.match-text-header {
+  font-size: 1.2rem;
   color: #fff;
 }
 
 .match-status {
-  padding: 3px 9px;
-  font-size: 1rem;
-  color: #fff;
-  border: solid 2px #fff;
+  padding: 3px 6px;
+  border: solid 2px #eeeeee;
   border-radius: 50px;
 }
-  
+
+.match-goals {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-top: 12px;
+  padding: 0 12px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.match-goals-home, .match-goals-away {
+  width: calc(50% - 18px);
+}
+
+.match-goals-player-home, .match-goals-player-away {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 6px;
+}
+
+.match-goals-player-home {
+  align-items: end;
+}
+
+.match-goals-minute {
+  font-weight: 900;
+  font-size: 1rem;
+}
+
+.match-goals-scorer {
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.match-goals-assist {
+  font-size: 0.8rem;
+}
+
+.match-goals-center {
+  display: flex;
+  justify-content: center;
+  width: 36px;
+}
+
+.match-goals-icon {
+  display: flex;
+  justify-content: center;
+  width: 1.6rem;
+  height: auto;
+}
+
 @media (min-width: 800px) {
-    
-  .match {
-    border-radius: 12px;
+  
+  .match-header, .match-bottom {
+    padding: 24px 24px;
   }
 
+  .match-crest-home {
+    left: 24px;
+  }
+  
+  .match-crest-away {
+    right: 24px;
+  }
+  
+  .match-crest-img {
+    width: 6rem;
+    height: 6rem;
+  }
+
+  .match-scoreboard {
+    margin: 24px 0;
+  }
+
+  .match-result {
+    width: 84px;
+    font-size: 2.8rem;
+    font-weight: 900;
+    height: 48px;
+    line-height: 48px;
+  }
+
+  .match-text, .match-status {
+    font-size: 1.2rem;
+  }
+
+  .match-team-home, .match-team-away {
+    width: calc(50% - 104px);
+    height: 48px;
+    line-height: 48px;
+    font-size: 2.8rem;
+  }
+
+  .match-team-home {
+    margin-left: 54px;
+    padding-left: 18px;
+  }
+  
+  .match-team-away {
+    margin-right: 54px;
+    padding-right: 18px;
+  }
+
+  .match-goals {
+    margin-top: 24px;
+    padding: 0 24px;
+  }
+
+  .match-goals-home, .match-goals-away {
+    width: calc(50% - 24px);
+  }
+  
+  .match-goals-center {
+    width: 48px;
+  }
+
+  .match-goals-minute {
+    font-size: 1.2rem;
+  }
+  
+  .match-goals-scorer {
+    font-weight: 700;
+    font-size: 1.2rem;
+  }
+  
+  .match-goals-assist {
+    font-size: 1rem;
+  }
+
+  .match-text-header {
+    font-size: 1.4rem;
+  }
+    
 }
   

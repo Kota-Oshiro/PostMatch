@@ -163,6 +163,7 @@
     width: calc(100% - 48px);
     margin-bottom: 48px;
     padding: 48px 48px 0;
+    background: linear-gradient(135deg, #fff, #DEE6FF);
     border-radius: 12px;
   }
 
@@ -189,7 +190,7 @@
     flex-direction: column;
     margin: 0;
     padding: 0;
-    background-color: transparent;
+    background: transparent;
     width: calc(25% - 12px);
   }
 

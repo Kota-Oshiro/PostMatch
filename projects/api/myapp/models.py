@@ -203,3 +203,21 @@ class Watch(models.Model):
 
     class Meta:
         db_table = 'watches'
+
+# ゴール情報
+class Goal(models.Model):
+    id = models.AutoField(primary_key=True)
+    competition_id = models.IntegerField()
+    season_id = models.IntegerField()
+    match = models.ForeignKey(Match, on_delete=models.CASCADE, related_name='match_goals', db_column='match_id')
+    team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='team_goals', db_column='team_id')
+    player = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='player_goals', db_column='player_id')
+    assist_player = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='assist_player_goals', db_column='assist_player_id', null=True)
+    minute = models.IntegerField(null=True)
+    additional_time = models.CharField(max_length=255, null=True)
+    type = models.CharField(max_length=255, null=True)
+    home_score = models.IntegerField(null=True)
+    away_score = models.IntegerField(null=True)
+
+    class Meta:
+        db_table = 'goals'

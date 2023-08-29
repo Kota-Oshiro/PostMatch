@@ -38,6 +38,10 @@ function Match() {
   const [postPlayerList, setPostPlayerList] = useState({ home_team_players: [], away_team_players: [] });
   const [postPlayerId, setPostPlayerId] = useState('');
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   // タブをクリック切り替え
   const openForm = (formName) => {
     setCurrentTab(formName);
@@ -178,7 +182,7 @@ function Match() {
       <div className={`modal-overlay ${isPostModalVisible ? '' : 'hidden'}`}></div>
       <div className='bg'></div>      
       <div className='match-container'>
-        <MatchDetail match={data.match} />
+        <MatchDetail match={data.match} goals={data.goals} />
       </div>
       <MatchFloatButton
         matchId={id}

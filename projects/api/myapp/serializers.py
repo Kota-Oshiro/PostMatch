@@ -1,6 +1,6 @@
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
-from .models import Account, Team, Match, Post, Watch, Player
+from .models import Account, Team, Match, Post, Watch, Player, Goal
 
 #トークン発行
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -169,11 +169,19 @@ class MatchSerializer(serializers.ModelSerializer):
         model = Match
         fields = ['id', 'competition_id', 'matchday', 'home_team', 'away_team', 'started_at', 'status', 'home_score', 'away_score', 'total_watch_count', 'total_post_count']
 
-class MatchPostPlayerSerializer(serializers.ModelSerializer):
+class MatchPlayerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Player
         fields = ['id', 'name_ja', 'shirt_number']
+
+class MatchGoalSerializer(serializers.ModelSerializer):
+    player = MatchPlayerSerializer(read_only=True)
+    assist_player = MatchPlayerSerializer(read_only=True)
+
+    class Meta:
+        model = Goal
+        fields = [ 'team', 'player', 'assist_player', 'minute', 'additional_time', 'type']
 
 class WatchSerializer(serializers.ModelSerializer):
     match = MatchSerializer()   

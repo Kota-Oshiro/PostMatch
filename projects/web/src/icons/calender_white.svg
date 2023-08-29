@@ -1,0 +1,12 @@
+<svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M13 13C8.02944 13 4 17.0294 4 22V46C4 50.9706 8.02944 55 13 55H47C51.9706 55 56 50.9706 56 46V22C56 17.0294 51.9706 13 47 13V9C54.1797 9 60 14.8203 60 22V46C60 53.1797 54.1797 59 47 59H13C5.8203 59 0 53.1797 0 46V22C0 14.8203 5.8203 9 13 9V13Z" fill="white"/>
+<path d="M19 1H17C15.8954 1 15 1.89543 15 3V17C15 18.1046 15.8954 19 17 19H19C20.1046 19 21 18.1046 21 17V3C21 1.89543 20.1046 1 19 1Z" fill="white"/>
+<path d="M43 1H41C39.8954 1 39 1.89543 39 3V17C39 18.1046 39.8954 19 41 19H43C44.1046 19 45 18.1046 45 17V3C45 1.89543 44.1046 1 43 1Z" fill="white"/>
+<rect x="27" y="27" width="6" height="6" rx="2" fill="white"/>
+<rect x="13" y="27" width="6" height="6" rx="2" fill="white"/>
+<rect x="13" y="41" width="6" height="6" rx="2" fill="white"/>
+<rect x="27" y="41" width="6" height="6" rx="2" fill="white"/>
+<rect x="41" y="41" width="6" height="6" rx="2" fill="white"/>
+<rect x="41" y="27" width="6" height="6" rx="2" fill="white"/>
+<path d="M37 9H23V13H37V9Z" fill="white"/>
+</svg>

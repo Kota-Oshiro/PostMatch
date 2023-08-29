@@ -2,7 +2,7 @@ import json
 import pandas as pd
 import http.client
 import requests
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
@@ -11,6 +11,7 @@ from django.utils import timezone
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 from django.utils.decorators import method_decorator
+from django.db import connection
 from django.db.models import Count, Min, Q, Case, When, Value, IntegerField
 
 from django.views.decorators.http import require_POST
@@ -45,10 +46,14 @@ from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination, LimitOffsetPagination
 from rest_framework.exceptions import ValidationError
 
-from .models import Account, Team, Player, Match, Post, Watch
-from .serializers import MyTokenObtainPairSerializer, AccountSerializer, AccountHeaderSerializer, AccountEditSerializer, AccountEditTeamSerializer, TeamSerializer, TeamListSerializer, TeamSupporterSerializer, PlayerSerializer, MatchSerializer, PostSerializer, MotmPlayerSerializer, MatchPostPlayerSerializer, WatchSerializer
+from .models import Account, Team, Player, Match, Post, Watch, Goal
+from .serializers import MyTokenObtainPairSerializer, AccountSerializer, AccountHeaderSerializer, AccountEditSerializer, AccountEditTeamSerializer, TeamSerializer, TeamListSerializer, TeamSupporterSerializer, PlayerSerializer, MatchSerializer, MatchGoalSerializer, PostSerializer, MotmPlayerSerializer, MatchPlayerSerializer, WatchSerializer
 
-
+#モデルのインクリメントを初期化
+def reset_sequence(model):
+    table_name = model._meta.db_table
+    with connection.cursor() as cursor:
+        cursor.execute(f"SELECT setval(pg_get_serial_sequence('{table_name}', 'id'), 1, false);")
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
@@ -389,6 +394,7 @@ class MatchDetail(APIView):
 
     def get(self, request, pk, format=None):
         match = get_object_or_404(Match.objects.select_related('home_team', 'away_team'), pk=pk)
+        goals = Goal.objects.select_related('player').filter(match_id=pk)
 
         if request.user.is_authenticated:
             current_account = Account.objects.select_related('support_team').get(pk=request.user.id)
@@ -401,6 +407,7 @@ class MatchDetail(APIView):
             'match': MatchSerializer(match).data,
             'current_account': AccountSerializer(current_account).data if current_account else None,
             'has_watched': has_watched,
+            'goals': MatchGoalSerializer(goals, many=True).data
         }
         return Response(response)
     
@@ -454,8 +461,8 @@ class MatchPostPlayerList(generics.ListAPIView):
         away_team_players = players.filter(team=match.away_team)
 
         response = {
-            'home_team_players': MatchPostPlayerSerializer(home_team_players, many=True).data,
-            'away_team_players': MatchPostPlayerSerializer(away_team_players, many=True).data,
+            'home_team_players': MatchPlayerSerializer(home_team_players, many=True).data,
+            'away_team_players': MatchPlayerSerializer(away_team_players, many=True).data,
         }
         return Response(response)
 
@@ -867,6 +874,114 @@ def fetch_matches_from_competitions():
     competitions = ['PL', 'PD', 'SA']
     for competition in competitions:
         fetch_matches_data(competition)
+
+# ▼ ここからGoalsのAPIデータ取得 ▼
+
+def fetch_goals_data(match_id):
+    connection = http.client.HTTPConnection(settings.FOOTBALLDATA_API_URL)
+    headers = { 'X-Auth-Token': settings.FOOTBALLDATA_API_TOKEN }
+    connection.request('GET', f'/v4/matches/{match_id}', None, headers)
+    response = json.loads(connection.getresponse().read().decode())
+
+    #df_original = pd.DataFrame(response['matches'])
+    df_original = pd.DataFrame([response])
+
+    #ここからGOALデータの抽出
+    def extract_goals_data(row):
+        goals = []
+        for goal in row.get('goals', []):
+            goal_data = {
+                'competition_id': row['competition']['id'],
+                'season_id': row['season']['id'],  
+                'match_id': row['id'],
+                'team_id': goal['team']['id'],
+                'player_id': goal['scorer']['id'],
+                'assist_player_id': goal['assist']['id'] if goal['assist'] else None,
+                'minute': goal['minute'],
+                'additional_time': goal['injuryTime'],
+                'type': goal['type'],
+                'home_score': goal['score']['home'],
+                'away_score': goal['score']['away'],
+            }
+            goals.append(goal_data)
+        return goals
+    
+    goals_to_create = []
+    for _, row in df_original.iterrows():
+        goals_data = extract_goals_data(row)
+        for goal_data in goals_data:
+            # 既存のゴールデータが存在するか確認
+            exists = Goal.objects.filter(
+                match_id=goal_data['match_id'],
+                team_id=goal_data['team_id'],
+                player_id=goal_data['player_id'],
+                minute=goal_data['minute'],
+                additional_time=goal_data['additional_time']
+            ).exists()
+            if not exists:
+                goals_to_create.append(Goal(**goal_data))
+
+    Goal.objects.bulk_create(goals_to_create)
+
+def fetch_recent_match_goals():
+    # 3時間以内のmatch_idを取得
+    current_time = timezone.now()
+    three_hours_ago = timezone.now() - timedelta(hours=3)
+
+    recent_match_ids = Match.objects.filter(started_at__gte=three_hours_ago, started_at__lte=current_time).values_list('id', flat=True)
+
+    # 各match_idに対してfetch_goals_dataを実行
+    for match_id in recent_match_ids:
+        fetch_goals_data(match_id)
+
+''' match_id指定でgoalsをfetchしたいとき用
+
+def fetch_goals_data(match_id):
+    connection = http.client.HTTPConnection(settings.FOOTBALLDATA_API_URL)
+    headers = { 'X-Auth-Token': settings.FOOTBALLDATA_API_TOKEN }
+    connection.request('GET', f'/v4/matches/{match_id}', None, headers)
+    response = json.loads(connection.getresponse().read().decode())
+
+    df_original = pd.DataFrame([response])
+
+    #ここからGOALデータの抽出
+    def extract_goals_data(row):
+        goals = []
+        for goal in row.get('goals', []):
+            goal_data = {
+                'competition_id': row['competition']['id'],
+                'season_id': row['season']['id'],  
+                'match_id': row['id'],
+                'team_id': goal['team']['id'],
+                'player_id': goal['scorer']['id'],
+                'assist_player_id': goal['assist']['id'] if goal['assist'] else None,
+                'minute': goal['minute'],
+                'additional_time': goal['injuryTime'],
+                'type': goal['type'],
+                'home_score': goal['score']['home'],
+                'away_score': goal['score']['away'],
+            }
+            goals.append(goal_data)
+        return goals
+    
+    goals_to_create = []
+    for _, row in df_original.iterrows():
+        goals_data = extract_goals_data(row)
+        for goal_data in goals_data:
+            # 既存のゴールデータが存在するか確認
+            exists = Goal.objects.filter(
+                match_id=goal_data['match_id'],
+                team_id=goal_data['team_id'],
+                player_id=goal_data['player_id'],
+                minute=goal_data['minute'],
+                additional_time=goal_data['additional_time']
+            ).exists()
+            if not exists:
+                goals_to_create.append(Goal(**goal_data))
+
+    Goal.objects.bulk_create(goals_to_create)
+
+'''
 
 ''' メールログイン関連（廃止）
 

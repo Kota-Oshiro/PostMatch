@@ -63,8 +63,10 @@ function renderMatchScoreForSchedule(match, isScoreVisible) {
     if (!isScoreVisible && isRecent) {
         if (status === 'FINISHED') {
             return <span className='schedule-text schedule-invisible'>終了</span>;
-        } else if (status === 'PAUSED' || status === 'IN_PLAY') {
-            return <span className={`schedule-text schedule-invisible ${status === 'IN_PLAY' ? 'schedule-inplay' : ''}`}>試合中</span>;
+        } else if (status === 'IN_PLAY') {
+            return <span className='schedule-text schedule-invisible schedule-inplay'>試合中</span>;
+        } else if (status === 'PAUSED') {
+            return <span className='schedule-text schedule-invisible schedule-inplay'>ＨＴ</span>;
         }
     }
 
