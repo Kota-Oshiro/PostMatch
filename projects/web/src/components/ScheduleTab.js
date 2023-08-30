@@ -1,10 +1,7 @@
-import React, { useRef, useEffect, useState, useContext } from 'react';
+import React, { useRef, useEffect } from 'react';
 import './ScheduleTab.css';
-import { FetchContext } from './Schedule';
 
 function ScheduleTab({ currentMatchday, setCurrentMatchday }) {
-
-  const { fetchData } = useContext(FetchContext);
 
   const minTab = 1;
   const maxTab = 38;
@@ -15,7 +12,6 @@ function ScheduleTab({ currentMatchday, setCurrentMatchday }) {
 
   const handleTabClick = (tab) => {
     setCurrentMatchday(tab);
-    fetchData(tab);
   };
 
   const tabRef = useRef(null);

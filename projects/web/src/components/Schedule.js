@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext, createContext } from 'react';
+import { useQuery, useQueryClient } from 'react-query';
 import axios from 'axios';
 import { useSwipeable } from 'react-swipeable';
 import { Helmet } from 'react-helmet';
@@ -22,6 +23,8 @@ export const FetchContext = createContext();
 
 function Schedule() {  
 
+  const queryClient = useQueryClient();
+
   const { currentUser } = useContext(AuthContext);
 
   const initialCompetitionId = currentUser && currentUser.support_team_competition ? currentUser.support_team_competition : 2021;
@@ -40,63 +43,91 @@ function Schedule() {
     : NationEngIcon;
 
   const [competitionId, setCompetitionId] = useState(initialCompetitionId);
+  // competitonIdが変わったときにisLoadingをtrueにするために使用
+  const [prevCompetitionId, setPrevCompetitionId] = useState(null);
+
   const [seasonId, setSeasonId] = useState(initialSeasonId);
 
   const [competitionIcon, setCompetitionIcon] = useState(initialCompetitionIcon);
   const [competitionName, setCompetitionName] = useState(initialCompetitionName);
   const [competitionColor, setCompetitionColor] = useState(initialCompetitionColor);
 
-  const [isLoading, setLoading] = useState(true);
-  const [isLoadingTab, setLoadingTab] = useState(false);
-  
-  const [matches, setMatches] = useState([]);
+  const minTab = 1;
+  const maxTab = 38;
+
+  const [currentMatchday, setCurrentMatchday] = useState(null);
 
   const [isLeagueSelectModalVisible, setLeagueSelectModalVisible] = useState(false);
   const [isScoreVisible, setScoreVisible] = useState(false);
 
-  const [currentMatchday, setCurrentMatchday] = useState(null);
+  // 初回レンダリングの判定
+  const [isInitialRender, setIsInitialRender] = useState(true);
 
-  const minTab = 1;
-  const maxTab = 38;
+  // グローバルのローディング
+  const [isLoading, setLoading] = useState(true);
 
-  //フェッチデータ
-  const fetchData = async (matchday) => {
-    setLoadingTab(true);
+  // ローカルのローディング（scheduleList）
+  const [isLoadingSchedule, setLoadingSchedule] = useState(false);
+
+  // fetchMatchesがキャッシュされていればtrue、そうでなければfalseを返す
+  const isCached = (key) => {
+    return !!queryClient.getQueryData(key);
+  }
+
+  const queryKey = ['matches', competitionId, seasonId, currentMatchday];
+
+  // queryKeyがなく新規フェッチで初回レンダリングまたはcompetitionIdが変わったときにsetLoading（グローバルローディング）を表示し、それ以外はsetLoadingScheduleを表示
+  useEffect(() => {
+    if (!isCached(queryKey)) {
+      if (isInitialRender || prevCompetitionId !== competitionId) {
+        setLoading(true);
+      } else {
+        setLoadingSchedule(true);
+      }
+      setPrevCompetitionId(competitionId);
+    }
+  }, [competitionId, currentMatchday]);
+
+  const fetchMatches = async (competitionId, seasonId, matchday) => {
     const url = matchday 
       ? `${process.env.REACT_APP_API_BASE_URL}/schedule/${competitionId}/${seasonId}/${matchday}` 
       : `${process.env.REACT_APP_API_BASE_URL}/schedule/${competitionId}/${seasonId}/`;
     const result = await axios.get(url);
-    setMatches(result.data);
-    setLoadingTab(false);
     return result.data;
   };
-
-  //初回レンダリング フェッチ後にcurrentMatchdayを設定
-  useEffect(() => {
-    const fetchDataAndUpdateLoading = async () => {
-      const matchesData = await fetchData();
-      if (matchesData.length > 0) { 
-        setCurrentMatchday(matchesData[0].matchday);
+  
+  const { data: matchesData } = useQuery(
+    queryKey, 
+    () => fetchMatches(competitionId, seasonId, currentMatchday), 
+    {
+      onSuccess: (data) => {
+        setLoading(false);
+        setLoadingSchedule(false);
+        if (data.length > 0 && !currentMatchday) {
+          setCurrentMatchday(data[0].matchday);
+        }
+        if (isInitialRender) {
+          setIsInitialRender(false);
+        }
+      },
+      onError: () => {
+        setLoading(false);
+        setLoadingSchedule(false);
       }
-      setLoading(false);
-    };
-    fetchDataAndUpdateLoading();
-  }, [competitionId, setCompetitionId]);
+    }
+  );
 
-  //スワイプしたらフェッチとcurrentMatchdayの更新
   const handlers = useSwipeable({
     onSwipedLeft: () => {
-      if (matches.length > 0) {
+      if (matchesData.length > 0) {
         const newMatchday = Math.min(currentMatchday + 1, maxTab);
         setCurrentMatchday(newMatchday);
-        fetchData(newMatchday);
       }
     },
     onSwipedRight: () => {
-      if (matches.length > 0) {
+      if (matchesData.length > 0) {
         const newMatchday = Math.max(currentMatchday - 1, minTab);
         setCurrentMatchday(newMatchday);
-        fetchData(newMatchday);
       }
     }
   });
@@ -108,7 +139,7 @@ function Schedule() {
         <meta property='og:title' content={`${competitionName}の試合日程 - ポストマッチ`} />
       </Helmet>
 
-      <FetchContext.Provider value={{ fetchData, setLoading, setLoadingTab }}>
+      <FetchContext.Provider value={{ fetchMatches, isLoading, setLoadingSchedule }}>
         <div className='bg'></div>
         {isLoading ? (
           <SkeletonScreenSchedule />
@@ -135,9 +166,13 @@ function Schedule() {
             <ScheduleTab currentMatchday={currentMatchday} setCurrentMatchday={setCurrentMatchday} />
           </div>
           <div {...handlers}>
-            {isLoadingTab ? <SkeletonScreenScheduleList /> : matches.map(match => (
-            <ScheduleCard key={match.id} match={match} isScoreVisible={isScoreVisible} />
-          ))}
+            {isLoadingSchedule ? (
+              <SkeletonScreenScheduleList />
+            ) : (
+              matchesData && matchesData.map(match => (
+                <ScheduleCard key={match.id} match={match} isScoreVisible={isScoreVisible} />
+              ))
+            )}
           </div>
         </div>
         </>
