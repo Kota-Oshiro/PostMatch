@@ -47,6 +47,7 @@ class Player(models.Model):
     is_active = models.BooleanField(default=True)
     shirt_number = models.IntegerField(null=True)
     is_national = models.BooleanField(default=False)
+    national_team_id = models.IntegerField(null=True)
     national_shirt_number = models.IntegerField(null=True)
 
     class Meta:
@@ -128,9 +129,9 @@ def update_supporter_count(sender, instance, **kwargs):
 # 試合情報
 class Match(models.Model):
     id = models.IntegerField(primary_key=True)
-    competition_id = models.IntegerField()
-    season_id = models.IntegerField()
-    matchday = models.IntegerField()
+    competition_id = models.IntegerField(null=True)
+    season_id = models.IntegerField(null=True)
+    matchday = models.IntegerField(null=True)
     home_team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='home_matches', db_column='home_team_id')
     away_team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='away_matches', db_column='away_team_id')
     started_at = models.DateTimeField()
@@ -143,6 +144,7 @@ class Match(models.Model):
     last_updated_at = models.DateTimeField()
     total_watch_count = models.IntegerField(default=0)
     total_post_count = models.IntegerField(default=0)
+    is_national = models.BooleanField(default=False)
 
     class Meta:
         db_table = 'matches'
