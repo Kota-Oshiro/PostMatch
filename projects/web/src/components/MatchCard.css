@@ -18,7 +18,7 @@
   margin-right: 48px;
 }
 
-.match-card:hover {
+.match-card-content:hover {
   background-color: #EFF1F1;
   opacity: 1;
 }

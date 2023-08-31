@@ -11,11 +11,11 @@ class Team(models.Model):
     id = models.IntegerField(primary_key=True)
     area_id = models.IntegerField()
     competition_id = models.IntegerField()  
-    season_id = models.IntegerField() 
+    season_id = models.IntegerField(null=True) 
     name = models.CharField(max_length=255)
     short_name = models.CharField(max_length=255)
-    tla = models.CharField(max_length=255)
-    crest_image_url = models.URLField()
+    tla = models.CharField(max_length=255, unique=True)
+    crest_image_url = models.URLField(null=True)
     coach_id = models.IntegerField(null=True)
     coach_name = models.CharField(max_length=255, null=True)
     founded_year = models.IntegerField(null=True)
@@ -27,8 +27,8 @@ class Team(models.Model):
     total_supporter_count = models.IntegerField(default=0)
     club_color_code_first = models.CharField(max_length=7, default='#FFFFFF')
     club_color_code_second = models.CharField(max_length=7, default='#FFFFFF')
-    coach_name_ja = models.CharField(max_length=255, blank=True)
-    venue_ja = models.CharField(max_length=255, blank=True)
+    coach_name_ja = models.CharField(max_length=255, null=True)
+    venue_ja = models.CharField(max_length=255, null=True)
 
     class Meta:
         db_table = 'teams'
@@ -46,6 +46,8 @@ class Player(models.Model):
     name_ja = models.CharField(max_length=255, null=True)
     is_active = models.BooleanField(default=True)
     shirt_number = models.IntegerField(null=True)
+    is_national = models.BooleanField(default=False)
+    national_shirt_number = models.IntegerField(null=True)
 
     class Meta:
         db_table = 'players'
