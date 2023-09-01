@@ -2,10 +2,9 @@ import React from 'react';
 import MatchCard from './MatchCard';
 import './MatchCardList.css';
 
-function MatchCardList({ data }) {
-
+export function MatchCards({ data }) {
   return (
-    <div className='matchcards-container'>
+    <>
       {data.map((match, index) => (
         <MatchCard 
           key={match.id} 
@@ -13,8 +12,16 @@ function MatchCardList({ data }) {
           className={index === data.length - 1 ? 'last-match-card' : ''}
         />
       ))}
-    </div>
+    </>
   );
 }
 
-export default MatchCardList;
+export function TopMatchCardList({ data }) {
+  return (
+    <div className='matchcards-wrapper'>
+      <div className='matchcards'>
+        {data && <MatchCards data={data} />}
+      </div>
+  </div>
+  );
+}

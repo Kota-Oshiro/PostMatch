@@ -1,7 +1,7 @@
 
 
 
-.loader, .loader-index, .loader-tab-content, .loader-posts, .load-spinner, .loader-teamcards, .loader-schedule-index, .loader-schedule {
+.loader, .loader-index, .loader-tab-content, .loader-posts, .load-spinner, .loader-teamcards, .loader-schedule-index, .loader-schedule, .loader-matchcards {
     display: flex;
     justify-content: center;
     background-color: #fff;
@@ -11,6 +11,10 @@
 
 .loader {
     margin-top: 24px;
+}
+
+.loader-posts, .load-spinner, .loader-matchcards {
+    padding: 24px;
 }
 
 .loader-index {
@@ -39,22 +43,20 @@
 .loader-posts {
     flex-direction: column;
     align-items: center;
-    padding: 24px;
 }
 
 .load-spinner {
-    padding: 24px;
     height: 160px;
 }
 
 .loader-schedule-index, .loader-schedule {
     flex-direction: column;
     align-items: center;
-    padding: 0 24px 24px;
+    padding: 0 24px;
 }
 
 .loader-schedulecard {
-    height: 50px;
+    height: 49px;
     box-sizing: border-box;
 }
 
@@ -80,9 +82,20 @@
         margin-right: auto;
     }
 
-    .loader, .loader-schedule-index {
+    .loader {
         margin: 48px auto 92px;
         padding-top: 24px;
+    }
+
+    .loader-schedule-index {
+        margin: 0;
+        padding-top: 24px;
+    }
+
+    .loader-matchcards {
+        max-width: 312px;
+        height: fit-content;
+        border-radius: 12px;
     }
 
 }

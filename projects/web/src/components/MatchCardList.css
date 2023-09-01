@@ -1,4 +1,46 @@
 .matchcards-container {
+  position: relative;
+  width: calc(100% - 48px);
+  margin: 24px;
+  padding: 24px 0;
+  background-color: #3465FF;
+  border-radius: 12px;
+}
+
+.matchcards-title {
+  display: flex;
+  align-items: center;
+  padding: 0 24px 12px;
+}
+
+.matchcards-icon {
+  margin-right: 0.5rem;
+  width: auto;
+  height: 1.8rem;
+}
+
+.matchcards-title > h2 {
+  color: #fff;
+  font-size: 1.4rem;
+}
+
+.matchcards-wrapper {
+  overflow: scroll;
+  scroll-snap-type: x mandatory;
+  margin: 24px 0;
+  width: 100%;
+}
+
+.matchcards-wrapper.national-matchcards-wrapper {
+  width: calc(100% + 24px);
+  margin: 0;
+}
+
+.matchcards-wrapper::-webkit-scrollbar {
+  display: none;
+}
+
+.matchcards {
   display: flex;
   width: 100%;
   gap: 24px;
@@ -6,12 +48,47 @@
   box-sizing: border-box;
 }
 
-@media (min-width: 922px) {
+.matchcards.national-matchcards {
+  padding: 0 24px;
+}
+
+@media (min-width: 800px) {
 
   .matchcards-container {
+    max-width: 312px;
+    padding: 0;
+    margin: 0;
+    height: fit-content;
+    background-color: #fff;
+  }
+
+  .matchcards-title {
+    padding-top: 24px;
+  }
+
+  .matchcards-title > h2 {
+    color: #000;
+  }
+
+  .matchcards-wrapper {
+    margin-top: 48px;
+  }
+
+  .matchcards-wrapper.national-matchcards-wrapper {
+    width: 100%;
+  }
+
+  .matchcards {
     display: flex;
     justify-content: center;
     padding: 0;
+  }
+
+  .matchcards.national-matchcards {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 24px;
   }
 
 }

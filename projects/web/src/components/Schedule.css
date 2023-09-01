@@ -38,12 +38,24 @@
     background-color: #ECF0FF;
 }
 
+.schedule-cards {
+    min-height: 490px;
+}
+
 @media (min-width: 800px) {
     
+    .schedule-wrapper {
+        display: flex;
+        justify-content: center;
+        gap: 24px;
+        margin: 48px auto 96px;
+        max-width: 1080px;
+    }
+
     .schedule-container {
-      max-width: 520px;
-      margin: 48px auto 96px;
-      border-radius: 12px;
+        width: calc(100% - 384px);
+        max-width: 520px;
+        border-radius: 12px;
     }
 
     .schedule-header {

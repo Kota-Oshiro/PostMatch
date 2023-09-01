@@ -130,9 +130,9 @@ export function HeaderLoaderSchedule() {
       backgroundColor="#f3f3f3"
       foregroundColor="#ecebeb"
       width="100%"
-      height={100}
+      height={112}
       >
-      <rect x="0" y="0" rx="6" ry="6" width="100%" height="100" />   
+      <rect x="0" y="0" rx="6" ry="6" width="100%" height="112" />   
       </ContentLoader>
   );
 }
@@ -144,7 +144,7 @@ export function SingleLoaderSchedule() {
       backgroundColor="#f3f3f3"
       foregroundColor="#ecebeb"
       width="100%"
-      height={50}
+      height={49}
       className='loader-schedulecard'
       >
 
@@ -174,5 +174,21 @@ export function SkeletonScreenScheduleList()  {
       {Array(numLoaders).fill().map((_, i) => <SingleLoaderSchedule key={i} />)}
     </div>
     </>
+  );
+}
+
+export function SkeletonMatchCardList() {
+  return (
+    <div className='loader-matchcards'>
+      <ContentLoader 
+      speed={2}
+      backgroundColor="#f3f3f3"
+      foregroundColor="#ecebeb"
+      width="100%"
+      height={244}
+      >
+      <rect x="0" y="0" rx="12" ry="12" width="100%" height="244" />   
+      </ContentLoader>
+    </div>
   );
 }

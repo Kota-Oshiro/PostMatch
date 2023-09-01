@@ -51,22 +51,6 @@
   height: 1.8rem;
 }
 
-.top-matchcards {
-  overflow: scroll;
-  scroll-snap-type: x mandatory;
-  margin: 24px 0;
-  width: 100%;
-}
-
-.top-matchcards::-webkit-scrollbar {
-  display: none;
-}
-
-.top-matchcards > .inner-container > * {
-  flex: 0 0 auto;
-  scroll-snap-align: start;
-}
-
 .news {
   display: flex;
   margin-left: auto;
@@ -154,15 +138,11 @@
     font-size: 1.6rem;
   }
 
-  .top-matchcards {
-    margin-top: 48px;
-  }
-
   .container-how-to-use {
     max-width: 960px;
     width: calc(100% - 48px);
     margin-bottom: 48px;
-    padding: 48px 48px 0;
+    padding: 24px 24px 0;
     background: linear-gradient(135deg, #fff, #DEE6FF);
     border-radius: 12px;
   }

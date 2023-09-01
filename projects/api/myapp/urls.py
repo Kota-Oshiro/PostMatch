@@ -3,7 +3,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 from . import views
-from .views import ObtainTokenPairWithColorView, CustomTokenRefresh, GoogleLoginView, FeaturedMatches, UserDetail, UserMotm, UserWatch, UserPost, UserEditTeamList, TeamList, TeamSupporter, TeamDetail, TeamPost, TeamMotm, MatchList, MatchDetail, MatchPost, MatchMotm, MatchPostPlayerList, MatchPostCreateView, MatchWatchCreateView, ScheduleList, ScheduleMatchdayList, PostList, PostDetail
+from .views import ObtainTokenPairWithColorView, CustomTokenRefresh, GoogleLoginView, FeaturedMatches, NationalMatches, UserDetail, UserMotm, UserWatch, UserPost, UserEditTeamList, TeamList, TeamSupporter, TeamDetail, TeamPost, TeamMotm, MatchList, MatchDetail, MatchPost, MatchMotm, MatchPostPlayerList, MatchPostCreateView, MatchWatchCreateView, ScheduleList, ScheduleMatchdayList, PostList, PostDetail
 
 urlpatterns = [
 
@@ -23,6 +23,7 @@ urlpatterns = [
     #path('api/password_reset/confirm/', views.api_password_reset_comfirm, name='password_reset_confirm'),
 
     path('api/featured_matches/', FeaturedMatches.as_view()),
+    path('api/national_matches/', NationalMatches.as_view()),
 
     path('api/user/<int:pk>/', UserDetail.as_view()),
     path('api/user/<int:pk>/motms/', UserMotm.as_view()),

@@ -175,6 +175,17 @@ class MatchPlayerSerializer(serializers.ModelSerializer):
         model = Player
         fields = ['id', 'name_ja', 'shirt_number']
 
+class MatchNationalPlayerSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Player
+        fields = ['id', 'name_ja', 'national_shirt_number']
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data['shirt_number'] = instance.national_shirt_number
+        return data
+
 class MatchGoalSerializer(serializers.ModelSerializer):
     player = MatchPlayerSerializer(read_only=True)
     assist_player = MatchPlayerSerializer(read_only=True)

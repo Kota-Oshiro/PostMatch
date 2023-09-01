@@ -28,7 +28,7 @@ import Privacy from './components/article/Privacy';
 import Term from './components/article/Terms';
 
 import IndexBackground from './components/IndexBackground';
-import MatchCardList from './components/MatchCardList';
+import { TopMatchCardList } from './components/MatchCardList';
 
 import ErrorBoundary from './components/error/ErrorBoundary';
 import NotFoundPage from './components/error/NotFoundPage';
@@ -106,9 +106,7 @@ function Index() {
             <span className='top-text'>最新の試合を観たらタップして記録</span>
             <FireIcon className='top-emoji' />
           </div>
-          <div className='top-matchcards'>
-            {data && <MatchCardList data={data} />}
-          </div>
+          {data && <TopMatchCardList data={data} />}
         </div>
       </div>
     </div>

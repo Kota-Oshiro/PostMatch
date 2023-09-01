@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useContext, createContext } from 'react';
+import React, { useState, useEffect, useContext, createContext, Suspense } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
-import axios from 'axios';
 import { useSwipeable } from 'react-swipeable';
 import { Helmet } from 'react-helmet';
 
@@ -8,7 +7,7 @@ import { AuthContext } from '../AuthContext';
 
 import './Schedule.css';
 
-import { SkeletonScreenSchedule, SkeletonScreenScheduleList } from './Loader';
+import { SkeletonScreenSchedule, SkeletonScreenScheduleList, SkeletonMatchCardList } from './Loader';
 
 import ScheduleCard from './ScheduleCard';
 import ScheduleTab from './ScheduleTab';
@@ -19,13 +18,15 @@ import { ReactComponent as NationEngIcon } from '../icons/nation_eng.svg';
 import { ReactComponent as NationEspIcon } from '../icons/nation_esp.svg';
 import { ReactComponent as NationItaIcon } from '../icons/nation_ita.svg';
 
+const MatchCardListNational = React.lazy(() => import('./MatchCardListNational.js'));
+
 export const FetchContext = createContext();
 
 function Schedule() {  
 
   const queryClient = useQueryClient();
 
-  const { currentUser } = useContext(AuthContext);
+  const { currentUser, apiBaseUrl } = useContext(AuthContext);
 
   const initialCompetitionId = currentUser && currentUser.support_team_competition ? currentUser.support_team_competition : 2021;
   const initialSeasonId = currentUser && currentUser.support_team_season ? currentUser.support_team_season : 1564;
@@ -88,11 +89,18 @@ function Schedule() {
     }
   }, [competitionId, currentMatchday]);
 
+  // competitionIdが変わったときにcurrentMatchdayをリセット
+  useEffect(() => {
+    if (prevCompetitionId !== null && competitionId !== prevCompetitionId) {
+      setCurrentMatchday(null);
+    }
+  }, [competitionId]);
+
   const fetchMatches = async (competitionId, seasonId, matchday) => {
     const url = matchday 
-      ? `${process.env.REACT_APP_API_BASE_URL}/schedule/${competitionId}/${seasonId}/${matchday}` 
-      : `${process.env.REACT_APP_API_BASE_URL}/schedule/${competitionId}/${seasonId}/`;
-    const result = await axios.get(url);
+        ? `/schedule/${competitionId}/${seasonId}/${matchday}`
+        : `/schedule/${competitionId}/${seasonId}/`;
+    const result = await apiBaseUrl.get(url);
     return result.data;
   };
   
@@ -132,52 +140,75 @@ function Schedule() {
     }
   });
 
+  // NationalMatchListのfetch
+  const fetchNationalMatch = async () => {
+    const res = await apiBaseUrl.get(`/national_matches/`);
+    return res.data;
+  };
+    
+  const { data: matchCardData, isLoading: isLoadingMatchCardList, isError, error } = useQuery(
+    ['match'], 
+    fetchNationalMatch,
+  );
+
   return (
     <>
       <Helmet>
-        <title>{competitionName}の試合日程 - ポストマッチ</title>
-        <meta property='og:title' content={`${competitionName}の試合日程 - ポストマッチ`} />
+          <title>{competitionName}の試合日程 - ポストマッチ</title>
+          <meta property='og:title' content={`${competitionName}の試合日程 - ポストマッチ`} />
       </Helmet>
 
+      <div className='bg'></div>
+
+      <div className='schedule-wrapper'>
+
       <FetchContext.Provider value={{ fetchMatches, isLoading, setLoadingSchedule }}>
-        <div className='bg'></div>
-        {isLoading ? (
-          <SkeletonScreenSchedule />
-        ) : (
-        <>
-        <div className='schedule-container'>
-          <div className='schedule-header' style={{ backgroundColor: competitionColor }}>
-            <div className='schedule-league'>
-              <LeagueSelecter
-                isLeagueSelectModalVisible={isLeagueSelectModalVisible}
-                setLeagueSelectModalVisible={setLeagueSelectModalVisible}
-                competitionId={competitionId}
-                setCompetitionId={setCompetitionId}
-                setSeasonId={setSeasonId}
-                competitionIcon={competitionIcon}
-                setCompetitionIcon={setCompetitionIcon}
-                competitionName={competitionName}
-                setCompetitionName={setCompetitionName}
-                competitionColor={competitionColor}
-                setCompetitionColor={setCompetitionColor}
-              />
-              <ScoreVisibleSwitcher isScoreVisible={isScoreVisible} setScoreVisible={setScoreVisible} />
+          {isLoading ? (
+              <SkeletonScreenSchedule />
+          ) : (
+            <div className='schedule-container'>
+                <div className='schedule-header' style={{ backgroundColor: competitionColor }}>
+                    <div className='schedule-league'>
+                        <LeagueSelecter
+                            isLeagueSelectModalVisible={isLeagueSelectModalVisible}
+                            setLeagueSelectModalVisible={setLeagueSelectModalVisible}
+                            competitionId={competitionId}
+                            setCompetitionId={setCompetitionId}
+                            setSeasonId={setSeasonId}
+                            competitionIcon={competitionIcon}
+                            setCompetitionIcon={setCompetitionIcon}
+                            competitionName={competitionName}
+                            setCompetitionName={setCompetitionName}
+                            competitionColor={competitionColor}
+                            setCompetitionColor={setCompetitionColor}
+                        />
+                        <ScoreVisibleSwitcher isScoreVisible={isScoreVisible} setScoreVisible={setScoreVisible} />
+                    </div>
+                    <ScheduleTab currentMatchday={currentMatchday} setCurrentMatchday={setCurrentMatchday} />
+                </div>
+                <div {...handlers} className='schedule-cards'>
+                    {isLoadingSchedule ? (
+                        <SkeletonScreenScheduleList />
+                    ) : (
+                        matchesData && matchesData.map(match => (
+                            <ScheduleCard key={match.id} match={match} isScoreVisible={isScoreVisible} />
+                        ))
+                    )}
+                </div>
             </div>
-            <ScheduleTab currentMatchday={currentMatchday} setCurrentMatchday={setCurrentMatchday} />
-          </div>
-          <div {...handlers}>
-            {isLoadingSchedule ? (
-              <SkeletonScreenScheduleList />
-            ) : (
-              matchesData && matchesData.map(match => (
-                <ScheduleCard key={match.id} match={match} isScoreVisible={isScoreVisible} />
-              ))
-            )}
-          </div>
-        </div>
-        </>
-        )}
+          )}
       </FetchContext.Provider>
+
+      <Suspense fallback={<div>Loading Component...</div>}>
+        {isLoadingMatchCardList ? (
+          <SkeletonMatchCardList />
+        ) : (
+          matchCardData && <MatchCardListNational data={matchCardData} />
+        )}
+      </Suspense>
+
+      </div>
+        
     </>
   );
 }

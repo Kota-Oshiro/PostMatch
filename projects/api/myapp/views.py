@@ -47,7 +47,7 @@ from rest_framework.pagination import PageNumberPagination, LimitOffsetPaginatio
 from rest_framework.exceptions import ValidationError
 
 from .models import Account, Team, Player, Match, Post, Watch, Goal
-from .serializers import MyTokenObtainPairSerializer, AccountSerializer, AccountHeaderSerializer, AccountEditSerializer, AccountEditTeamSerializer, TeamSerializer, TeamListSerializer, TeamSupporterSerializer, PlayerSerializer, MatchSerializer, MatchGoalSerializer, PostSerializer, MotmPlayerSerializer, MatchPlayerSerializer, WatchSerializer
+from .serializers import MyTokenObtainPairSerializer, AccountSerializer, AccountHeaderSerializer, AccountEditSerializer, AccountEditTeamSerializer, TeamSerializer, TeamListSerializer, TeamSupporterSerializer, PlayerSerializer, MatchSerializer, MatchGoalSerializer, PostSerializer, MotmPlayerSerializer, MatchPlayerSerializer, MatchNationalPlayerSerializer, WatchSerializer
 
 #モデルのインクリメントを初期化
 def reset_sequence(model):
@@ -440,11 +440,16 @@ class MatchPostPlayerList(generics.ListAPIView):
     authentication_classes = (CustomJWTAuthentication,)
     permission_classes = (IsAuthenticated,)
     
+    def get_players(self, team_id, is_national, position_order):
+        if is_national:
+            return Player.objects.filter(national_team_id=team_id, is_active=True).annotate(sort_order=position_order).order_by('sort_order', 'national_shirt_number', 'name')
+        else:
+            return Player.objects.filter(team_id=team_id, is_active=True).exclude(shirt_number=None).annotate(sort_order=position_order).order_by('sort_order', 'shirt_number', 'name')
+        
     def get(self, request, pk, format=None):
 
         match = get_object_or_404(Match.objects.select_related('home_team', 'away_team'), pk=pk)
 
-        # position のソート順序を定義
         position_order = Case(
             When(position='Goalkeeper', then=Value(1)),
             When(position='Defence', then=Value(2)),
@@ -454,15 +459,19 @@ class MatchPostPlayerList(generics.ListAPIView):
             output_field=IntegerField()
         )
 
-        # 上記のソート順序に基づいて選手をソート
-        players = Player.objects.filter(team__in=[match.home_team, match.away_team], is_active=True).exclude(shirt_number=None).annotate(sort_order=position_order).order_by('sort_order', 'shirt_number', 'name')
+        home_team_players = self.get_players(match.home_team_id, match.is_national, position_order)
+        away_team_players = self.get_players(match.away_team_id, match.is_national, position_order)
 
-        home_team_players = players.filter(team=match.home_team)
-        away_team_players = players.filter(team=match.away_team)
+        if match.is_national:
+            home_team_serializer = MatchNationalPlayerSerializer(home_team_players, many=True, context={'is_national': True})
+            away_team_serializer = MatchNationalPlayerSerializer(away_team_players, many=True, context={'is_national': True})
+        else:
+            home_team_serializer = MatchPlayerSerializer(home_team_players, many=True)
+            away_team_serializer = MatchPlayerSerializer(away_team_players, many=True)
 
         response = {
-            'home_team_players': MatchPlayerSerializer(home_team_players, many=True).data,
-            'away_team_players': MatchPlayerSerializer(away_team_players, many=True).data,
+            'home_team_players': home_team_serializer.data,
+            'away_team_players': away_team_serializer.data,
         }
         return Response(response)
 
@@ -577,6 +586,18 @@ class ScheduleMatchdayList(generics.ListAPIView):
             .order_by('started_at', 'home_team_id')
 
         return queryset
+
+class NationalMatches(generics.ListAPIView):
+
+    permission_classes = [AllowAny]
+    serializer_class = MatchSerializer
+
+    def get_queryset(self):
+
+        # 現在から3日前の日付を取得
+        three_days_ago = timezone.now() - timedelta(days=3)
+
+        return Match.objects.select_related('home_team', 'away_team').filter(home_team=766,started_at__gte=three_days_ago).order_by('started_at')
 
 #ここからチームページ用ビュー
 
