@@ -19,6 +19,9 @@ function MatchDetail({ match, goals }) {
     : match.competition_id === 10000001 ? '国際親善試合'
     : match.competition_id === 10000002 ? 'キリンチャレンジカップ'
     : '';
+  
+  const competitionType = (match.competition_id === 10000001 || match.competition_id === 10000002) ? 'エキシビション' 
+  : 'マッチデイ ';
 
   const CompetitionIcon = match.competition_id === 2021 ? NationEngIcon
     : match.competition_id === 2014 ? NationEspIcon 
@@ -38,7 +41,7 @@ function MatchDetail({ match, goals }) {
         <h2 className='match-text-header'>{ competitionName }</h2>
       </div>
       <div className='match-content'>
-        <span className='match-text'>マッチデイ {match.matchday}</span>
+        <span className='match-text'>{ competitionType }{match.matchday}</span>
         <div className='match-scoreboard'>
           <Link to={`/team/${match.home_team.id}`} className='match-crest-home'>
             <img

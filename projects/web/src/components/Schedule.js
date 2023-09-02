@@ -7,7 +7,7 @@ import { AuthContext } from '../AuthContext';
 
 import './Schedule.css';
 
-import { SkeletonScreenSchedule, SkeletonScreenScheduleList, SkeletonMatchCardList } from './Loader';
+import { SkeletonScreenScheduleList, SkeletonMatchCardList } from './Loader';
 
 import ScheduleCard from './ScheduleCard';
 import ScheduleTab from './ScheduleTab';
@@ -164,42 +164,63 @@ function Schedule() {
 
       <FetchContext.Provider value={{ fetchMatches, isLoading, setLoadingSchedule }}>
           {isLoading ? (
-              <SkeletonScreenSchedule />
+            <div className='schedule-container'>
+              <div className='schedule-header' style={{ backgroundColor: competitionColor }}>
+                <div className='schedule-league'>
+                    <LeagueSelecter
+                        isLeagueSelectModalVisible={isLeagueSelectModalVisible}
+                        setLeagueSelectModalVisible={setLeagueSelectModalVisible}
+                        competitionId={competitionId}
+                        setCompetitionId={setCompetitionId}
+                        setSeasonId={setSeasonId}
+                        competitionIcon={competitionIcon}
+                        setCompetitionIcon={setCompetitionIcon}
+                        competitionName={competitionName}
+                        setCompetitionName={setCompetitionName}
+                        competitionColor={competitionColor}
+                        setCompetitionColor={setCompetitionColor}
+                    />
+                    <ScoreVisibleSwitcher isScoreVisible={isScoreVisible} setScoreVisible={setScoreVisible} />
+                </div>
+                <ScheduleTab currentMatchday={currentMatchday} setCurrentMatchday={setCurrentMatchday} />
+              </div>
+              <SkeletonScreenScheduleList />
+            </div>
           ) : (
             <div className='schedule-container'>
-                <div className='schedule-header' style={{ backgroundColor: competitionColor }}>
-                    <div className='schedule-league'>
-                        <LeagueSelecter
-                            isLeagueSelectModalVisible={isLeagueSelectModalVisible}
-                            setLeagueSelectModalVisible={setLeagueSelectModalVisible}
-                            competitionId={competitionId}
-                            setCompetitionId={setCompetitionId}
-                            setSeasonId={setSeasonId}
-                            competitionIcon={competitionIcon}
-                            setCompetitionIcon={setCompetitionIcon}
-                            competitionName={competitionName}
-                            setCompetitionName={setCompetitionName}
-                            competitionColor={competitionColor}
-                            setCompetitionColor={setCompetitionColor}
-                        />
-                        <ScoreVisibleSwitcher isScoreVisible={isScoreVisible} setScoreVisible={setScoreVisible} />
-                    </div>
-                    <ScheduleTab currentMatchday={currentMatchday} setCurrentMatchday={setCurrentMatchday} />
-                </div>
-                <div {...handlers} className='schedule-cards'>
-                    {isLoadingSchedule ? (
-                        <SkeletonScreenScheduleList />
-                    ) : (
-                        matchesData && matchesData.map(match => (
-                            <ScheduleCard key={match.id} match={match} isScoreVisible={isScoreVisible} />
-                        ))
-                    )}
-                </div>
+              <div className='schedule-header' style={{ backgroundColor: competitionColor }}>
+                  <div className='schedule-league'>
+                      <LeagueSelecter
+                          isLeagueSelectModalVisible={isLeagueSelectModalVisible}
+                          setLeagueSelectModalVisible={setLeagueSelectModalVisible}
+                          competitionId={competitionId}
+                          setCompetitionId={setCompetitionId}
+                          setSeasonId={setSeasonId}
+                          competitionIcon={competitionIcon}
+                          setCompetitionIcon={setCompetitionIcon}
+                          competitionName={competitionName}
+                          setCompetitionName={setCompetitionName}
+                          competitionColor={competitionColor}
+                          setCompetitionColor={setCompetitionColor}
+                      />
+                      <ScoreVisibleSwitcher isScoreVisible={isScoreVisible} setScoreVisible={setScoreVisible} />
+                  </div>
+                  <ScheduleTab currentMatchday={currentMatchday} setCurrentMatchday={setCurrentMatchday} />
+              </div>
+              <div {...handlers} className='schedule-cards'>
+                  {isLoadingSchedule ? (
+                      <SkeletonScreenScheduleList />
+                  ) : (
+                      matchesData && matchesData.map(match => (
+                          <ScheduleCard key={match.id} match={match} isScoreVisible={isScoreVisible} />
+                      ))
+                  )}
+              </div>
             </div>
           )}
       </FetchContext.Provider>
 
-      <Suspense fallback={<div>Loading Component...</div>}>
+      <Suspense fallback={<SkeletonMatchCardList />}>
         {isLoadingMatchCardList ? (
           <SkeletonMatchCardList />
         ) : (

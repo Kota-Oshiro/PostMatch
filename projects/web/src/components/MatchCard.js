@@ -18,6 +18,9 @@ function MatchCard({ match, className }) {
     : match.competition_id === 10000002 ? 'キリンチャレンジカップ'
     : '';
 
+  const competitionType = (match.competition_id === 10000001 || match.competition_id === 10000002) ? 'エキシビション' 
+  : 'マッチデイ ';
+
   const CompetitionIcon = match.competition_id === 2021 ? NationEngIcon
     : match.competition_id === 2014 ? NationEspIcon 
     : match.competition_id === 2019 ? NationItaIcon
@@ -39,7 +42,7 @@ function MatchCard({ match, className }) {
         </div>
 
         <div className='match-card-content'>
-          <span className='match-card-text'>マッチデイ {match.matchday}</span>
+          <span className='match-card-text'>{ competitionType }{ match.matchday }</span>
           <div className='match-card-scoreboard'>
             <img
               src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/crest-${match.home_team.tla}.webp`}
@@ -90,13 +93,13 @@ function renderMatchCardStatus(match) {
     case 'TIMED':
       return (
         <>
-          <span className='match-card-status'>{formatUsing(match.started_at, formats.MONTH_DAY)}</span>
+          <span className='match-card-status'>{formatUsing(match.started_at, formats.DATE_TIME)}</span>
         </>
       );
     case 'SCHEDULED':
       return (
         <>
-          <span className='match-card-status'>{formatUsing(match.started_at, formats.MONTH_DAY)}</span>
+          <span className='match-card-status'>{formatUsing(match.started_at, formats.DATE_TIME)}</span>
         </>
       );
     default:

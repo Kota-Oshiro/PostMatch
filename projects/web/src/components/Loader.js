@@ -166,6 +166,22 @@ export function SkeletonScreenSchedule()  {
   );
 }
 
+export function SkeletonScreenScheduleMatchday() {
+  return (
+      <ContentLoader 
+      speed={2}
+      backgroundColor="#f3f3f3"
+      foregroundColor="#ecebeb"
+      width="100%"
+      height={20}
+      className='loader-schedule-matchday'
+      >
+
+      <rect x="0" y="0" rx="4" ry="4" width="100%" height="20" />  
+      </ContentLoader>
+  );
+}
+
 export function SkeletonScreenScheduleList()  {
   const numLoaders = 10;
   return (
