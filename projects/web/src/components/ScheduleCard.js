@@ -56,7 +56,7 @@ function renderMatchScoreForSchedule(match, isScoreVisible) {
 
     if ((isScoreVisible && isRecent) || !isRecent) {
         if (status === 'FINISHED' || status === 'PAUSED' || status === 'IN_PLAY') {
-            return <span className={`schedule-text ${status === 'IN_PLAY' ? 'schedule-inplay' : ''}`}>{home_score} - {away_score}</span>;
+            return <span className={`schedule-text ${(status === 'IN_PLAY') || (status === 'PAUSED') ? 'schedule-inplay' : ''}`}>{home_score} - {away_score}</span>;
         }
     }
 
