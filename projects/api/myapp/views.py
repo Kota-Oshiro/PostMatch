@@ -394,7 +394,7 @@ class MatchDetail(APIView):
 
     def get(self, request, pk, format=None):
         match = get_object_or_404(Match.objects.select_related('home_team', 'away_team'), pk=pk)
-        goals = Goal.objects.select_related('player').filter(match_id=pk)
+        goals = Goal.objects.select_related('player').filter(is_valid=True, match_id=pk).order_by('minute')
 
         if request.user.is_authenticated:
             current_account = Account.objects.select_related('support_team').get(pk=request.user.id)

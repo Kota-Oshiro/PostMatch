@@ -222,6 +222,7 @@ class Goal(models.Model):
     type = models.CharField(max_length=255, null=True)
     home_score = models.IntegerField(null=True)
     away_score = models.IntegerField(null=True)
+    is_valid = models.BooleanField(default=True)
 
     class Meta:
         db_table = 'goals'
