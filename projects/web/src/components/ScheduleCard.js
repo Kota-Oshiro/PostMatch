@@ -6,7 +6,7 @@ import './ScheduleCard.css';
 import { ReactComponent as PostIcon } from '../icons/post.svg';
 import { ReactComponent as WatchedIconGrey } from '../icons/watched_grey.svg';
 
-function ScheduleCard({ match, isScoreVisible }) {
+function ScheduleCard({ match, isScoreVisible, competitionId }) {
 
     const location = useLocation();
 
@@ -19,21 +19,29 @@ function ScheduleCard({ match, isScoreVisible }) {
         <div className='schedule'>
         <div className='schedule-block'>
             <div className='schedule-left'>
-                <img
-                src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/crest-${match.home_team.tla}.webp`}
-                alt={match.home_team.tla}
-                className='schedule-crest'
-                />
-                {renderMatchScore(match, isScoreVisible)}
-                <img
-                src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/crest-${match.away_team.tla}.webp`}
-                alt={match.away_team.tla}
-                className='schedule-crest'
-                />
+                {competitionId !== 2119 ? (                
+                    <img
+                    src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/crest-${match.home_team.tla}.webp`}
+                    alt={match.home_team.tla}
+                    className='schedule-crest'
+                    />
+                ) : (
+                    <span className='schedule-tla' style={{ backgroundColor: match.home_team.club_color_code_first }}>{match.home_team.tla}</span>
+                )}
+                {renderMatchScore(match, isScoreVisible, competitionId)}
+                {competitionId !== 2119 ? (                
+                    <img
+                    src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/crest-${match.away_team.tla}.webp`}
+                    alt={match.away_team.tla}
+                    className='schedule-crest'
+                    />
+                ) : (
+                    <span className='schedule-tla' style={{ backgroundColor: match.away_team.club_color_code_first }}>{match.away_team.tla}</span>
+                )}
             </div>
             <div className='schedule-right'>
                 {renderMatchDateTime(match)}
-                <div className='schedule-record'>
+                <div className={`schedule-record ${competitionId === 2119 ? 'schedule-narrow' : ''}`}>
                     <div className='schedule-record-block'>
                         <WatchedIconGrey className='schedule-icon' />
                         <span className='schedule-record-count'>{match.total_watch_count}</span>
@@ -50,31 +58,57 @@ function ScheduleCard({ match, isScoreVisible }) {
     );
 }
 
-function renderMatchScoreForSchedule(match, isScoreVisible) {
+//スコア表示
+function renderMatchScoreForSchedule(match, isScoreVisible, competitionId) {
     const isRecent = isWithin7Days(match.started_at);
     const { status, home_score, away_score } = match;
-
-    if ((isScoreVisible && isRecent) || !isRecent) {
-        if (status === 'FINISHED' || status === 'PAUSED' || status === 'IN_PLAY') {
-            return <span className={`schedule-text ${(status === 'IN_PLAY') || (status === 'PAUSED') ? 'schedule-inplay' : ''}`}>{home_score} - {away_score}</span>;
-        }
+    const baseClasses = ['schedule-text'];
+    
+    // Jリーグの場合はロゴではなくテキスト表示のためマージン調整を行う用のクラス付与
+    if (competitionId === 2119) {
+        baseClasses.push('schedule-narrow');
     }
 
-    if (!isScoreVisible && isRecent) {
-        if (status === 'FINISHED') {
-            return <span className='schedule-text schedule-invisible'>終了</span>;
-        } else if (status === 'IN_PLAY') {
-            return <span className='schedule-text schedule-invisible schedule-inplay'>試合中</span>;
-        } else if (status === 'PAUSED') {
-            return <span className='schedule-text schedule-invisible schedule-inplay'>ＨＴ</span>;
-        }
-    }
-
+    // TIMEDのときの時間表示
     if (status === 'TIMED') {
-        return <span className='schedule-text schedule-timed'>{formatUsing(match.started_at, formats.HOUR_MINUTE)}</span>;
+        baseClasses.push('schedule-timed');
+        return <span className={baseClasses.join(' ')}>{formatUsing(match.started_at, formats.HOUR_MINUTE)}</span>;
+    }
+    
+    // スコア表示且つ最近 または 最近でない場合はスコア表示
+    if ((isScoreVisible && isRecent) || !isRecent) {
+        if (['FINISHED', 'PAUSED', 'IN_PLAY'].includes(status)) {
+            if (status === 'IN_PLAY' || status === 'PAUSED') {
+                baseClasses.push('schedule-inplay');
+            }
+            return <span className={baseClasses.join(' ')}>{home_score} - {away_score}</span>;
+        }
     }
 
-    return <span className='schedule-text schedule-timed'>-- : --</span>;
+    // スコア非表示（デフォルト）且つ最近の場合はステータスを代入
+    if (!isScoreVisible && isRecent) {
+        baseClasses.push('schedule-invisible');
+        if (status === 'IN_PLAY' || status === 'PAUSED') {
+            baseClasses.push('schedule-inplay');
+        }
+        return <span className={baseClasses.join(' ')}>{statusMapping(status)}</span>;
+    }
+
+    return <span className={baseClasses.join(' ')}>-- : --</span>;
+}
+
+// ステータス定義
+const statusMapping = (status) => {
+    switch (status) {
+        case 'FINISHED':
+            return '終了';
+        case 'IN_PLAY':
+            return '試合中';
+        case 'PAUSED':
+            return 'ＨＴ';
+        default:
+            return '-- : --';
+    }
 }
 
 // started_atが7日以内か判定する用
@@ -88,7 +122,6 @@ function isWithin7Days(dateTimeStr) {
 
     return difference <= sevenDaysInMilliseconds; // 7日以内であるか判定
 }
-
 
 function renderMatchScoreForWatch(match) {
     const { status, home_score, away_score } = match;
@@ -126,6 +159,5 @@ function renderMatchDateTime(match) {
       );
     }
   }
-
 
 export default ScheduleCard;

@@ -11,29 +11,19 @@ import TeamCard from './TeamCard';
 import LeagueSelecter from './LeagueSelecter';
 import NotFoundPage from './error/NotFoundPage';
 
-import { ReactComponent as NationEngIcon } from '../icons/nation_eng.svg';
-import { ReactComponent as NationEspIcon } from '../icons/nation_esp.svg';
-import { ReactComponent as NationItaIcon } from '../icons/nation_ita.svg';
+import { getDefaultCompetitionId, getDefaultSeasonId,getCompetitionName, getCompetitionColor, getCompetitionIcon } from './UtilityCompetition';
 
 function TeamList() {
   
   const { currentUser } = useContext(AuthContext);
 
-  const initialCompetitionId = currentUser && currentUser.support_team_competition ? currentUser.support_team_competition : 2021;
-  const initialSeasonId = currentUser && currentUser.support_team_season ? currentUser.support_team_season : 1564;
-  const initialCompetitionName = initialCompetitionId === 2021 ? 'プレミアリーグ' 
-    : initialCompetitionId === 2014 ? 'ラ・リーガ' 
-    : initialCompetitionId === 2019 ? 'セリエA'
-    : 'スケジュール';
-  const initialCompetitionColor = initialCompetitionId === 2021 ? '#38003c' 
-    : initialCompetitionId === 2014 ? '#FF4B44' 
-    : initialCompetitionId === 2019 ? '#171D8D'
-    : '#3465FF';
-    const initialCompetitionIcon = initialCompetitionId === 2021 ? NationEngIcon
-    : initialCompetitionId === 2014 ? NationEspIcon 
-    : initialCompetitionId === 2019 ? NationItaIcon
-    : NationEngIcon;
-
+  const initialCompetitionId = getDefaultCompetitionId(currentUser);
+  const initialSeasonId = getDefaultSeasonId(currentUser);
+  
+  const initialCompetitionName = getCompetitionName(initialCompetitionId);
+  const initialCompetitionColor = getCompetitionColor(initialCompetitionId);
+  const initialCompetitionIcon = getCompetitionIcon(initialCompetitionId);
+  
   const [competitionId, setCompetitionId] = useState(initialCompetitionId);
   const [seasonId, setSeasonId] = useState(initialSeasonId);
   const [competitionIcon, setCompetitionIcon] = useState(initialCompetitionIcon);

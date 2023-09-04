@@ -2,37 +2,19 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { formatUsing, formats } from '../DateFormat.js';
 
+import { getCompetitionName, getCompetitionType, getCompetitionIcon, getCompetitionColor } from './UtilityCompetition';
+
 import './MatchDetail.css';
 
 import { ReactComponent as BallIcon } from '../icons/soccer_ball.svg';
 import { ReactComponent as CalenderIcon } from '../icons/calender_grey.svg';
-import { ReactComponent as NationEngIcon } from '../icons/nation_eng.svg';
-import { ReactComponent as NationEspIcon } from '../icons/nation_esp.svg';
-import { ReactComponent as NationItaIcon } from '../icons/nation_ita.svg';
-import { ReactComponent as EarthIcon } from '../icons/earth.svg';
 
 function MatchDetail({ match, goals }) {
 
-  const competitionName = match.competition_id === 2021 ? 'プレミアリーグ' 
-    : match.competition_id === 2014 ? 'ラ・リーガ' 
-    : match.competition_id === 2019 ? 'セリエA'
-    : match.competition_id === 10000001 ? '国際親善試合'
-    : match.competition_id === 10000002 ? 'キリンチャレンジカップ'
-    : '';
-  
-  const competitionType = (match.competition_id === 10000001 || match.competition_id === 10000002) ? 'エキシビション' 
-  : 'マッチデイ ';
-
-  const CompetitionIcon = match.competition_id === 2021 ? NationEngIcon
-    : match.competition_id === 2014 ? NationEspIcon 
-    : match.competition_id === 2019 ? NationItaIcon
-    : EarthIcon;
-
-  const CompetitionColor = match.competition_id === 2021 ? '#38003c'
-  : match.competition_id === 2014 ? '#FF4B44'
-  : match.competition_id === 2019 ? '#171D8D'
-  : (match.competition_id === 10000001 || match.competition_id === 10000002) ? '#052667'
-  : '#3465FF';
+  const competitionName = getCompetitionName(match.competition_id);
+  const competitionType = getCompetitionType(match.competition_id);
+  const CompetitionIcon = getCompetitionIcon(match.competition_id);
+  const CompetitionColor = getCompetitionColor(match.competition_id);
 
   return (
     <>

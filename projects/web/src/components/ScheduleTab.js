@@ -1,10 +1,8 @@
 import React, { useRef, useEffect } from 'react';
 import './ScheduleTab.css';
 
-function ScheduleTab({ currentMatchday, setCurrentMatchday }) {
+function ScheduleTab({ currentMatchday, setCurrentMatchday, minTab, maxTab }) {
 
-  const minTab = 1;
-  const maxTab = 38;
   const tabs = [];
   for (let i = minTab; i <= maxTab; i++) {
     tabs.push(i);

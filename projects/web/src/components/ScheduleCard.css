@@ -27,6 +27,19 @@
     object-fit: cover;
 }
 
+.schedule-tla {
+    display: flexbox;
+    text-align: center;
+    width: 40px;
+    height: 24px;
+    line-height: 24px;
+    font-weight: 900;
+    color: #fff;
+    font-size: 1rem;
+    border-radius: 50px;
+    box-sizing: border-box;
+}
+
 .schedule-text, .schedule-text.schedule-timed {
     text-align: center;
     margin: 0 12px;
@@ -65,7 +78,7 @@
     padding-left: 12px;
     border-left: solid 1px #eeeeee;
 }
-  
+
 .schedule-record-block {
     display: flex;
     align-items: center;
@@ -79,5 +92,17 @@
 .schedule-record-count {
     text-align: center;
     width: 24px;
-
 }
+
+@media (max-width: 799px) {
+    
+    .schedule-text.schedule-narrow {
+        margin: 0 6px;
+    }
+
+    .schedule-record.schedule-narrow {
+        margin-left: 6px;
+        padding-left: 6px;
+    }
+  
+  }

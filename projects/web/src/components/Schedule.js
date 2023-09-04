@@ -14,9 +14,7 @@ import ScheduleTab from './ScheduleTab';
 import LeagueSelecter from './LeagueSelecter';
 import ScoreVisibleSwitcher from './ScoreVisibleSwitcher';
 
-import { ReactComponent as NationEngIcon } from '../icons/nation_eng.svg';
-import { ReactComponent as NationEspIcon } from '../icons/nation_esp.svg';
-import { ReactComponent as NationItaIcon } from '../icons/nation_ita.svg';
+import { getDefaultCompetitionId, getDefaultSeasonId,getCompetitionName, getCompetitionColor, getCompetitionIcon } from './UtilityCompetition';
 
 const MatchCardListNational = React.lazy(() => import('./MatchCardListNational.js'));
 
@@ -28,20 +26,12 @@ function Schedule() {
 
   const { currentUser, apiBaseUrl } = useContext(AuthContext);
 
-  const initialCompetitionId = currentUser && currentUser.support_team_competition ? currentUser.support_team_competition : 2021;
-  const initialSeasonId = currentUser && currentUser.support_team_season ? currentUser.support_team_season : 1564;
-  const initialCompetitionName = initialCompetitionId === 2021 ? 'プレミアリーグ' 
-    : initialCompetitionId === 2014 ? 'ラ・リーガ' 
-    : initialCompetitionId === 2019 ? 'セリエA'
-    : 'スケジュール';
-  const initialCompetitionColor = initialCompetitionId === 2021 ? '#38003c' 
-    : initialCompetitionId === 2014 ? '#FF4B44' 
-    : initialCompetitionId === 2019 ? '#171D8D'
-    : '#3465FF';
-    const initialCompetitionIcon = initialCompetitionId === 2021 ? NationEngIcon
-    : initialCompetitionId === 2014 ? NationEspIcon 
-    : initialCompetitionId === 2019 ? NationItaIcon
-    : NationEngIcon;
+  const initialCompetitionId = getDefaultCompetitionId(currentUser);
+  const initialSeasonId = getDefaultSeasonId(currentUser);
+  
+  const initialCompetitionName = getCompetitionName(initialCompetitionId);
+  const initialCompetitionColor = getCompetitionColor(initialCompetitionId);
+  const initialCompetitionIcon = getCompetitionIcon(initialCompetitionId);
 
   const [competitionId, setCompetitionId] = useState(initialCompetitionId);
   // competitonIdが変わったときにisLoadingをtrueにするために使用
@@ -54,7 +44,7 @@ function Schedule() {
   const [competitionColor, setCompetitionColor] = useState(initialCompetitionColor);
 
   const minTab = 1;
-  const maxTab = 38;
+  const maxTab = competitionId === 2119 ? 34 : 38;
 
   const [currentMatchday, setCurrentMatchday] = useState(null);
 
@@ -167,22 +157,22 @@ function Schedule() {
             <div className='schedule-container'>
               <div className='schedule-header' style={{ backgroundColor: competitionColor }}>
                 <div className='schedule-league'>
-                    <LeagueSelecter
-                        isLeagueSelectModalVisible={isLeagueSelectModalVisible}
-                        setLeagueSelectModalVisible={setLeagueSelectModalVisible}
-                        competitionId={competitionId}
-                        setCompetitionId={setCompetitionId}
-                        setSeasonId={setSeasonId}
-                        competitionIcon={competitionIcon}
-                        setCompetitionIcon={setCompetitionIcon}
-                        competitionName={competitionName}
-                        setCompetitionName={setCompetitionName}
-                        competitionColor={competitionColor}
-                        setCompetitionColor={setCompetitionColor}
-                    />
-                    <ScoreVisibleSwitcher isScoreVisible={isScoreVisible} setScoreVisible={setScoreVisible} />
+                  <LeagueSelecter
+                    isLeagueSelectModalVisible={isLeagueSelectModalVisible}
+                    setLeagueSelectModalVisible={setLeagueSelectModalVisible}
+                    competitionId={competitionId}
+                    setCompetitionId={setCompetitionId}
+                    setSeasonId={setSeasonId}
+                    competitionIcon={competitionIcon}
+                    setCompetitionIcon={setCompetitionIcon}
+                    competitionName={competitionName}
+                    setCompetitionName={setCompetitionName}
+                    competitionColor={competitionColor}
+                    setCompetitionColor={setCompetitionColor}
+                  />
+                  <ScoreVisibleSwitcher isScoreVisible={isScoreVisible} setScoreVisible={setScoreVisible} />
                 </div>
-                <ScheduleTab currentMatchday={currentMatchday} setCurrentMatchday={setCurrentMatchday} />
+                <ScheduleTab currentMatchday={currentMatchday} setCurrentMatchday={setCurrentMatchday} minTab={minTab} maxTab={maxTab} />
               </div>
               <SkeletonScreenScheduleList />
             </div>
@@ -205,14 +195,14 @@ function Schedule() {
                       />
                       <ScoreVisibleSwitcher isScoreVisible={isScoreVisible} setScoreVisible={setScoreVisible} />
                   </div>
-                  <ScheduleTab currentMatchday={currentMatchday} setCurrentMatchday={setCurrentMatchday} />
+                  <ScheduleTab currentMatchday={currentMatchday} setCurrentMatchday={setCurrentMatchday} minTab={minTab} maxTab={maxTab} />
               </div>
               <div {...handlers} className='schedule-cards'>
                   {isLoadingSchedule ? (
                       <SkeletonScreenScheduleList />
                   ) : (
                       matchesData && matchesData.map(match => (
-                          <ScheduleCard key={match.id} match={match} isScoreVisible={isScoreVisible} />
+                          <ScheduleCard key={match.id} match={match} isScoreVisible={isScoreVisible} competitionId={competitionId} />
                       ))
                   )}
               </div>

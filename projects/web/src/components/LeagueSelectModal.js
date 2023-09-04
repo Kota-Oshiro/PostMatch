@@ -4,9 +4,10 @@ import { useLocation } from 'react-router-dom';
 import TeamSelecter from './TeamSelecter';
 
 import './LeagueSelectModal.css';
-import { ReactComponent as NaitonEngIcon } from '../icons/nation_eng.svg';
-import { ReactComponent as NaitonEspIcon } from '../icons/nation_esp.svg';
-import { ReactComponent as NaitonItaIcon } from '../icons/nation_ita.svg';
+import { ReactComponent as NationEngIcon } from '../icons/nation_eng.svg';
+import { ReactComponent as NationEspIcon } from '../icons/nation_esp.svg';
+import { ReactComponent as NationItaIcon } from '../icons/nation_ita.svg';
+import { ReactComponent as NationJpnIcon } from '../icons/nation_jpn.svg';
 import { ReactComponent as CloseIcon } from '../icons/close.svg';
 
 function LeagueSelectModal({ handleLeagueClick, handleTeamClick, handleModalClose, handleClearSettingClick, isTeamSelecterVisible, filteredTeams}) {
@@ -15,9 +16,10 @@ function LeagueSelectModal({ handleLeagueClick, handleTeamClick, handleModalClos
   const isUserEdit = location.pathname === ("/user/edit") 
 
   const leagueLists = [
-    { key: 'eng1', competition_id: 2021, season_id: '1564', color: '#38003c', icon: NaitonEngIcon, name: 'プレミアリーグ' },
-    { key: 'esp1', competition_id: 2014, season_id: '1577', color: '#FF4B44', icon: NaitonEspIcon, name: 'ラ・リーガ' },
-    { key: 'ita1', competition_id: 2019, season_id: '1600', color: '#171D8D', icon: NaitonItaIcon, name: 'セリエA' },
+    { key: 'eng1', competition_id: 2021, season_id: '1564', color: '#38003c', icon: NationEngIcon, name: 'プレミアリーグ' },
+    { key: 'jpn1', competition_id: 2119, season_id: '1544', color: '#000000', icon: NationJpnIcon, name: 'Jリーグ' },
+    { key: 'esp1', competition_id: 2014, season_id: '1577', color: '#FF4B44', icon: NationEspIcon, name: 'ラ・リーガ' },
+    { key: 'ita1', competition_id: 2019, season_id: '1600', color: '#171D8D', icon: NationItaIcon, name: 'セリエA' },
   ]
 
   return (

@@ -14,7 +14,7 @@ class Team(models.Model):
     season_id = models.IntegerField(null=True) 
     name = models.CharField(max_length=255)
     short_name = models.CharField(max_length=255)
-    tla = models.CharField(max_length=255, unique=True)
+    tla = models.CharField(max_length=255)
     crest_image_url = models.URLField(null=True)
     coach_id = models.IntegerField(null=True)
     coach_name = models.CharField(max_length=255, null=True)
@@ -35,7 +35,8 @@ class Team(models.Model):
 
 # プレイヤー情報
 class Player(models.Model):
-    id = models.IntegerField(primary_key=True) 
+    id = models.IntegerField(primary_key=True)
+    competition_id = models.IntegerField(null=True)  
     season_id = models.IntegerField(null=True)
     team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='players', db_column='team_id', null=True)
     name = models.CharField(max_length=255, null=True)

@@ -729,7 +729,7 @@ def fetch_teams_data(competition_code):
     Team.objects.bulk_create(new_teams)
 
 def fetch_teams_from_competitions():
-    competitions = ['PL', 'PD', 'SA']
+    competitions = ['JJL']
     for competition in competitions:
         fetch_teams_data(competition)
 
@@ -742,6 +742,7 @@ def fetch_players_data(competition_code):
     connection.request('GET', f'/v4/competitions/{competition_code}/teams', None, headers)
     response = json.loads(connection.getresponse().read().decode())
 
+    competition_id = response['competition']['id']
     season_id = response['season']['id']
 
     df_original = pd.DataFrame(response['teams'])
@@ -753,6 +754,7 @@ def fetch_players_data(competition_code):
             player_data = {
                 'id': player['id'],
                 'team_id': team_id,
+                'competition_id': competition_id,
                 'season_id': season_id,
                 'name': player['name'],
                 'position': player['position'],
@@ -764,6 +766,14 @@ def fetch_players_data(competition_code):
             players_data.append(player_data)
 
     df_players = pd.DataFrame(players_data)
+
+    # 取得したデータの中で重複があった場合のログ
+    duplicates = df_players[df_players.duplicated(subset='id')]
+    if not duplicates.empty:
+        print(f"Duplicated Player IDs: {duplicates['id'].tolist()}")
+
+    # 取得したデータの中での重複の除去
+    df_players = df_players.drop_duplicates(subset='id', keep='first')
 
     df_players['last_updated_at'] = pd.to_datetime(df_players['last_updated_at'])
     df_players['birthday'] = pd.to_datetime(df_players['birthday'])
@@ -786,6 +796,7 @@ def fetch_players_data(competition_code):
             Player(
                 id=row['id'],
                 team_id=row['team_id'],
+                competition_id=row['competition_id'],
                 season_id=row['season_id'],
                 name=row['name'],
                 nationality=row['nationality'],
@@ -809,6 +820,7 @@ def fetch_players_data(competition_code):
             Player(
                 id=row['id'],
                 team_id=row['team_id'],
+                competition_id=row['competition_id'],
                 season_id=row['season_id'],
                 name=row['name'],
                 nationality=row['nationality'],
@@ -819,10 +831,10 @@ def fetch_players_data(competition_code):
             )
         )
 
-    Player.objects.bulk_update(update_player_objects, ['team_id', 'season_id', 'name', 'nationality', 'position', 'birthday', 'shirt_number', 'last_updated_at'])
+    Player.objects.bulk_update(update_player_objects, ['team_id', 'competition_id', 'season_id', 'name', 'nationality', 'position', 'birthday', 'shirt_number', 'last_updated_at'])
 
 def fetch_players_from_competitions():
-    competitions = ['PL', 'PD', 'SA']
+    competitions = ['JJL']
     for competition in competitions:
         fetch_players_data(competition)
 
@@ -892,7 +904,7 @@ def fetch_matches_data(competition_code):
     Match.objects.bulk_update(matches_to_update, ['competition_id', 'season_id', 'matchday', 'home_team_id', 'away_team_id', 'started_at', 'status', 'winner', 'home_score', 'away_score', 'referees_id', 'referees_name', 'last_updated_at'])
 
 def fetch_matches_from_competitions():
-    competitions = ['PL', 'PD', 'SA']
+    competitions = ['PL', 'PD', 'SA', 'JJL']
     for competition in competitions:
         fetch_matches_data(competition)
 
@@ -954,55 +966,6 @@ def fetch_recent_match_goals():
     # 各match_idに対してfetch_goals_dataを実行
     for match_id in recent_match_ids:
         fetch_goals_data(match_id)
-
-''' match_id指定でgoalsをfetchしたいとき用
-
-def fetch_goals_data(match_id):
-    connection = http.client.HTTPConnection(settings.FOOTBALLDATA_API_URL)
-    headers = { 'X-Auth-Token': settings.FOOTBALLDATA_API_TOKEN }
-    connection.request('GET', f'/v4/matches/{match_id}', None, headers)
-    response = json.loads(connection.getresponse().read().decode())
-
-    df_original = pd.DataFrame([response])
-
-    #ここからGOALデータの抽出
-    def extract_goals_data(row):
-        goals = []
-        for goal in row.get('goals', []):
-            goal_data = {
-                'competition_id': row['competition']['id'],
-                'season_id': row['season']['id'],  
-                'match_id': row['id'],
-                'team_id': goal['team']['id'],
-                'player_id': goal['scorer']['id'],
-                'assist_player_id': goal['assist']['id'] if goal['assist'] else None,
-                'minute': goal['minute'],
-                'additional_time': goal['injuryTime'],
-                'type': goal['type'],
-                'home_score': goal['score']['home'],
-                'away_score': goal['score']['away'],
-            }
-            goals.append(goal_data)
-        return goals
-    
-    goals_to_create = []
-    for _, row in df_original.iterrows():
-        goals_data = extract_goals_data(row)
-        for goal_data in goals_data:
-            # 既存のゴールデータが存在するか確認
-            exists = Goal.objects.filter(
-                match_id=goal_data['match_id'],
-                team_id=goal_data['team_id'],
-                player_id=goal_data['player_id'],
-                minute=goal_data['minute'],
-                additional_time=goal_data['additional_time']
-            ).exists()
-            if not exists:
-                goals_to_create.append(Goal(**goal_data))
-
-    Goal.objects.bulk_create(goals_to_create)
-
-'''
 
 ''' メールログイン関連（廃止）
 
