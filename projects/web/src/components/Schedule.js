@@ -197,7 +197,7 @@ function Schedule() {
                   </div>
                   <ScheduleTab currentMatchday={currentMatchday} setCurrentMatchday={setCurrentMatchday} minTab={minTab} maxTab={maxTab} />
               </div>
-              <div {...handlers} className='schedule-cards'>
+              <div {...handlers} className={`schedule-cards ${competitionId === 2119 ? 'schedule-cards-jleague' : ''}`}>
                   {isLoadingSchedule ? (
                       <SkeletonScreenScheduleList />
                   ) : (
