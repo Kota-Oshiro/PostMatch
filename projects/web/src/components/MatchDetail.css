@@ -87,6 +87,10 @@
   padding-right: 12px;
 }
 
+.match-team-home.match-tla-japanese, .match-team-away.match-tla-japanese {
+  font-size: 1.6rem;
+}
+
 .match-result {
   display: flex;
   justify-content: center;
@@ -230,6 +234,10 @@
   .match-team-away {
     margin-right: 54px;
     padding-right: 18px;
+  }
+
+  .match-team-home.match-tla-japanese, .match-team-away.match-tla-japanese {
+    font-size: 2.4rem;
   }
 
   .match-goals {

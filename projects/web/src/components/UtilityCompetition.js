@@ -17,7 +17,7 @@ export const getCompetitionName = (competitionId) => {
     case 2021: return 'プレミアリーグ';
     case 2014: return 'ラ・リーガ';
     case 2019: return 'セリエA';
-    case 2119: return 'Jリーグ';
+    case 2119: return 'J1リーグ';
     case 10000001: return '国際親善試合';
     case 10000002: return 'キリンチャレンジカップ';
     default: return 'マッチアップ';
@@ -44,7 +44,8 @@ export const getCompetitionColor = (competitionId) => {
     case 2014: return '#FF4B44';
     case 2019: return '#171D8D';
     case 2119: return '#000000';
-    case (10000001 || 10000002) : return '#052667';
+    case 10000001:
+    case 10000002: return '#052667';
     default: return'#3465FF';
   }
 }

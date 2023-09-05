@@ -8,6 +8,7 @@ import axios from 'axios';
 
 import './TeamDetail.css';
 import './TabContent.css';
+import { ReactComponent as CrestIcon } from '../icons/crest.svg';
 
 import { Loader, LoaderInTabContent, SkeletonScreenPost } from './Loader';
 import NotFoundPage from './error/NotFoundPage';
@@ -184,7 +185,11 @@ function TeamDetail() {
         <div className='team-profile' style={{backgroundColor: data.team.club_color_code_first }}>
           <div className='team-profile-top'>
             <div className='team-profile-left'>
-              <img src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/crest-${data.team.tla}.webp`} className='team-profile-img' style={{transition: 'none'}}/>
+              {data.team.competition_id !== 2119 ? (
+                <img src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/crest-${data.team.tla}.webp`} className='team-profile-img' style={{transition: 'none'}}/>
+              ) : (
+                <CrestIcon className='team-profile-img'/>
+              )}
               <span className='team-name'>{ data.team.name_ja }</span>
             </div>
           </div>

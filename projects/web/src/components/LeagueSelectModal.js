@@ -17,7 +17,7 @@ function LeagueSelectModal({ handleLeagueClick, handleTeamClick, handleModalClos
 
   const leagueLists = [
     { key: 'eng1', competition_id: 2021, season_id: '1564', color: '#38003c', icon: NationEngIcon, name: 'プレミアリーグ' },
-    { key: 'jpn1', competition_id: 2119, season_id: '1544', color: '#000000', icon: NationJpnIcon, name: 'Jリーグ' },
+    { key: 'jpn1', competition_id: 2119, season_id: '1544', color: '#000000', icon: NationJpnIcon, name: 'J1リーグ' },
     { key: 'esp1', competition_id: 2014, season_id: '1577', color: '#FF4B44', icon: NationEspIcon, name: 'ラ・リーガ' },
     { key: 'ita1', competition_id: 2019, season_id: '1600', color: '#171D8D', icon: NationItaIcon, name: 'セリエA' },
   ]

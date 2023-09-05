@@ -86,9 +86,8 @@
   padding-right: 18px;
 }
 
-.match-card-tla {
-  text-align: center;
-  width: 50px;
+.match-card-team-home.match-card-tla-japanese, .match-card-team-away.match-card-tla-japanese {
+  font-size: 1.4rem;
 }
 
 .match-card-icon {

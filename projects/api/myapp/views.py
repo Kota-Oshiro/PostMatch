@@ -12,7 +12,8 @@ from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 from django.utils.decorators import method_decorator
 from django.db import connection
-from django.db.models import Count, Min, Q, Case, When, Value, IntegerField
+from django.db.models import Count, Min, Q, Case, When, Value, IntegerField, F, ExpressionWrapper, FloatField, DurationField
+from django.db.models.functions import Abs, Extract
 
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt #一部のviewでCSRF保護を無効にする（開発環境でだけ使う）
@@ -563,13 +564,24 @@ class ScheduleList(generics.ListAPIView):
         if season_id is None:
             raise ValidationError({"message": "Invalid parameters"})
 
-        # 各matchdayごとの最小のstartedAtを計算
-        matchday_startedAt_min = Match.objects.filter(season_id=season_id).values('matchday').annotate(min_startedAt=Min('started_at'))
+        # 現在の時間に最も近いMatchを取得
+        closest_match = Match.objects.filter(season_id=season_id).annotate(
+            time_difference=ExpressionWrapper(
+                (Extract('started_at', 'epoch') - Extract(timezone.now(), 'epoch')), output_field=FloatField()
+            )
+        ).annotate(
+            abs_time_difference=Abs('time_difference')
+        ).order_by('abs_time_difference').first()
 
-        # 現在の時間と最も近いmatchdayを選択
-        closest_matchday = min(matchday_startedAt_min, key=lambda x: abs(x['min_startedAt'] - timezone.now()))
+        if not closest_match:
+            return Match.objects.none()  # 一致する試合がない場合、空のクエリセットを返します
 
-        return Match.objects.filter(competition_id=competition_id, season_id=season_id, matchday=closest_matchday['matchday']).select_related('home_team', 'away_team').order_by('started_at', 'home_team_id')
+        # そのMatchのmatchdayを取得
+        closest_matchday = closest_match.matchday
+
+        return Match.objects.filter(
+            competition_id=competition_id, season_id=season_id, matchday=closest_matchday
+        ).select_related('home_team', 'away_team').order_by('started_at', 'home_team_id')
 
 class ScheduleMatchdayList(generics.ListAPIView):
 

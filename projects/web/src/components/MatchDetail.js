@@ -8,6 +8,7 @@ import './MatchDetail.css';
 
 import { ReactComponent as BallIcon } from '../icons/soccer_ball.svg';
 import { ReactComponent as CalenderIcon } from '../icons/calender_grey.svg';
+import { ReactComponent as CrestIcon } from '../icons/crest.svg';
 
 function MatchDetail({ match, goals }) {
 
@@ -24,26 +25,34 @@ function MatchDetail({ match, goals }) {
       </div>
       <div className='match-content'>
         <span className='match-text'>{ competitionType }{match.matchday}</span>
-        <div className='match-scoreboard'>
+        <div className='match-scoreboard'>          
           <Link to={`/team/${match.home_team.id}`} className='match-crest-home'>
+            {match.competition_id !== 2119 ? (
             <img
               src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/crest-${match.home_team.tla}.webp`}
               alt={match.home_team.tla}
               className='match-crest-img'
             />
+            ) : (
+              <CrestIcon className='match-crest-img' />
+            )}
           </Link>
           <Link to={`/team/${match.away_team.id}`} className='match-crest-away'>
-              <img
-                src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/crest-${match.away_team.tla}.webp`}
-                alt={match.away_team.tla}
-                className='match-crest-img'
-              />
+            {match.competition_id !== 2119 ? (
+            <img
+              src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/crest-${match.away_team.tla}.webp`}
+              alt={match.away_team.tla}
+              className='match-crest-img'
+            />
+            ) : (
+              <CrestIcon className='match-crest-img' />
+            )}
           </Link>
-          <span className='match-team-home' style={{background: `linear-gradient( -90deg, ${match.home_team.club_color_code_first}, 90%, white)`}}>
+          <span className={`match-team-home ${match.competition_id === 2119 ? 'match-tla-japanese' : ''}`} style={{background: `linear-gradient( -90deg, ${match.home_team.club_color_code_first}, 90%, white)`}}>
             { match.home_team.tla }
           </span>
           {renderMatchScore(match)}
-          <span className='match-team-away' style={{background: `linear-gradient( 90deg, ${match.away_team.club_color_code_first}, 90%, white)`}}>
+          <span className={`match-team-away ${match.competition_id === 2119 ? 'match-tla-japanese' : ''}`} style={{background: `linear-gradient( 90deg, ${match.away_team.club_color_code_first}, 90%, white)`}}>
             { match.away_team.tla }
           </span>
         </div>

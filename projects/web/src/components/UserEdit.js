@@ -13,6 +13,7 @@ import './UserEdit.css';
 import { ReactComponent as CameraIcon } from '../icons/camera.svg';
 import { ReactComponent as ArrowDownIcon } from '../icons/arrow_down.svg';
 import { ReactComponent as ArrowUpIcon } from '../icons/arrow_up.svg';
+import { ReactComponent as CrestIcon } from '../icons/crest.svg';
 
 function UserEditForm() {
   
@@ -41,6 +42,7 @@ function UserEditForm() {
   const [nameError, setNameError] = useState('');
 
   const [supportTeam, setSupportTeam] = useState('');
+  const [supportTeamCompetition, setSupportTeamCompetition] = useState('');
   const [supportTeamTla, setSupportTeamTla] = useState('');
   const [supportTeamName, setSupportTeamName] = useState('');
   const [supportedAtYear, setSupportedAtYear] = useState('');
@@ -95,6 +97,7 @@ function UserEditForm() {
               // 各テキストデータの初期表示セット
               if (data.name) setName(data.name);
               if (data.support_team) setSupportTeam(data.support_team);
+              if (data.support_team) setSupportTeamCompetition(data.support_team_competition);
               if (data.support_team) setSupportTeamTla(data.support_team_tla);
               if (data.support_team) setSupportTeamName(data.support_team_name_ja);
               if (data.description) setDescription(data.description);
@@ -208,9 +211,10 @@ function UserEditForm() {
     setTeamSelecterVisible(true);
   };
 
-  // support_teamを選ぶモーダル内でリーグがクリックされたときの関数
+  // support_teamを選ぶモーダル内でチームがクリックされたときの関数
   const handleTeamClick = (team) => {
     setSupportTeam(team.id);
+    setSupportTeamCompetition(team.competition_id);
     setSupportTeamTla(team.tla);
     setSupportTeamName(team.name);
     setLeagueSelectModalVisible(false);
@@ -219,6 +223,7 @@ function UserEditForm() {
   
   const handleClearSettingClick = () => {
     setSupportTeam('');
+    setSupportTeamCompetition('');
     setSupportTeamTla('');
     setSupportTeamName('');
     setSupportedAtYear('');
@@ -381,7 +386,11 @@ function UserEditForm() {
             {supportTeam ? (
               <>
                 <div className='custom-form-selecter-default'>
-                  <img src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/crest-${supportTeamTla}.webp`} className='custom-form-selecter-icon'/>
+                  {supportTeamCompetition !== 2119 ? (
+                    <img src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/crest-${supportTeamTla}.webp`} className='custom-form-selecter-icon'/>
+                  ) : (
+                    <CrestIcon className='custom-form-selecter-icon' />
+                  )}
                   <span className='custom-form-text'>{supportTeamName}</span>
                 </div>
                 {isLeagueSelectModalVisible ? (

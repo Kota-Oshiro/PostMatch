@@ -114,7 +114,7 @@
   align-items: center;
 }
 
-.post-user-crest, .post-match-icon {
+.post-user-crest, .post-match-icon, .post-match-icon-motm {
   width: 1.4rem;
   height: 1.4rem;
   object-fit: cover;
@@ -122,10 +122,6 @@
 
 .post-user-crest {
   margin-left: 6px;
-}
-
-.post-match-icon {
-  margin-right: 6px;
 }
 
 .post-created {
@@ -159,14 +155,25 @@
   cursor: pointer;
 }
 
-.post-match-text {
+.post-match-text, .post-match-status, .post-match-tla, .post-match-matchday {
   display: flex;
   align-items: center;
-  margin-right: 6px;
   color: #3465FF;
   font-weight: 700;
   font-size: 1.2rem;
   line-height: 24px;
+}
+
+.post-match-status {
+  margin: 0 6px;
+}
+
+.post-match-matchday {
+  margin-left: 6px;
+}
+
+.post-match-icon-motm {
+  margin-right: 6px;
 }
 
 .post-match-text-motm {

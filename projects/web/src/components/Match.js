@@ -223,6 +223,7 @@ function Match() {
             <h2 className='activity-title add-padding'>みんなが選んだマンオブザマッチ</h2>
             <PlayerList
               data={dataMotms}
+              dataMatch={data}
               isFetchingNextPage={isFetchingNextPageMotms}
               ignitionPage={ignitionPageMotms}
             />

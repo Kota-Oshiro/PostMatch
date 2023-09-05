@@ -35,7 +35,7 @@ function Schedule() {
 
   const [competitionId, setCompetitionId] = useState(initialCompetitionId);
   // competitonIdが変わったときにisLoadingをtrueにするために使用
-  const [prevCompetitionId, setPrevCompetitionId] = useState(null);
+  const [prevCompetitionId, setPrevCompetitionId] = useState(initialCompetitionId);
 
   const [seasonId, setSeasonId] = useState(initialSeasonId);
 

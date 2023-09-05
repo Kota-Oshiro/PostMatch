@@ -211,10 +211,11 @@ function UserDetail() {
               <div className='user-profile-block'>
                 <div className='user-profile-main'>
                   <span className='user-name'>{ account.name }</span>
-                  { account.support_team && 
-                  <Link to={`/team/${account.support_team.id}`}>
-                    <img src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/crest-${account.support_team.tla}.webp`} className='user-support-crest'/>
-                  </Link>}
+                  { account.support_team && account.support_team.competition_id !== 2119 &&
+                    <Link to={`/team/${account.support_team.id}`}>
+                      <img src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/crest-${account.support_team.tla}.webp`} className='user-support-crest'/>
+                    </Link>
+                  }
                 </div>
                 <span className='user-profile-text-sub'>{formatUsing(account.created_at, formats.DATE)} 登録</span>
               </div>

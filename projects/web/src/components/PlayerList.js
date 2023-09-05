@@ -5,7 +5,7 @@ import { Loader, LoaderSpinner } from './Loader';
 import PlayerCard from './PlayerCard';
 import NoContent from './NoContent';
 
-function PlayerList({ data, isLoading, isFetchingNextPage, ignitionPage }) {
+function PlayerList({ data, dataMatch, isLoading, isFetchingNextPage, ignitionPage }) {
   
   const totalCount = data?.pages.reduce((sum, page) => sum + page.results.length, 0);
   
@@ -24,7 +24,7 @@ function PlayerList({ data, isLoading, isFetchingNextPage, ignitionPage }) {
           {data.pages.map((pageData, i) => (
             <div key={i}>
               {pageData.results.map(player => (
-                <PlayerCard key={player.id} player={player} />
+                <PlayerCard key={player.id} player={player} dataMatch={dataMatch} />
               ))}
             </div>
           ))}

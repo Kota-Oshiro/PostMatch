@@ -8,10 +8,20 @@ const PostCardTagMatch = ({ post }) => {
 
   return (
     <div className='post-tag-match' onClick={(e) => {e.stopPropagation(); navigation(`/match/${post.match.id}`)}}>
-      <img src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Badge/badge-${ post.match.home_team.tla }.webp`} className='post-match-icon'/>
+      {post.match.competition_id !== 2119 ? (
+        <img src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Badge/badge-${ post.match.home_team.tla }.webp`} className='post-match-icon'/>
+      ) : (
+        <span className='post-match-tla'>{ post.match.home_team.tla }</span>
+      )}
       {postTagStatus(post)}
-      <img src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Badge/badge-${ post.match.away_team.tla }.webp`} className='post-match-icon'/>
-      <span className='post-match-text'>マッチデイ{ post.match.matchday }</span>
+      {post.match.competition_id !== 2119 ? (
+        <img src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Badge/badge-${ post.match.away_team.tla }.webp`} className='post-match-icon'/>
+      ) : (
+        <span className='post-match-tla'>{ post.match.away_team.tla}</span>
+      )}
+      {(post.match.competition_id !== 10000001 && post.match.competition_id !== 10000002) && (
+        <span className='post-match-matchday'>{ post.match.matchday }節</span>
+      )}
     </div> 
   );
 };
@@ -19,11 +29,11 @@ const PostCardTagMatch = ({ post }) => {
 function postTagStatus(post) {
   if (post.match.status === 'FINISHED') {
     return (
-      <span className='post-match-text'>{ post.match.home_score } - { post.match.away_score }</span>
+      <span className='post-match-status'>{ post.match.home_score } - { post.match.away_score }</span>
     );
   } else {
     return (
-      <span className='post-match-text'>{formatUsing(post.match.started_at, formats.HOUR_MINUTE)}</span>
+      <span className='post-match-status'>{formatUsing(post.match.started_at, formats.HOUR_MINUTE)}</span>
     );
   }
 }

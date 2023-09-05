@@ -9,13 +9,17 @@
 .player-block {
   display: flex;
   align-items: center;
-  min-width: 36px;
 }
 
 .player-count {
-  padding: 0 12px;
-  height: 2rem;
-  line-height: 2rem;
+  text-align: center;
+  margin-right: 6px;
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #888;
   background-color: #eeeeee;
   border-radius: 50px;
 }

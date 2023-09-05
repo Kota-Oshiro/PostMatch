@@ -1,14 +1,18 @@
 import React from 'react';
 
 import './MotmSelectModal.css';
-import { ReactComponent as CloseIcon } from '../icons/close.svg';
+import { ReactComponent as CrestIcon } from '../icons/crest.svg';
 
 function LeagueSelectModal({ match, postPlayerList, handlePlayerClick, handleModalClose }) {
 
   return (
     <div id='motm-select-modal'>
       <label className='player-lists-group' style={{ backgroundColor: match.home_team.club_color_code_first }}>
-        <img src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/crest-${match.home_team.tla}.webp`} className='custom-form-selecter-icon'/>
+        {match.competition_id !== 2119 ? (
+          <img src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/crest-${match.home_team.tla}.webp`} className='custom-form-selecter-icon'/>
+        ) : (
+          <CrestIcon className='custom-form-selecter-icon'/>
+        )}
         {match.home_team.name_ja}
       </label>
       {postPlayerList.home_team_players.map(player => (
@@ -18,7 +22,11 @@ function LeagueSelectModal({ match, postPlayerList, handlePlayerClick, handleMod
         </div>
       ))}
       <label className='player-lists-group' style={{ backgroundColor: match.away_team.club_color_code_first }}>
-        <img src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/crest-${match.away_team.tla}.webp`} className='custom-form-selecter-icon'/>
+        {match.competition_id !== 2119 ? (
+          <img src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/crest-${match.away_team.tla}.webp`} className='custom-form-selecter-icon'/>
+        ) : (
+          <CrestIcon className='custom-form-selecter-icon'/>
+        )}
         {match.away_team.name_ja}
       </label>
       {postPlayerList.away_team_players.map(player => (

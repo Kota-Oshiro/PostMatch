@@ -14,12 +14,12 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 class TeamListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Team
-        fields = ['id', 'name_ja', 'tla', 'crest_image', 'total_supporter_count', 'club_color_code_first']
+        fields = ['id', 'competition_id', 'name_ja', 'tla', 'total_supporter_count', 'club_color_code_first']
 
 class TeamSerializer(serializers.ModelSerializer):
     class Meta:
         model = Team
-        fields = ['id', 'tla', 'founded_year', 'name_ja', 'crest_image', 'crest_badge_image', 'total_supporter_count', 'club_color_code_first', 'club_color_code_second', 'coach_name_ja', 'venue_ja']
+        fields = ['id', 'competition_id', 'tla', 'founded_year', 'name_ja', 'total_supporter_count', 'club_color_code_first', 'coach_name_ja', 'venue_ja']
 
 class TeamSupporterSerializer(serializers.ModelSerializer):
     class Meta:
@@ -106,7 +106,7 @@ class AccountEditSerializer(serializers.ModelSerializer):
 class PostTeamSerializer(serializers.ModelSerializer):
     class Meta:
         model = Team
-        fields = ['id', 'name_ja', 'tla', 'crest_badge_image']
+        fields = ['id', 'tla', 'name_ja', 'club_color_code_first']
 
 class PostAccountSerializer(serializers.ModelSerializer):
     support_team = PostTeamSerializer(read_only=True)
@@ -121,7 +121,7 @@ class PostMatchSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Match
-        fields = ['id', 'matchday', 'home_team', 'away_team', 'started_at', 'status', 'home_score', 'away_score', 'total_post_count']
+        fields = ['id', 'competition_id', 'matchday', 'home_team', 'away_team', 'started_at', 'status', 'home_score', 'away_score', 'total_post_count']
 
 class PostPlayerSerializer(serializers.ModelSerializer):
 

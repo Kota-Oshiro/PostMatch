@@ -7,6 +7,7 @@ import { getCompetitionName, getCompetitionType, getCompetitionIcon, getCompetit
 import './MatchCard.css';
 
 import { ReactComponent as VersusEngIcon } from '../icons/versus_grey.svg';
+import { ReactComponent as CrestIcon } from '../icons/crest.svg';
 
 function MatchCard({ match, className }) {
 
@@ -27,21 +28,29 @@ function MatchCard({ match, className }) {
         <div className='match-card-content'>
           <span className='match-card-text'>{ competitionType }{ match.matchday }</span>
           <div className='match-card-scoreboard'>
-            <img
+            {match.competition_id !== 2119 ? (
+              <img
               src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/crest-${match.home_team.tla}.webp`}
               className='match-card-crest-home'
               alt={match.home_team.tla}
-            />
-            <img
+              />
+            ) : (
+              <CrestIcon className='match-card-crest-home' />
+            )}
+            {match.competition_id !== 2119 ? (
+              <img
               src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/crest-${match.away_team.tla}.webp`}
               className='match-card-crest-away'
               alt={match.away_team.tla}
-            />
-            <span className='match-card-team-home' style={{background: `linear-gradient( -90deg, ${match.home_team.club_color_code_first}, 90%, white)`}}>
+              />
+            ) : (
+              <CrestIcon className='match-card-crest-away' />
+            )}
+            <span className={`match-card-team-home ${match.competition_id === 2119 ? 'match-card-tla-japanese' : ''}`} style={{background: `linear-gradient( -90deg, ${match.home_team.club_color_code_first}, 90%, white)`}}>
               { match.home_team.tla }
             </span>
             <VersusEngIcon className='match-card-versus-icon'/>
-            <span className='match-card-team-away' style={{background: `linear-gradient( 90deg, ${match.away_team.club_color_code_first}, 90%, white)`}}>
+            <span className={`match-card-team-away ${match.competition_id === 2119 ? 'match-card-tla-japanese' : ''}`} style={{background: `linear-gradient( 90deg, ${match.away_team.club_color_code_first}, 90%, white)`}}>
               { match.away_team.tla }
             </span>
           </div>
