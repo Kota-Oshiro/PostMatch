@@ -14,7 +14,8 @@ import { ReactComponent as HighlightIcon } from '../icons/highlight.svg';
 function PostCard({ post }) {
 
   const location = useLocation();
-  const isPostDetail = location.pathname.includes("/post/") 
+  const isPostDetail = location.pathname.includes("/post/")
+  const isPosts = location.pathname === "/posts";
 
   const navigation  = useNavigate();
 
@@ -43,7 +44,7 @@ function PostCard({ post }) {
   };
 
   return (
-    <div onClick={() => navigation(`/post/${post.id}`)} className={`post ${ !post.is_highlight && isExpanded && isLong ? 'post-expand' : ''}`}>
+    <div onClick={() => navigation(`/post/${post.id}`)} className={`post ${!isPosts && !isPostDetail && 'post-border'} ${ !post.is_highlight && isExpanded && isLong ? 'post-expand' : ''}`}>
       <PostCardHeader post={post} />
       <div className={`post-tag ${(post.content) ? 'post-tag-margin' : ''}`}>
         <PostCardTagMatch post={post} />  

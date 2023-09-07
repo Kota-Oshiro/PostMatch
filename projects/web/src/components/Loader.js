@@ -56,6 +56,7 @@ export function LoaderInButton() {
   );
 }
 
+// 無限ロード用スピナー
 export function LoaderSpinner() {  
   return (
     <div className='load-spinner'>
@@ -79,6 +80,7 @@ export function SingleLoaderPost() {
       backgroundColor="#f3f3f3"
       foregroundColor="#ecebeb"
       width="100%"
+      className='loader-post'
     >
       <rect x="50" y="6" rx="6" ry="1" width="30%" height="14" /> 
       <rect x="50" y="25" rx="6" ry="1" width="20%" height="7" /> 
@@ -94,7 +96,7 @@ export function SkeletonScreenPost()  {
   const numLoaders = 3;
   return (
     <div className='loader-posts'>
-      {Array(numLoaders).fill().map((_, i) => <SingleLoaderPost key={i} />)}
+      {Array(numLoaders).fill().map((_, i) => <SingleLoaderPost key={i}/>)}
     </div>
   );
 }

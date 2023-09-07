@@ -15,7 +15,7 @@ import NotFoundPage from './error/NotFoundPage';
 
 import './Match.css';
 import './TabContent.css';
-import { Loader } from './Loader';
+import { Loader, LoaderInTabContent } from './Loader';
 
 const PostList = React.lazy(() => import('./PostList.js'));
 const PlayerList = React.lazy(() => import('./PlayerList'));
@@ -147,13 +147,22 @@ function Match() {
   }, [dataMotms, isLoadingMotms, ignitionPageMotms, hasNextPageMotms, isFetchingNextPageMotms, currentTab, fetchNextPageMotms]);
 
   if (isLoading) {
-    return <Loader />;
+    return(
+      <>
+        <div className='bg'></div>      
+        <Loader />
+      </>
+    )
   }
 
   if (isError) {
-    return <NotFoundPage />;
+    return(
+      <>
+        <div className='bg'></div>      
+        <NotFoundPage />
+      </>
+    )
   }
-
 
   return (
     <>
@@ -194,13 +203,13 @@ function Match() {
       />
       {!isAuthenticated && <Login /> }
   
-      <div className='activity-container'>
-        <div className='activity-tab'>
-          <div className={`activity-tab-column ${currentTab === 'posts' ? 'active' : ''}`} onClick={() => openForm('posts')}>
+      <div className='activity-container match-detail'>
+        <div className='activity-tab match-detail'>
+          <div className={`activity-tab-column match-detail ${currentTab === 'posts' ? 'active' : ''}`} onClick={() => openForm('posts')}>
             <span>ポスト</span>
             {data.match && <span className='total-post-count'>{ data.match.total_post_count }</span>}
           </div>
-          <div className={`activity-tab-column ${currentTab === 'motms' ? 'active' : ''}`} onClick={() => openForm('motms')}>
+          <div className={`activity-tab-column match-detail ${currentTab === 'motms' ? 'active' : ''}`} onClick={() => openForm('motms')}>
             <span>MOTM</span>
           </div>
         </div>
@@ -217,7 +226,7 @@ function Match() {
           </>
           ) : (
           isLoadingMotms ? (
-            <Loader />
+            <LoaderInTabContent />
           ) : (
           <>
             <h2 className='activity-title add-padding'>みんなが選んだマンオブザマッチ</h2>

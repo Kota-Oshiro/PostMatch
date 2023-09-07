@@ -4,9 +4,16 @@
   align-items: center;
   width: 100%;
   margin: 0 auto 48px;
-  padding: 48px 24px 24px;
-  background-color: #fff;
+  padding: 12px;
   box-sizing: border-box;
+}
+
+.edit-form {
+  padding: 36px 12px 12px;
+  background-color: #fff;
+  border-radius: 12px;
+  box-sizing: border-box;
+  box-shadow: 0px 3px 9px 0px rgba(0, 0, 0, 0.1);
 }
 
 .edit-image {
@@ -93,7 +100,13 @@
   .edit-container {
     max-width: 520px;
     margin: 48px auto;
+    padding: 0;
     border-radius: 12px;
     border: none;
   }
+
+  .edit-form {
+    padding: 48px 24px 24px;
+  }
+
 }

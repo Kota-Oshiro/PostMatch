@@ -1,6 +1,6 @@
 .schedule-container {
+    padding: 12px;
     width: 100%;
-    background-color: #fff;
     box-sizing: border-box;
 }
 
@@ -13,7 +13,8 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 24px;
+    padding: 18px 18px 6px;
+    z-index: 1;
 }
 
 .schedule-league {
@@ -39,7 +40,9 @@
 }
 
 .schedule-cards {
+    position: relative;
     min-height: 490px;
+    border-radius: 0 0 12px 12px;
 }
 
 .schedule-cards.schedule-cards-jleague {
@@ -59,11 +62,7 @@
     .schedule-container {
         width: calc(100% - 384px);
         max-width: 520px;
-        border-radius: 12px;
-    }
-
-    .schedule-header {
-        border-radius: 12px 12px 0 0;
+        padding: 0;
     }
   
   }

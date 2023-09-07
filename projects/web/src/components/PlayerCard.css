@@ -2,7 +2,7 @@
   display: flex;
   align-items: center;
   justify-content: left;
-  padding: 6px 24px;
+  padding: 6px 12px;
   box-sizing: border-box;
 }
 
@@ -33,5 +33,12 @@
 
 .player-name {
   font-size: 1.4rem;
+}
+
+@media (min-width: 800px) {
+
+  .player {
+    padding: 6px 24px;
+  }
 }
 

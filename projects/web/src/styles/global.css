@@ -95,16 +95,16 @@ a {
 
 .container {
   width: 100%;
-  background-color: #fff;
+  padding: 12px;
   box-sizing: border-box;
 }
 
 .container.add-padding {
-  padding: 24px;
+  padding: 12px;
 }
 
 .container-title {
-  padding: 24px 24px 0;
+  padding: 0 12px 12px;
 }
 
 /* フォーム関連 */
@@ -115,7 +115,6 @@ form {
   justify-content: center;
   margin: 0 auto;
   width: 100%;
-  max-width: 480px;
 }
 
 .form-group {
@@ -264,7 +263,7 @@ input[type="submit"]:hover, button:hover, .button:hover  {
   justify-content: center;
   align-items: center;
   top: 0;
-  padding: 24px 0;
+  padding: 24px 0px;
   width: 100%;
   backdrop-filter: blur(6px);
   background-color: rgba(255, 255, 255, 0.8);
@@ -309,22 +308,39 @@ input[type="submit"]:hover, button:hover, .button:hover  {
 
 .modal-overlay.hidden {
   display: none;
-}  
+}
+
+.bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #f7f7f7;
+  z-index: -2;
+}
+
+.content-bg, .content-bg-narrow {
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  box-sizing: border-box;
+  box-shadow: 0px 3px 9px 0px rgba(0, 0, 0, 0.1);
+}
+
+.content-bg {
+  padding: 12px;
+}
+
+.content-bg-narrow {
+  padding: 6px;
+}
 
 @media (min-width: 800px) {
 
-  .bg {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: #f7f7f7;
-    z-index: -2;
-  }
-
-  .container, .container-index {
+ .container, .container-index, .container.add-padding {
     margin: 48px auto 96px;
+    padding: 0;
     border-radius: 12px;
   }
 

@@ -26,11 +26,21 @@ function Posts() {
   });
 
   if (isLoading) {
-    return <Loader />;
+    return(
+      <>
+        <div className='bg'></div>      
+        <Loader />
+      </>
+    )
   }
 
   if (isError) {
-    return <NotFoundPage />;
+    return(
+      <>
+        <div className='bg'></div>      
+        <NotFoundPage />
+      </>
+    )
   }
 
   return (

@@ -345,8 +345,14 @@ function UserEditForm() {
     }
   };
 
+  // 初期読み込み時のLoader
   if (loadingAccountEdit) {
-    return <Loader />;
+    return (
+      <>
+        <div className='bg'></div>
+        <Loader />
+      </>
+    )
   }
 
   return (
@@ -357,7 +363,7 @@ function UserEditForm() {
     </div>
     <div className={`modal-overlay ${isCropperVisible || isLeagueSelectModalVisible ? '' : 'hidden'}`}></div>
     <div className="edit-container">
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className='edit-form'>
         <div className="edit-image">
           <div className="edit-image-mat" onClick={handleCropper}></div>
           <input type="file" accept=".jpg,.jpeg,.png"  ref={inputRef} style={{ display: 'none' }} onChange={handleImageChange}/>

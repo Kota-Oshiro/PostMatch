@@ -7,11 +7,13 @@
 }
 
 .schedule-matchday {
-    margin: 12px 10px 0;
+    margin: 6px 4.5px;
+    padding: 6px 4.5px;
     color: #fff;
     font-size: 1.4rem;
     cursor: pointer;
     opacity: 0.6;
+    box-sizing: border-box;
 }
 
 .schedule-matchday.active {
@@ -30,10 +32,6 @@
 }
 
 @media (min-width: 800px) {
-    
-    .schedule-matchday {
-        margin: 12px 10px;
-    }
 
     .schedule-tab::-webkit-scrollbar{
         display: block;

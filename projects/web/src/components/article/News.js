@@ -22,16 +22,18 @@ function NewsArticleList() {
 
       <div className='bg'></div>
       <div className='container add-padding'>
-        <h1>運営ブログ</h1>
-        {sortedNewsArticle.map((article, index) => (
-          <Link to={article.path} key={index} className='article-card'>
-            <div className='article-card-left'>
-              <h2 className='article-card-title'>{article.title}</h2>
-              <p className='article-card-date'>{article.date}</p>
-            </div>
-            <img src={article.ogpImage} className='article-card-img'/>
-          </Link>
-        ))}
+        <div className='articles'>
+          <h1 className='articles-title'>運営ブログ</h1>
+          {sortedNewsArticle.map((article, index) => (
+            <Link to={article.path} key={index} className='article-card'>
+              <div className='article-card-left'>
+                <h2 className='article-card-title'>{article.title}</h2>
+                <p className='article-card-date'>{article.date}</p>
+              </div>
+              <img src={article.ogpImage} className='article-card-img'/>
+            </Link>
+          ))}
+        </div>
       </div>
     </>
   );

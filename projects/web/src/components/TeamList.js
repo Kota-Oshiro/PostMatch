@@ -45,8 +45,9 @@ function TeamList() {
   if (isLoading) {
     return (
       <>
-        <div className='bg'></div>
-        <div className='team-list-container'>
+      <div className='bg'></div>
+      <div className='team-list-container'>
+        <div className='content-bg' style={{backgroundImage: `linear-gradient(${competitionColor}, #f7f7f7 360px)`}} >
           <LeagueSelecter
             isLeagueSelectModalVisible={isLeagueSelectModalVisible}
             setLeagueSelectModalVisible={setLeagueSelectModalVisible}
@@ -62,12 +63,18 @@ function TeamList() {
           />
           <SkeletonScreenTeam />
         </div>
+      </div>
       </>
     )
   }
 
   if (isError) {
-    return <NotFoundPage />;
+    return(
+      <>
+        <div className='bg'></div>      
+        <NotFoundPage />
+      </>
+    )
   }
 
   return (
@@ -76,28 +83,31 @@ function TeamList() {
         <title>{competitionName}のクラブ一覧 - ポストマッチ</title>
         <meta property='og:title' content={`${competitionName}のクラブ一覧 - ポストマッチ`} />
       </Helmet>
+
       <div className='bg'></div>
       <div className='team-list-container'>
-        <LeagueSelecter
-          isLeagueSelectModalVisible={isLeagueSelectModalVisible}
-          setLeagueSelectModalVisible={setLeagueSelectModalVisible}
-          competitionId={competitionId}
-          setCompetitionId={setCompetitionId}
-          setSeasonId={setSeasonId}
-          competitionIcon={competitionIcon}
-          setCompetitionIcon={setCompetitionIcon}
-          competitionName={competitionName}
-          setCompetitionName={setCompetitionName}
-          competitionColor={competitionColor}
-          setCompetitionColor={setCompetitionColor}
-        />
-        <div className='team-cards'>
-        {data && data.map(team => (
-          <TeamCard 
-            key={team.id} 
-            team={team}
+        <div className='content-bg' style={{backgroundImage: `linear-gradient(${competitionColor}, #f7f7f7 360px)`}} >
+          <LeagueSelecter
+            isLeagueSelectModalVisible={isLeagueSelectModalVisible}
+            setLeagueSelectModalVisible={setLeagueSelectModalVisible}
+            competitionId={competitionId}
+            setCompetitionId={setCompetitionId}
+            setSeasonId={setSeasonId}
+            competitionIcon={competitionIcon}
+            setCompetitionIcon={setCompetitionIcon}
+            competitionName={competitionName}
+            setCompetitionName={setCompetitionName}
+            competitionColor={competitionColor}
+            setCompetitionColor={setCompetitionColor}
           />
-        ))} 
+          <div className='team-cards'>
+            {data && data.map(team => (
+              <TeamCard 
+                key={team.id} 
+                team={team}
+              />
+            ))} 
+          </div>
         </div>
       </div>
     </>

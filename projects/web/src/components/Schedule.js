@@ -13,6 +13,7 @@ import ScheduleCard from './ScheduleCard';
 import ScheduleTab from './ScheduleTab';
 import LeagueSelecter from './LeagueSelecter';
 import ScoreVisibleSwitcher from './ScoreVisibleSwitcher';
+import NotFoundPage from './error/NotFoundPage';
 
 import { getDefaultCompetitionId, getDefaultSeasonId,getCompetitionName, getCompetitionColor, getCompetitionIcon } from './UtilityCompetition';
 
@@ -141,6 +142,15 @@ function Schedule() {
     fetchNationalMatch,
   );
 
+  if (isError) {
+    return(
+      <>
+        <div className='bg'></div>      
+        <NotFoundPage />
+      </>
+    )
+  }
+
   return (
     <>
       <Helmet>
@@ -155,30 +165,35 @@ function Schedule() {
       <FetchContext.Provider value={{ fetchMatches, isLoading, setLoadingSchedule }}>
           {isLoading ? (
             <div className='schedule-container'>
-              <div className='schedule-header' style={{ backgroundColor: competitionColor }}>
-                <div className='schedule-league'>
-                  <LeagueSelecter
-                    isLeagueSelectModalVisible={isLeagueSelectModalVisible}
-                    setLeagueSelectModalVisible={setLeagueSelectModalVisible}
-                    competitionId={competitionId}
-                    setCompetitionId={setCompetitionId}
-                    setSeasonId={setSeasonId}
-                    competitionIcon={competitionIcon}
-                    setCompetitionIcon={setCompetitionIcon}
-                    competitionName={competitionName}
-                    setCompetitionName={setCompetitionName}
-                    competitionColor={competitionColor}
-                    setCompetitionColor={setCompetitionColor}
-                  />
-                  <ScoreVisibleSwitcher isScoreVisible={isScoreVisible} setScoreVisible={setScoreVisible} />
+              <div className='content-bg-narrow' style={{backgroundImage: `linear-gradient(${competitionColor}, #f7f7f7 360px)`}} >
+                <div className='schedule-header'>
+                  <div className='schedule-league'>
+                    <LeagueSelecter
+                      isLeagueSelectModalVisible={isLeagueSelectModalVisible}
+                      setLeagueSelectModalVisible={setLeagueSelectModalVisible}
+                      competitionId={competitionId}
+                      setCompetitionId={setCompetitionId}
+                      setSeasonId={setSeasonId}
+                      competitionIcon={competitionIcon}
+                      setCompetitionIcon={setCompetitionIcon}
+                      competitionName={competitionName}
+                      setCompetitionName={setCompetitionName}
+                      competitionColor={competitionColor}
+                      setCompetitionColor={setCompetitionColor}
+                    />
+                    <ScoreVisibleSwitcher isScoreVisible={isScoreVisible} setScoreVisible={setScoreVisible} />
+                  </div>
+                  <ScheduleTab currentMatchday={currentMatchday} setCurrentMatchday={setCurrentMatchday} minTab={minTab} maxTab={maxTab} />
                 </div>
-                <ScheduleTab currentMatchday={currentMatchday} setCurrentMatchday={setCurrentMatchday} minTab={minTab} maxTab={maxTab} />
+                <div className= 'schedule-cards'>
+                  <SkeletonScreenScheduleList />
+                </div>
               </div>
-              <SkeletonScreenScheduleList />
             </div>
           ) : (
             <div className='schedule-container'>
-              <div className='schedule-header' style={{ backgroundColor: competitionColor }}>
+              <div className='content-bg-narrow' style={{backgroundImage: `linear-gradient(${competitionColor}, #f7f7f7 360px)`}} >
+                <div className='schedule-header'>
                   <div className='schedule-league'>
                       <LeagueSelecter
                           isLeagueSelectModalVisible={isLeagueSelectModalVisible}
@@ -196,15 +211,16 @@ function Schedule() {
                       <ScoreVisibleSwitcher isScoreVisible={isScoreVisible} setScoreVisible={setScoreVisible} />
                   </div>
                   <ScheduleTab currentMatchday={currentMatchday} setCurrentMatchday={setCurrentMatchday} minTab={minTab} maxTab={maxTab} />
-              </div>
-              <div {...handlers} className={`schedule-cards ${competitionId === 2119 ? 'schedule-cards-jleague' : ''}`}>
-                  {isLoadingSchedule ? (
-                      <SkeletonScreenScheduleList />
-                  ) : (
-                      matchesData && matchesData.map(match => (
-                          <ScheduleCard key={match.id} match={match} isScoreVisible={isScoreVisible} competitionId={competitionId} />
-                      ))
-                  )}
+                </div>
+                <div {...handlers} className={`schedule-cards ${competitionId === 2119 ? 'schedule-cards-jleague' : ''}`}>
+                    {isLoadingSchedule ? (
+                        <SkeletonScreenScheduleList />
+                    ) : (
+                        matchesData && matchesData.map(match => (
+                            <ScheduleCard key={match.id} match={match} isScoreVisible={isScoreVisible} competitionId={competitionId} />
+                        ))
+                    )}
+                </div>
               </div>
             </div>
           )}

@@ -6,17 +6,19 @@ import './ScheduleCard.css';
 import { ReactComponent as PostIcon } from '../icons/post.svg';
 import { ReactComponent as WatchedIconGrey } from '../icons/watched_grey.svg';
 
-function ScheduleCard({ match, isScoreVisible, competitionId }) {
+function ScheduleCard({ match, isScoreVisible }) {
+
+    const competitionId = match.competition_id
 
     const location = useLocation();
-
-    const renderMatchScore = location.pathname.includes("/schedule") 
+    const isSchedules = location.pathname === "/schedules";
+    const renderMatchScore = location.pathname.includes("/schedules") 
         ? renderMatchScoreForSchedule 
         : renderMatchScoreForWatch;
 
     return (
         <Link to={`/match/${match.id}`} className='match-links'>
-        <div className='schedule'>
+        <div className={`schedule ${isSchedules ? '' : 'watch-list'}`}>
         <div className='schedule-block'>
             <div className='schedule-left'>
                 {competitionId !== 2119 ? (                
@@ -26,7 +28,10 @@ function ScheduleCard({ match, isScoreVisible, competitionId }) {
                     className='schedule-crest'
                     />
                 ) : (
-                    <span className='schedule-tla' style={{ backgroundColor: match.home_team.club_color_code_first }}>{match.home_team.tla}</span>
+                    <div className='schedule-tmp-crest'>
+                        <TmpCrest color={match.home_team.club_color_code_first}/>
+                        <span className='schedule-tla'>{match.home_team.tla}</span>
+                    </div>
                 )}
                 {renderMatchScore(match, isScoreVisible, competitionId)}
                 {competitionId !== 2119 ? (                
@@ -36,12 +41,15 @@ function ScheduleCard({ match, isScoreVisible, competitionId }) {
                     className='schedule-crest'
                     />
                 ) : (
-                    <span className='schedule-tla' style={{ backgroundColor: match.away_team.club_color_code_first }}>{match.away_team.tla}</span>
+                    <div className='schedule-tmp-crest'>
+                        <TmpCrest color={match.away_team.club_color_code_first} />
+                        <span className='schedule-tla'>{match.away_team.tla}</span>
+                    </div>
                 )}
             </div>
             <div className='schedule-right'>
                 {renderMatchDateTime(match)}
-                <div className={`schedule-record ${competitionId === 2119 ? 'schedule-narrow' : ''}`}>
+                <div className='schedule-record'>
                     <div className='schedule-record-block'>
                         <WatchedIconGrey className='schedule-icon' />
                         <span className='schedule-record-count'>{match.total_watch_count}</span>
@@ -139,16 +147,11 @@ function renderMatchScoreForWatch(match) {
 
 // 試合日程表示の定義
 function renderMatchDateTime(match) {
-    if (['FINISHED', 'PAUSED', 'IN_PLAY', 'TIMED'].includes(match.status)) {
-      return (
-          <span className='schedule-date'>{formatUsing(match.started_at, formats.DATE_TIME)}</span>
-      );
-    } else if (match.status === 'SCHEDULED') {
+    if (['FINISHED', 'PAUSED', 'IN_PLAY', 'TIMED', 'SCHEDULED'].includes(match.status)) {
       return (
           <span className='schedule-date'>{formatUsing(match.started_at, formats.DATE)}</span>
       );
-    }
-    else if (match.status === 'POSTPONED') {
+    } else if (match.status === 'POSTPONED') {
       return (
           <span className='schedule-date'>延期 日時未定</span>
       );
@@ -158,6 +161,26 @@ function renderMatchDateTime(match) {
           <span className='schedule-date'>日時未定</span>
       );
     }
-  }
+}
+
+function TmpCrest({ color}) {
+
+    const gradientId = `paint${Math.random().toString(36).substring(2, 15)}_linear`;
+
+    return (
+        <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg" className='schedule-tmp-crest'>
+        <g opacity="1">
+        <path d="M28.1482 0.96722C29.3084 0.361246 30.6917 0.361266 31.8519 0.967273L44.7104 7.68363L54.3423 5.03751C55.6154 4.68775 56.8721 5.64576 56.8721 6.96605V7.87031V10.4798V17.0719V34.7402C56.8712 37.0863 56.233 39.3336 55.2285 41.4142C54.2208 43.4968 52.8446 45.4334 51.2648 47.2274C48.1011 50.811 44.1185 53.8445 40.3701 56.0793C37.8635 57.5667 35.4786 58.6942 33.4044 59.3638C32.2078 59.7417 31.1329 59.9914 30.0002 59.9999C29.2528 59.9978 28.5423 59.8812 27.7938 59.7039C27.0486 59.5234 26.2718 59.2736 25.4551 58.9618C23.824 58.3393 22.0311 57.4703 20.1657 56.3932C16.4393 54.2361 12.4327 51.2644 9.19228 47.7364C7.03731 45.3798 5.21071 42.7725 4.12017 39.9006C3.50083 38.261 3.12817 36.5258 3.12817 34.7403V7.86844V6.96645C3.12817 5.64604 4.38509 4.68801 5.65828 5.03798L15.2867 7.68469L28.1482 0.96722Z" fill={`url(#${gradientId})`}/>
+        </g>
+        <defs>
+        <linearGradient id={gradientId} x1="30.0001" y1="0" x2="30.0001" y2="59.9999" gradientUnits="userSpaceOnUse">
+        <stop stop-color={color} stop-opacity="1"/>
+        <stop offset="1" stop-color={color} stop-opacity="0.6"/>
+        </linearGradient>
+        </defs>
+        </svg>
+    );
+}
 
 export default ScheduleCard;
+

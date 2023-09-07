@@ -184,11 +184,21 @@ function UserDetail() {
 
   // 初期読み込み時のLoader
   if (isLoading) {
-    return <Loader />;
+    return (
+      <>
+        <div className='bg'></div>
+        <Loader />
+      </>
+    )
   }
 
   if (isError) {
-    return <NotFoundPage />;
+    return (
+      <>
+        <div className='bg'></div>
+        <NotFoundPage />
+      </>
+    )
   }
 
   if (data) {
@@ -203,122 +213,125 @@ function UserDetail() {
       
       <div className='bg'></div>
       {account && (
-      <div className='user-container'>
-        <div className='user-profile' style={{backgroundColor: account.support_team ? account.support_team.club_color_code_first : '#3465FF'}}>
-          <div className='user-profile-top'>
-            <div className='user-profile-left'>
-              <img src={ account.profile_image } className='user-profile-img' style={{transition: 'none'}}/>
-              <div className='user-profile-block'>
-                <div className='user-profile-main'>
-                  <span className='user-name'>{ account.name }</span>
-                  { account.support_team && account.support_team.competition_id !== 2119 &&
-                    <Link to={`/team/${account.support_team.id}`}>
-                      <img src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/crest-${account.support_team.tla}.webp`} className='user-support-crest'/>
-                    </Link>
-                  }
+      <div className='tab-container'>
+        <div className='content-bg' style={{backgroundImage: `linear-gradient(${account.support_team ? account.support_team.club_color_code_first : '#3465FF'}, #f7f7f7 360px)`}}>
+          <div className='tab-content'> 
+            <div className='tab-header'>
+              <div className='tab-header-left'>
+                <img src={ account.profile_image } className='tab-header-user-icon' style={{transition: 'none'}}/>
+                <div className='user-profile-block'>
+                  <div className='user-profile-main'>
+                    <span className='tab-header-name'>{ account.name }</span>
+                    { account.support_team && account.support_team.competition_id !== 2119 &&
+
+                      <Link to={`/team/${account.support_team.id}`}>
+                        <img src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/crest-${account.support_team.tla}.webp`} className='user-support-crest'/>
+                      </Link>
+                    }
+                  </div>
+                  <span className='user-profile-text-sub'>{formatUsing(account.created_at, formats.DATE)} 登録</span>
                 </div>
-                <span className='user-profile-text-sub'>{formatUsing(account.created_at, formats.DATE)} 登録</span>
               </div>
-            </div>
-            {currentUser && currentUser.id ===  account.id &&
-            <Link to='/user/edit'>
-              <SettingIcon className='user-edit-icon'/>
-            </Link>
-            }
-          </div>
-          <div className='activity-tab-user'>
-            <div className={`activity-tab-column-user ${currentTab === 'detail' ? 'active' : ''}`} onClick={() => openForm('detail')}>
-              <span>紹介</span>
-            </div>
-            <div className={`activity-tab-column-user ${currentTab === 'posts' ? 'active' : ''}`} onClick={() => openForm('posts')}>
-              <span>ポスト</span>
-            </div>
-            <div className={`activity-tab-column-user ${currentTab === 'motms' ? 'active' : ''}`} onClick={() => openForm('motms')}>
-              <span>MOTM</span>
-            </div>
-            <div className={`activity-tab-column-user ${currentTab === 'watches' ? 'active' : ''}`} onClick={() => openForm('watches')}>
-              <span>観戦済</span>
-            </div>
-          </div>        
-        </div>
-        <div className='activity-container-user' {...handlers}>
-        {currentTab === 'detail' ? (
-          <>
-          <h2 className='activity-title'>プロフィール</h2>
-          <div className='activity-content padding'>
-            <div className='user-profile-item'>
-              <h3 className='user-profile-item-column'>応援クラブ</h3>
-              { account.support_team &&
-              <Link to={`/team/${account.support_team.id}`} className='user-profile-text-team'>{ account.support_team.name_ja }</Link>
+              {currentUser && currentUser.id ===  account.id &&
+              <Link to='/user/edit'>
+                <SettingIcon className='user-edit-icon'/>
+              </Link>
               }
             </div>
-            <div className='user-profile-item'>
-              <h3 className='user-profile-item-column'>サポーター歴</h3>
-              { account.support_team && account.supported_at &&
-              <span>
-                { support_years !== 0 &&
-                  `${support_years}年`
-                }
-                {`${support_months}ヶ月`}
-              </span>
-              }   
-            </div>
-            <div className='user-profile-item'>
-              <h3 className='user-profile-item-column'>自己紹介</h3>
-                { account.description &&
-                <pre className='user-profile-text-pre'>{ account.description }</pre>
-                }
-            </div>
-            { account.twitter_id &&
-            <a href={`https://twitter.com/${account.twitter_id}`} className='user-sns' target='_blank' rel='noopener noreferrer'>
-              <XIcon className='user-sns-icon'/>
-            </a>
-            }
+            <div className='activity-tab'>
+              <div className={`activity-tab-column ${currentTab === 'detail' ? 'active' : ''}`} onClick={() => openForm('detail')}>
+                <span>紹介</span>
+              </div>
+              <div className={`activity-tab-column ${currentTab === 'posts' ? 'active' : ''}`} onClick={() => openForm('posts')}>
+                <span>ポスト</span>
+              </div>
+              <div className={`activity-tab-column ${currentTab === 'motms' ? 'active' : ''}`} onClick={() => openForm('motms')}>
+                <span>MOTM</span>
+              </div>
+              <div className={`activity-tab-column ${currentTab === 'watches' ? 'active' : ''}`} onClick={() => openForm('watches')}>
+                <span>観戦済</span>
+              </div>
+            </div>        
           </div>
-          </>
-        ) : currentTab === 'motms' ? (
-          isLoadingMotms ? (
-            <LoaderInTabContent />
+          <div className='activity-container' {...handlers}>
+          {currentTab === 'detail' ? (
+            <>
+            <h2 className='activity-title'>プロフィール</h2>
+            <div className='activity-content padding'>
+              <div className='tab-profile-item'>
+                <h3 className='tab-profile-column'>応援クラブ</h3>
+                { account.support_team &&
+                <Link to={`/team/${account.support_team.id}`} className='tab-profile-link'>{ account.support_team.name_ja }</Link>
+                }
+              </div>
+              <div className='tab-profile-item'>
+                <h3 className='tab-profile-column'>サポーター歴</h3>
+                { account.support_team && account.supported_at &&
+                <span>
+                  { support_years !== 0 &&
+                    `${support_years}年`
+                  }
+                  {`${support_months}ヶ月`}
+                </span>
+                }   
+              </div>
+              <div className='tab-profile-item'>
+                <h3 className='tab-profile-column'>自己紹介</h3>
+                  { account.description &&
+                  <pre className='tab-profile-pre'>{ account.description }</pre>
+                  }
+              </div>
+              { account.twitter_id &&
+              <a href={`https://twitter.com/${account.twitter_id}`} className='tab-sns-link' target='_blank' rel='noopener noreferrer'>
+                <XIcon className='tab-sns-icon'/>
+              </a>
+              }
+            </div>
+            </>
+          ) : currentTab === 'motms' ? (
+            isLoadingMotms ? (
+              <LoaderInTabContent />
+            ) : (
+            <>
+            <h2 className='activity-title add-padding'>マンオブザマッチ投票</h2>
+            <PlayerList
+              data={dataMotms}
+              isLoading={isErrorMotms}
+              isFetchingNextPage={isFetchingNextPageMotms}
+              ignitionPage={ignitionPageMotms}
+            />
+            </>
+            )
+          ): currentTab === 'watches' ? (
+            isLoadingWatches ? (
+              <LoaderInTabContent />
+            ) : (
+            <>
+            <h2 className='activity-title add-padding'>{ account.total_watch_count }回の観戦</h2>
+            <ScheduleList
+              data={dataWatches}
+              isLoading={isErrorWatches}
+              isFetchingNextPage={isFetchingNextPageWatches}
+              ignitionPage={ignitionPageWatches}
+            />
+            </>
+            )
           ) : (
-          <>
-          <h2 className='activity-title add-padding'>マンオブザマッチ投票</h2>
-          <PlayerList
-            data={dataMotms}
-            isLoading={isErrorMotms}
-            isFetchingNextPage={isFetchingNextPageMotms}
-            ignitionPage={ignitionPageMotms}
-          />
-          </>
-          )
-        ): currentTab === 'watches' ? (
-          isLoadingWatches ? (
-            <LoaderInTabContent />
-          ) : (
-          <>
-          <h2 className='activity-title add-padding'>{ account.total_watch_count }回の観戦</h2>
-          <ScheduleList
-            data={dataWatches}
-            isLoading={isErrorWatches}
-            isFetchingNextPage={isFetchingNextPageWatches}
-            ignitionPage={ignitionPageWatches}
-          />
-          </>
-          )
-        ) : (
-          isLoadingPosts ? (
-            <SkeletonScreenPost />
-          ) : (
-          <>
-          <h2 className='activity-title'>{ account.total_post_count }件のポスト</h2>
-          <PostList
-            data={dataPosts}
-            isLoading={isLoadingPosts}
-            isFetchingNextPage={isFetchingNextPage}
-            ignitionPage={ignitionPagePosts}
-          />
-          </>
-          )
-        )}
+            isLoadingPosts ? (
+              <SkeletonScreenPost />
+            ) : (
+            <>
+            <h2 className='activity-title'>{ account.total_post_count }件のポスト</h2>
+            <PostList
+              data={dataPosts}
+              isLoading={isLoadingPosts}
+              isFetchingNextPage={isFetchingNextPage}
+              ignitionPage={ignitionPagePosts}
+            />
+            </>
+            )
+          )}
+          </div>
         </div>
       </div>
       )}

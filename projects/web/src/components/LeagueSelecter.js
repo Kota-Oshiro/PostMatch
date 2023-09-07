@@ -75,7 +75,7 @@ function LeagueSelecter ({
   return (
     <>
       <div className={`modal-overlay ${isLeagueSelectModalVisible ? '' : 'hidden'}`}></div>
-      <div className={`league-header ${isSchedule ? 'league-select-schedule' : '' }`} style={{ backgroundColor: competitionColor }}>
+      <div className={`league-header ${isSchedule ? 'league-select-schedule' : '' }`}>
         <div>
           {isLeagueSelectModalVisible &&
             <LeagueSelectModal handleLeagueClick={handleLeagueClick} handleModalClose={handleModalClose} />

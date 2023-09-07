@@ -5,6 +5,7 @@ import { Helmet } from 'react-helmet';
 
 import './TabContent.css';
 import PostList from './PostList';
+import NotFoundPage from './error/NotFoundPage';
 
 import { SkeletonScreenPost } from './Loader';
 
@@ -53,16 +54,21 @@ function Posts() {
     return(
       <>
         <div className='bg'></div>
-          <div className='container'>
+        <div className='container'>
           <h2 className='container-title'>みんなの観戦記録</h2>
           <SkeletonScreenPost />
         </div>
       </>
     )
   }
-
+  
   if (isError) {
-    return <div>{error.message}</div>;
+    return(
+      <>
+        <div className='bg'></div>      
+        <NotFoundPage />
+      </>
+    )
   }
 
   return (

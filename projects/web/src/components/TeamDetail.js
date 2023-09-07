@@ -166,11 +166,21 @@ function TeamDetail() {
 
   // 初期読み込み時のLoader
   if (isLoading) {
-    return <Loader />;
+    return (
+      <>
+        <div className='bg'></div>
+        <Loader />
+      </>
+    )
   }
 
   if (isError) {
-    return <NotFoundPage />;
+    return (
+      <>
+        <div className='bg'></div>
+        <NotFoundPage />
+      </>
+    )
   }
 
   return (
@@ -181,99 +191,101 @@ function TeamDetail() {
       </Helmet>
       <div className='bg'></div>
       { data && (
-      <div className='team-container'>
-        <div className='team-profile' style={{backgroundColor: data.team.club_color_code_first }}>
-          <div className='team-profile-top'>
-            <div className='team-profile-left'>
-              {data.team.competition_id !== 2119 ? (
-                <img src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/crest-${data.team.tla}.webp`} className='team-profile-img' style={{transition: 'none'}}/>
-              ) : (
-                <CrestIcon className='team-profile-img'/>
-              )}
-              <span className='team-name'>{ data.team.name_ja }</span>
+      <div className='tab-container'>
+        <div className='content-bg'  style={{backgroundImage: `linear-gradient(${data.team.club_color_code_first}, #f7f7f7 360px)`}} >
+          <div className='tab-content'>
+            <div className='tab-header'>
+              <div className='tab-header-left'>
+                {data.team.competition_id !== 2119 ? (
+                  <img src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/crest-${data.team.tla}.webp`} className='tab-header-icon' style={{transition: 'none'}}/>
+                ) : (
+                  <CrestIcon className='tab-header-icon'/>
+                )}
+                <span className='tab-header-name'>{ data.team.name_ja }</span>
+              </div>
             </div>
+            <div className='activity-tab'>
+              <div className={`activity-tab-column ${currentTab === 'detail' ? 'active' : ''}`} onClick={() => openForm('detail')}>
+                <span>情報</span>
+              </div>
+              <div className={`activity-tab-column ${currentTab === 'users' ? 'active' : ''}`} onClick={() => openForm('users')}>
+                <span>サポーター</span>
+              </div>
+              <div className={`activity-tab-column ${currentTab === 'posts' ? 'active' : ''}`} onClick={() => openForm('posts')}>
+                <span>ポスト</span>
+              </div>
+              <div className={`activity-tab-column ${currentTab === 'motms' ? 'active' : ''}`} onClick={() => openForm('motms')}>
+                <span>MOTM</span>
+              </div>
+            </div>        
           </div>
-          <div className='activity-tab-team'>
-            <div className={`activity-tab-column-team ${currentTab === 'detail' ? 'active' : ''}`} onClick={() => openForm('detail')}>
-              <span>情報</span>
+          <div className='activity-container' {...handlers}>
+          {currentTab === 'detail' ? (
+            <>
+            <h2 className='activity-title'>クラブ情報</h2>
+            <div className='activity-content padding'>
+              <div className='tab-profile-item'>
+                <h3 className='tab-profile-column'>創設</h3>
+                <span>{ data.team.founded_year }年</span>
+              </div>
+              <div className='tab-profile-item'>
+                <h3 className='tab-profile-column'>スタジアム</h3>
+                <span>{ data.team.venue_ja }</span>
+              </div>
+              <div className='tab-profile-item'>
+                <h3 className='tab-profile-column'>略称</h3>
+                <span>{ data.team.tla }</span>
+              </div>
+              <div className='tab-profile-item'>
+                <h3 className='tab-profile-column'>監督</h3>
+                <span>{ data.team.coach_name_ja }</span>
+              </div>
             </div>
-            <div className={`activity-tab-column-team ${currentTab === 'users' ? 'active' : ''}`} onClick={() => openForm('users')}>
-              <span>サポーター</span>
-            </div>
-            <div className={`activity-tab-column-team ${currentTab === 'posts' ? 'active' : ''}`} onClick={() => openForm('posts')}>
-              <span>ポスト</span>
-            </div>
-            <div className={`activity-tab-column-team ${currentTab === 'motms' ? 'active' : ''}`} onClick={() => openForm('motms')}>
-              <span>MOTM</span>
-            </div>
-          </div>        
-        </div>
-        <div className='activity-container-team' {...handlers}>
-        {currentTab === 'detail' ? (
-          <>
-          <h2 className='activity-title'>クラブ情報</h2>
-          <div className='activity-content padding'>
-            <div className='team-profile-item'>
-              <h3 className='team-profile-item-column'>創設</h3>
-              <span>{ data.team.founded_year }年</span>
-            </div>
-            <div className='team-profile-item'>
-              <h3 className='team-profile-item-column'>スタジアム</h3>
-              <span>{ data.team.venue_ja }</span>
-            </div>
-            <div className='team-profile-item'>
-              <h3 className='team-profile-item-column'>略称</h3>
-              <span>{ data.team.tla }</span>
-            </div>
-            <div className='team-profile-item'>
-              <h3 className='team-profile-item-column'>監督</h3>
-              <span>{ data.team.coach_name_ja }</span>
-            </div>
+            </>
+          ) : currentTab === 'posts' ? (
+            isLoadingPosts ? (
+            <SkeletonScreenPost />
+            ) : (
+            <>
+              <h2 className='activity-title'>{dataPosts.pages[0].count}件のポスト</h2>
+              <PostList
+                data={dataPosts}
+                isLoading={isLoadingPosts}
+                isFetchingNextPage={isFetchingNextPage}
+                ignitionPage={ignitionPagePosts}
+              />
+            </>
+            )
+          ) : currentTab === 'users' ? (
+            isLoadingUsers ? (
+            <LoaderInTabContent />
+            ) : (
+            <>
+              <h2 className='activity-title add-padding'>{dataUsers.pages[0].count}人が応援</h2>
+              <SupporterList
+                data={dataUsers}
+                isLoading={isLoadingUsers}
+                isFetchingNextPage={isFetchingNextPageUsers}
+                ignitionPage={ignitionPageUsers}
+              />
+            </>
+            )
+          ) : (
+            isLoadingMotms ? (
+            <LoaderInTabContent />
+            ) : (
+            <>
+              <h2 className='activity-title add-padding'>マンオブザマッチ投票</h2>
+              <PlayerList
+                data={dataMotms}
+                isLoading={isLoadingMotms}
+                isFetchingNextPage={isFetchingNextPageMotms}
+                ignitionPage={ignitionPageMotms}
+              />
+            </>
+            )
+          )}
           </div>
-          </>
-        ) : currentTab === 'posts' ? (
-          isLoadingPosts ? (
-          <SkeletonScreenPost />
-          ) : (
-          <>
-            <h2 className='activity-title'>{dataPosts.pages[0].count}件のポスト</h2>
-            <PostList
-              data={dataPosts}
-              isLoading={isLoadingPosts}
-              isFetchingNextPage={isFetchingNextPage}
-              ignitionPage={ignitionPagePosts}
-            />
-          </>
-          )
-        ) : currentTab === 'users' ? (
-          isLoadingUsers ? (
-          <LoaderInTabContent />
-          ) : (
-          <>
-            <h2 className='activity-title add-padding'>{dataUsers.pages[0].count}人が応援</h2>
-            <SupporterList
-              data={dataUsers}
-              isLoading={isLoadingUsers}
-              isFetchingNextPage={isFetchingNextPageUsers}
-              ignitionPage={ignitionPageUsers}
-            />
-          </>
-          )
-        ) : (
-          isLoadingMotms ? (
-          <LoaderInTabContent />
-          ) : (
-          <>
-            <h2 className='activity-title add-padding'>マンオブザマッチ投票</h2>
-            <PlayerList
-              data={dataMotms}
-              isLoading={isLoadingMotms}
-              isFetchingNextPage={isFetchingNextPageMotms}
-              ignitionPage={ignitionPageMotms}
-            />
-          </>
-          )
-        )}
         </div>
       </div>
       )}

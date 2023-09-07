@@ -14,13 +14,14 @@ function MatchCard({ match, className }) {
   const competitionName = getCompetitionName(match.competition_id);
   const competitionType = getCompetitionType(match.competition_id);
   const CompetitionIcon = getCompetitionIcon(match.competition_id);
-  const CompetitionColor = getCompetitionColor(match.competition_id);
+  const competitionColor = getCompetitionColor(match.competition_id);
 
   return (
 
     <Link to={`/match/${match.id}`}>    
       <div className={`match-card ${className}`}>
-        <div className='match-card-header' style={{backgroundColor: CompetitionColor}}>
+      <div className='content-bg' style={{backgroundImage: `linear-gradient(${competitionColor}, #f7f7f7 204px)`}} >
+        <div className='match-card-header'>
           <CompetitionIcon className='match-card-icon' />
           <span className='match-card-text-header'>{ competitionName }</span>
         </div>
@@ -55,6 +56,7 @@ function MatchCard({ match, className }) {
             </span>
           </div>
           {renderMatchCardStatus(match)}
+        </div>
         </div>
       </div>
     </Link>

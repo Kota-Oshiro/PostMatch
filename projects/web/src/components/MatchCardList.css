@@ -1,17 +1,16 @@
 .matchcards-container {
   position: relative;
-  width: calc(100% - 48px);
-  margin: 24px;
+  margin: 12px;
+  padding: 12px;
   background-color: #fff;
   border-radius: 12px;
-  box-shadow: 0px 3px 9px 0px rgba(0, 0, 0, 0.1);
-  
+  box-sizing: border-box;
+  box-shadow: 0px 3px 9px 0px rgba(0, 0, 0, 0.1);  
 }
 
 .matchcards-title {
   display: flex;
   align-items: center;
-  padding: 24px 24px 12px;
   height: 32px;
 }
 
@@ -50,22 +49,21 @@
 }
 
 .matchcards.national-matchcards {
-  padding: 0 24px;
-  padding-bottom: 24px;
+  padding: 12px;
 }
 
 @media (min-width: 800px) {
 
   .matchcards-container {
     max-width: 312px;
-    padding: 0;
+    padding: 12px;
     margin: 0;
     height: fit-content;
     background-color: #fff;
   }
 
   .matchcards-title {
-    padding-top: 24px;
+    padding: 12px 12px 0;
   }
 
   .matchcards-wrapper {

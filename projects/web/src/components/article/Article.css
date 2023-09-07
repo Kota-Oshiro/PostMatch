@@ -1,11 +1,24 @@
+.articles {
+  padding: 24px 0;
+  background-color: #fff;
+  border-radius: 12px;
+}
+
+.articles-title {
+  padding: 0 24px 12px;
+}
 
 .article-card {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
-  padding: 12px 0;
+  padding: 24px;
   width: 100%;
+  box-sizing: border-box;
+}
+
+.article-card:hover {
+  background-color: #EFF1F1;
 }
 
 .article-card-left {

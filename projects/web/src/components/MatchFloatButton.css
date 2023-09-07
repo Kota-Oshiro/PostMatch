@@ -71,7 +71,7 @@
     width: 100%;
     max-width: 520px;
     background-color: #fff;
-    border-radius: 0 0 12px;
+    border-radius: 12px;
     box-sizing: border-box;
     z-index: 1;
   }

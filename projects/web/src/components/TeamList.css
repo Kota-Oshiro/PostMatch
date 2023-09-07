@@ -1,4 +1,5 @@
 .team-list-container {
+  padding: 12px;
   width: 100%;
   box-sizing: border-box;
 }
@@ -8,7 +9,6 @@
   flex-wrap: wrap;
   justify-content: space-between;
   width: 100%;
-  padding: 24px;
   box-sizing: border-box;
 }
 
@@ -17,11 +17,8 @@
   .team-list-container {
     max-width: 520px;
     margin: 48px auto 96px;
+    padding: 0;
     border-radius: 12px;
-  }
-
-  .team-cards {
-    background-color: #fff;
   }
 
 }
