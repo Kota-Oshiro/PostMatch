@@ -52,10 +52,10 @@
     font-size: 1rem;
     font-weight: 700;
     color: #fff;
-    text-shadow:1px 1px 0 #242424, -1px -1px 0 #242424,
-                -1px 1px 0 #242424, 1px -1px 0 #242424,
-                0px 1px 0 #242424,  0 -1px 0 #242424,
-                -1px 0 0 #242424, 1px 0 0 #242424;
+    text-shadow:0.5px 0.5px 0 #242424, -0.5px -0.5px 0 #242424,
+                -0.5px 0.5px 0 #242424, 0.5px -0.5px 0 #242424,
+                0px 0.5px 0 #242424,  0 -0.5px 0 #242424,
+                -0.5px 0 0 #242424, 0.5px 0 0 #242424;
 }
 
 .schedule-text, .schedule-text.schedule-timed {
