@@ -217,6 +217,10 @@
   padding-bottom: 50px;
 }
 
+.post.post-border.post-expand {
+  padding-bottom: 62px;
+}
+
 .fade-out {
   position: absolute;
   display: none;
