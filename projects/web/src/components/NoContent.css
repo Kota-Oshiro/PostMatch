@@ -2,15 +2,13 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 48px;
-  box-sizing: border-box;
+  height: 228px;
 }
 
 .nocontent-icon {
-  max-width: 200px;
-  padding: 24px;
-  width: 80%;
-  height: auto;
+  margin: 12px 0;
+  width: auto;
+  height: 144px;
 }
 
 .nocontent-text{

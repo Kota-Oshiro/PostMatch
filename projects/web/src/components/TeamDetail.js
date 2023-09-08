@@ -23,11 +23,6 @@ function TeamDetail() {
 
   const [currentTab, setCurrentTab] = useState('detail'); 
   
-  // infinityLoadの発火地点管理
-  const ignitionPagePosts = useRef(null);
-  const ignitionPageUsers = useRef(null);
-  const ignitionPageMotms = useRef(null);
-
   // タブクリック切り替え
   const openForm = (formName) => {
     setCurrentTab(formName);
@@ -61,79 +56,44 @@ function TeamDetail() {
     retry: 0,
   });
 
-  // postsのフェッチ
+  // 各タブのキャンセルトークン（データ取得が未完了の場合の初期化に使う）
+  const sourceRefPosts = useRef(axios.CancelToken.source());
+  const sourceRefMotms = useRef(axios.CancelToken.source());
+  const sourceRefUsers = useRef(axios.CancelToken.source());
+
+  // 各タブのフェッチ
   const fetchPosts = async ({ pageParam = 1 }) => {
-    const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/team/${id}/posts/?page=${pageParam}`);
+    const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/team/${id}/posts/?page=${pageParam}`, {
+      cancelToken: sourceRefPosts.current.token
+    }); 
     return res.data;
   };
 
-  const { data: dataPosts, isLoading: isLoadingPosts, isError:isErrorPosts, error: errorPosts, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery(['posts', id], fetchPosts, {
-    enabled: currentTab === 'posts', // 'motms'のタブがアクティブな時だけデータを取得
-    staleTime: Infinity,
-    getNextPageParam: (lastPage) => {
-      if (lastPage.next !== null) {
-        const nextPageUrl = new URL(lastPage.next);
-        return nextPageUrl.searchParams.get('page');
-      }
-    },
-  });
-
-  // ここからpostsのobserver
-  const observer = new IntersectionObserver(
-    entries => {
-      if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage && currentTab === 'posts') {
-        fetchNextPage();
-      }
-    },
-    { threshold: 1 }
-  );
-
-  useEffect(() => {
-    if (!isLoadingPosts && !isErrorPosts && ignitionPagePosts.current) {
-      observer.observe(ignitionPagePosts.current);
-    }
-    return () => observer.disconnect();
-  }, [dataPosts, isLoadingPosts, ignitionPagePosts, hasNextPage, isFetchingNextPage, currentTab, fetchNextPage]);
-  
-  // usersのfetchとobserver
-  const fetchUsers = async ({ pageParam = 1 }) => {
-    const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/team/${id}/users/?page=${pageParam}`);
-    return res.data;
-  };
-
-  const { data: dataUsers, isLoading: isLoadingUsers, isError:isErrorUsers, error: errorUsers, fetchNextPage: fetchNextPageUsers, hasNextPage: hasNextPageUsers, isFetchingNextPage: isFetchingNextPageUsers } = useInfiniteQuery(['users', id], fetchUsers, {
-    enabled: currentTab === 'users',
-    staleTime: Infinity,
-    getNextPageParam: (lastPage) => {
-      if (lastPage.next !== null) {
-        const nextPageUrl = new URL(lastPage.next);
-        return nextPageUrl.searchParams.get('page');
-      }
-    },
-  });
-
-  const observerUsers = new IntersectionObserver(
-    entries => {
-      if (entries[0].isIntersecting && hasNextPageUsers && !isFetchingNextPageUsers && currentTab === 'users') {
-        fetchNextPageUsers();
-      }
-    },
-    { threshold: 1 }
-  );
-
-  useEffect(() => {
-    if (!isLoadingUsers && isErrorUsers && ignitionPageUsers.current) {
-      observerUsers.observe(ignitionPageUsers.current);
-    }
-    return () => observerUsers.disconnect();
-  }, [dataUsers, isLoadingUsers, ignitionPageUsers, hasNextPageUsers, isFetchingNextPageUsers, currentTab, fetchNextPageUsers]);
-
-
-  // motmsのfetchとobserver
   const fetchMotms = async ({ pageParam = 1 }) => {
-    const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/team/${id}/motms/?page=${pageParam}`);
+    const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/team/${id}/motms/?page=${pageParam}`, {
+      cancelToken: sourceRefMotms.current.token
+    });
     return res.data;
   };
+
+  const fetchUsers = async ({ pageParam = 1 }) => {
+    const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/team/${id}/users/?page=${pageParam}`, {
+      cancelToken: sourceRefUsers.current.token
+    });
+    return res.data;
+  };
+
+  // 各タブのuseQuery
+  const { data: dataPosts, isLoading: isLoadingPosts, isError: isErrorPosts, error: errorPosts, fetchNextPage: fetchNextPagePosts, hasNextPage: hasNextPagePosts, isFetchingNextPage: isFetchingNextPagePosts } = useInfiniteQuery(['posts', id], fetchPosts, {
+    enabled: currentTab === 'posts', //タブがアクティブな時だけデータを取得
+    staleTime: Infinity,
+    getNextPageParam: (lastPage) => {
+      if (lastPage.next !== null) {
+        const nextPageUrl = new URL(lastPage.next);
+        return nextPageUrl.searchParams.get('page');
+      }
+    },
+  });
 
   const { data: dataMotms, isLoading: isLoadingMotms, isError: isErrorMotms, error: errorMotms, fetchNextPage: fetchNextPageMotms, hasNextPage: hasNextPageMotms, isFetchingNextPage: isFetchingNextPageMotms } = useInfiniteQuery(['motms', id], fetchMotms, {
     enabled: currentTab === 'motms',
@@ -146,22 +106,105 @@ function TeamDetail() {
     },
   });
 
-  useEffect(() => {
+  const { data: dataUsers, isLoading: isLoadingUsers, isError:isErrorUsers, error: errorUsers, fetchNextPage: fetchNextPageUsers, hasNextPage: hasNextPageUsers, isFetchingNextPage: isFetchingNextPageUsers } = useInfiniteQuery(['users', id], fetchUsers, {
+    enabled: currentTab === 'users',
+    staleTime: Infinity,
+    getNextPageParam: (lastPage) => {
+      if (lastPage.next !== null) {
+        const nextPageUrl = new URL(lastPage.next);
+        return nextPageUrl.searchParams.get('page');
+      }
+    },
+  });
 
-    const observerMotms = new IntersectionObserver(
-      entries => {
-        if (entries[0].isIntersecting && hasNextPageMotms && !isFetchingNextPageMotms && currentTab === 'motms') {
-          fetchNextPageMotms();
-        }
-      },
-      { threshold: 1 }
+  // 各タブのオブザーバー
+  const observerPosts = useRef(null)
+  const observerMotms = useRef(null)
+  const observerUsers = useRef(null)
+
+  // infinityLoadの発火地点管理
+  const ignitionPagePosts = useRef(null);
+  const ignitionPageMotms = useRef(null);
+  const ignitionPageUsers = useRef(null);
+
+ // 各タブのuseEffect
+ useEffect(() => {
+  if (!observerPosts.current) {
+    observerPosts.current = new IntersectionObserver(
+        entries => {
+            if (entries[0].isIntersecting && hasNextPagePosts && !isFetchingNextPagePosts && currentTab === 'posts') {
+                fetchNextPageMotms();
+            }
+        },
+        { threshold: 1 }
     );
+  }
+
+  // タブがアクティブであり、エラーやローディング状態でない場合、observer をアクティブにする
+  if (!isLoadingPosts && !isErrorPosts && ignitionPagePosts.current) {
+    observerPosts.current.observe(ignitionPagePosts.current);
+  }
+
+  // useEffect のクリーンアップ関数
+  return () => {
+    sourceRefPosts.current.cancel("Operation cancelled by user.");
+    sourceRefPosts.current = axios.CancelToken.source(); 
+    // observer が存在する場合、監視を停止
+    if (observerPosts.current) {
+      observerPosts.current.disconnect();
+    }
+  };
+}, [dataPosts, isLoadingPosts, ignitionPagePosts, hasNextPagePosts, isFetchingNextPagePosts, currentTab, fetchNextPagePosts]);
+
+  useEffect(() => {
+    if (!observerMotms.current) {
+      observerMotms.current = new IntersectionObserver(
+          entries => {
+              if (entries[0].isIntersecting && hasNextPageMotms && !isFetchingNextPageMotms && currentTab === 'motms') {
+                  fetchNextPageMotms();
+              }
+          },
+          { threshold: 1 }
+      );
+    }
 
     if (!isLoadingMotms && !isErrorMotms && ignitionPageMotms.current) {
-      observerMotms.observe(ignitionPageMotms.current);
+      observerMotms.current.observe(ignitionPageMotms.current);
     }
-    return () => observerMotms.disconnect();
+
+    return () => {
+      sourceRefMotms.current.cancel("Operation cancelled by user.");
+      sourceRefMotms.current = axios.CancelToken.source(); 
+      if (observerMotms.current) {
+        observerMotms.current.disconnect();
+      }
+    };
   }, [dataMotms, isLoadingMotms, ignitionPageMotms, hasNextPageMotms, isFetchingNextPageMotms, currentTab, fetchNextPageMotms]);
+
+  useEffect(() => {
+    if (!observerUsers.current) {
+      observerUsers.current = new IntersectionObserver(
+          entries => {
+              if (entries[0].isIntersecting && hasNextPageUsers && !isFetchingNextPageUsers && currentTab === 'users') {
+                  fetchNextPageMotms();
+              }
+          },
+          { threshold: 1 }
+      );
+    }
+
+    if (!isLoadingUsers && !isErrorUsers && ignitionPageUsers.current) {
+      observerUsers.current.observe(ignitionPageUsers.current);
+    }
+
+    return () => {
+      sourceRefUsers.current.cancel("Operation cancelled by user.");
+      sourceRefUsers.current = axios.CancelToken.source(); 
+      if (observerUsers.current) {
+        observerUsers.current.disconnect();
+      }
+    };
+  }, [dataUsers, isLoadingUsers, ignitionPageUsers, hasNextPageUsers, isFetchingNextPageUsers, currentTab, fetchNextPageUsers]);
 
   // 初期読み込み時のLoader
   if (isLoading) {
@@ -222,7 +265,7 @@ function TeamDetail() {
           {currentTab === 'detail' ? (
             <>
             <h2 className='activity-title'>クラブ情報</h2>
-            <div className='activity-content padding'>
+            <div className='activity-content add-padding'>
               <div className='tab-profile-item'>
                 <h3 className='tab-profile-column'>創設</h3>
                 <span>{ data.team.founded_year }年</span>
@@ -250,7 +293,7 @@ function TeamDetail() {
               <PostList
                 data={dataPosts}
                 isLoading={isLoadingPosts}
-                isFetchingNextPage={isFetchingNextPage}
+                isFetchingNextPage={isFetchingNextPagePosts}
                 ignitionPage={ignitionPagePosts}
               />
             </>
@@ -260,7 +303,7 @@ function TeamDetail() {
             <LoaderInTabContent />
             ) : (
             <>
-              <h2 className='activity-title add-padding'>{dataUsers.pages[0].count}人が応援</h2>
+              <h2 className='activity-title'>{dataUsers.pages[0].count}人が応援</h2>
               <SupporterList
                 data={dataUsers}
                 isLoading={isLoadingUsers}
@@ -274,7 +317,7 @@ function TeamDetail() {
             <LoaderInTabContent />
             ) : (
             <>
-              <h2 className='activity-title add-padding'>マンオブザマッチ投票</h2>
+              <h2 className='activity-title'>マンオブザマッチ投票</h2>
               <PlayerList
                 data={dataMotms}
                 isLoading={isLoadingMotms}

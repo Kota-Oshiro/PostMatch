@@ -50,3 +50,16 @@
   height: 1rem;
   border-radius: 0 0 6px 6px;
 }
+
+@media (min-width: 800px) {
+
+  .team-card-link {
+    width: calc(50% - 12px);
+  }
+
+  .team-color-block {
+    margin-bottom: 24px;
+  }
+  
+}
+

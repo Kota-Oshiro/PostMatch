@@ -138,24 +138,20 @@
 }
 
 .activity-container.post-list {
-  margin: 24px auto 0;
+  margin: 24px auto 144px;
   width: calc(100% - 24px);
 }
 
 .activity-title {
-  padding: 24px 12px 0;
+  padding: 24px 12px 12px;
 }
 
-.activity-title.add-padding{
-  padding-bottom: 12px;
-}
-  
 .activity-content {
   display: flex;
   flex-direction: column;
 }
 
-.activity-content.padding {
+.activity-content.add-padding {
   padding: 12px;
 }
 
@@ -217,7 +213,7 @@
   }
   
   .activity-title {
-    padding: 24px 18px 0;
+    padding: 24px 18px 18px;
   }
 
 }

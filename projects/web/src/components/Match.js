@@ -25,10 +25,6 @@ function Match() {
   const { isAuthenticated, currentUser, apiBaseUrl } = useContext(AuthContext);
   const { id } = useParams();
 
-  // infinityLoadの発火地点管理
-  const ignitionPagePosts = useRef(null);
-  const ignitionPageMotms = useRef(null);
-
   const [currentTab, setCurrentTab] = useState('posts'); 
   const [hasWatched, setHasWatched] = useState(false);
 
@@ -78,49 +74,28 @@ function Match() {
     retry: 0,
   });
 
-  // postsのフェッチ（infinity load）
+  // 各タブのキャンセルトークン（データ取得が未完了の場合の初期化に使う）
+  const sourceRefPosts = useRef(axios.CancelToken.source());
+  const sourceRefMotms = useRef(axios.CancelToken.source());
+
+  // 各タブのフェッチ
   const fetchPosts = async ({ pageParam = 1 }) => {
-    const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/match/${id}/posts/?page=${pageParam}`);
+    const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/match/${id}/posts/?page=${pageParam}`, {
+      cancelToken: sourceRefPosts.current.token
+    }); 
     return res.data;
   };
 
-  const { data: dataPosts, isLoading: isLoadingPosts, isError: isErrorPosts, fetchNextPage, hasNextPage, isFetchingNextPage, refetch  } = useInfiniteQuery(['posts', id], fetchPosts, {
-    enabled: !isError,
-    getNextPageParam: (lastPage) => {
-      if (lastPage.next !== null) {
-        const nextPageUrl = new URL(lastPage.next);
-        return nextPageUrl.searchParams.get('page');
-      }
-    }
-  });
-
-  // ここからpostsのobserver
-  const observer = new IntersectionObserver(
-    entries => {
-      if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
-        fetchNextPage();
-      }
-    },
-    { threshold: 1 }
-  );
-
-  useEffect(() => {
-    if (!isLoadingPosts && !isErrorPosts && ignitionPagePosts.current) {
-      observer.observe(ignitionPagePosts.current);
-    }
-    return () => observer.disconnect();
-  }, [observer, isLoadingPosts, ignitionPagePosts]);
-  //ここまでpostsのobserver
-
-
-  // motmsのfetchとobserver
   const fetchMotms = async ({ pageParam = 1 }) => {
-    const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/match/${id}/motms/?page=${pageParam}`);
+    const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/match/${id}/motms/?page=${pageParam}`, {
+      cancelToken: sourceRefMotms.current.token
+    }); 
     return res.data;
   };
 
-  const { data: dataMotms, status: statusMotms, isLoading: isLoadingMotms, isError: isErrorMotms, fetchNextPage: fetchNextPageMotms, hasNextPage: hasNextPageMotms, isFetchingNextPage: isFetchingNextPageMotms } = useInfiniteQuery(['motms', id], fetchMotms, {
-    enabled: currentTab === 'motms', // 'motms'のタブがアクティブな時だけデータを取得
+  // 各タブのuseQuery
+  const { data: dataPosts, isLoading: isLoadingPosts, isError: isErrorPosts, error: errorPosts, fetchNextPage: fetchNextPagePosts, hasNextPage: hasNextPagePosts, isFetchingNextPage: isFetchingNextPagePosts, refetch: refetchPosts } = useInfiniteQuery(['posts', id], fetchPosts, {
+    enabled: !isError,
     staleTime: Infinity,
     getNextPageParam: (lastPage) => {
       if (lastPage.next !== null) {
@@ -130,20 +105,77 @@ function Match() {
     },
   });
 
-  useEffect(() => {
-    const observerMotms = new IntersectionObserver(
-      entries => {
-        if (entries[0].isIntersecting && hasNextPageMotms && !isFetchingNextPageMotms && currentTab === 'motms') {
-          fetchNextPageMotms();
-        }
-      },
-      { threshold: 1 }
-    );
+  const { data: dataMotms, isLoading: isLoadingMotms, isError:isErrorMotms, error: errorMotms, fetchNextPage: fetchNextPageMotms, hasNextPage: hasNextPageMotms, isFetchingNextPage: isFetchingNextPageMotms, refetch: refetchMotms } = useInfiniteQuery(['motms', id], fetchMotms, {
+    enabled: currentTab === 'motms',
+    staleTime: Infinity,
+    getNextPageParam: (lastPage) => {
+      if (lastPage.next !== null) {
+        const nextPageUrl = new URL(lastPage.next);
+        return nextPageUrl.searchParams.get('page');
+      }
+    },
+  });
 
-    if (statusMotms  === 'success' && ignitionPageMotms.current) {
-      observerMotms.observe(ignitionPageMotms.current);
+  // 各タブのオブザーバー
+  const observerPosts = useRef(null)
+  const observerMotms = useRef(null)
+
+  // infinityLoadの発火地点管理
+  const ignitionPagePosts = useRef(null);
+  const ignitionPageMotms = useRef(null);
+
+  // 各タブのuseEffect
+  useEffect(() => {
+    if (!observerPosts.current) {
+      observerPosts.current = new IntersectionObserver(
+          entries => {
+              if (entries[0].isIntersecting && hasNextPagePosts && !isFetchingNextPagePosts && currentTab === 'posts') {
+                  fetchNextPageMotms();
+              }
+          },
+          { threshold: 1 }
+      );
     }
-    return () => observerMotms.disconnect();
+
+    // タブがアクティブであり、エラーやローディング状態でない場合、observer をアクティブにする
+    if (!isLoadingPosts && !isErrorPosts && ignitionPagePosts.current) {
+      observerPosts.current.observe(ignitionPagePosts.current);
+    }
+
+    // useEffect のクリーンアップ関数
+    return () => {
+      sourceRefPosts.current.cancel("Operation cancelled by user.");
+      sourceRefPosts.current = axios.CancelToken.source(); 
+      // observer が存在する場合、監視を停止
+      if (observerPosts.current) {
+        observerPosts.current.disconnect();
+      }
+    };
+  }, [dataPosts, isLoadingPosts, ignitionPagePosts, hasNextPagePosts, isFetchingNextPagePosts, currentTab, fetchNextPagePosts]);
+
+  useEffect(() => {
+    if (!observerMotms.current) {
+      observerMotms.current = new IntersectionObserver(
+          entries => {
+              if (entries[0].isIntersecting && hasNextPageMotms && !isFetchingNextPageMotms && currentTab === 'motms') {
+                  fetchNextPageMotms();
+              }
+          },
+          { threshold: 1 }
+      );
+    }
+
+    if (!isLoadingMotms && !isErrorMotms && ignitionPageMotms.current) {
+      observerMotms.current.observe(ignitionPageMotms.current);
+    }
+
+    return () => {
+      sourceRefMotms.current.cancel("Operation cancelled by user.");
+      sourceRefMotms.current = axios.CancelToken.source(); 
+      if (observerMotms.current) {
+        observerMotms.current.disconnect();
+      }
+    };
   }, [dataMotms, isLoadingMotms, ignitionPageMotms, hasNextPageMotms, isFetchingNextPageMotms, currentTab, fetchNextPageMotms]);
 
   if (isLoading) {
@@ -184,7 +216,8 @@ function Match() {
         setPostPlayerList={setPostPlayerList}
         postPlayerId={postPlayerId}
         setPostPlayerId={setPostPlayerId}
-        refetchPosts={refetch}
+        refetchPosts={refetchPosts}
+        refetchMotms={refetchMotms}
       />
       }
 
@@ -220,7 +253,7 @@ function Match() {
             <PostList
               data={dataPosts}
               isLoading={isLoadingPosts}
-              isFetchingNextPage={isFetchingNextPage}
+              isFetchingNextPage={isFetchingNextPagePosts}
               ignitionPage={ignitionPagePosts}
             />
           </>
@@ -229,7 +262,7 @@ function Match() {
             <LoaderInTabContent />
           ) : (
           <>
-            <h2 className='activity-title add-padding'>みんなが選んだマンオブザマッチ</h2>
+            <h2 className='activity-title'>みんなが選んだマンオブザマッチ</h2>
             <PlayerList
               data={dataMotms}
               dataMatch={data}

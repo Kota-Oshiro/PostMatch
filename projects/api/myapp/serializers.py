@@ -106,7 +106,7 @@ class AccountEditSerializer(serializers.ModelSerializer):
 class PostTeamSerializer(serializers.ModelSerializer):
     class Meta:
         model = Team
-        fields = ['id', 'tla', 'name_ja', 'club_color_code_first']
+        fields = ['id', 'competition_id', 'tla', 'name_ja', 'club_color_code_first']
 
 class PostAccountSerializer(serializers.ModelSerializer):
     support_team = PostTeamSerializer(read_only=True)

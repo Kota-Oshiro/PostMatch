@@ -5,7 +5,7 @@ import { useQueryClient } from 'react-query';
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 
-export const AuthContext = createContext();
+export const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
 
@@ -69,39 +69,39 @@ export const AuthProvider = ({ children }) => {
     };
 
     initAuth();
-}, []);
+  }, []);
 
-// APIリクエストの共通部分をインスタンス化
-const apiBaseUrl = axios.create({
-  baseURL: process.env.REACT_APP_API_BASE_URL,
-  withCredentials: true
-});
+  // APIリクエストの共通部分をインスタンス化
+  const apiBaseUrl = axios.create({
+    baseURL: process.env.REACT_APP_API_BASE_URL,
+    withCredentials: true
+  });
 
-// レスポンスをインターセプト
-apiBaseUrl.interceptors.response.use(response => {
-  // 成功レスポンスはそのまま返す
-  return response;
-}, async error => {
-  if (error.response.status === 401) {
-      const refreshTokenResponse = await apiBaseUrl.get(`/get_refresh_token/`);
+  // レスポンスをインターセプト
+  apiBaseUrl.interceptors.response.use(response => {
+    // 成功レスポンスはそのまま返す
+    return response;
+  }, async error => {
+    if (error.response.status === 401) {
+        const refreshTokenResponse = await apiBaseUrl.get(`/get_refresh_token/`);
 
-      if (refreshTokenResponse.data && refreshTokenResponse.data.refresh) {
-          const newTokenResponse = await apiBaseUrl.post(`/set_new_token/`, {
-              refresh: refreshTokenResponse.data.refresh
-          });
+        if (refreshTokenResponse.data && refreshTokenResponse.data.refresh) {
+            const newTokenResponse = await apiBaseUrl.post(`/set_new_token/`, {
+                refresh: refreshTokenResponse.data.refresh
+            });
 
-          if (newTokenResponse.data && newTokenResponse.data.access) {
-              // 新しいトークンをヘッダーにセット
-              apiBaseUrl.defaults.headers.common['Authorization'] = `Bearer ${newTokenResponse.data.access}`;
+            if (newTokenResponse.data && newTokenResponse.data.access) {
+                // 新しいトークンをヘッダーにセット
+                apiBaseUrl.defaults.headers.common['Authorization'] = `Bearer ${newTokenResponse.data.access}`;
 
-              // 元のリクエストを再実行
-              return apiBaseUrl(error.config);
-          }
-      }
-  }
+                // 元のリクエストを再実行
+                return apiBaseUrl(error.config);
+            }
+        }
+    }
 
-  return Promise.reject(error);
-});
+    return Promise.reject(error);
+  });
 
   // ログイン状態を更新する関数
   const login = (user) => {

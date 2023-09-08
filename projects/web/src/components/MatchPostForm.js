@@ -19,7 +19,7 @@ function MatchPostForm({
     isPostModalVisible, setPostModalVisible,
     fetchedMatchPlayers, setFetchedMatchPlayers,
     postPlayerList, setPostPlayerList, postPlayerId, setPostPlayerId,
-    refetchPosts
+    refetchPosts, refetchMotms
   }) {
 
   const queryClient = useQueryClient();
@@ -146,6 +146,7 @@ function MatchPostForm({
         setToastMessage('投稿が完了しました')
         setToastType('postSuccess')
         await refetchPosts();
+        await refetchMotms();
         // 送信が成功したら親のクエリを再取得する
         queryClient.invalidateQueries(['match', matchId, currentUser]);
       },
