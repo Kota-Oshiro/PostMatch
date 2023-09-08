@@ -139,15 +139,20 @@ export function HeaderLoaderSchedule() {
   );
 }
 
-export function SingleLoaderSchedule() {
+export function SingleLoaderSchedule({ isFirst, isLast }) {
+
+  const classNames = ['loader-schedulecard'];
+  if (isFirst) classNames.push('first-schedule-card');
+  if (isLast) classNames.push('last-schedule-card');
+
   return (
       <ContentLoader 
       speed={2}
       backgroundColor="#f3f3f3"
       foregroundColor="#ecebeb"
       width="100%"
-      height={49}
-      className='loader-schedulecard'
+      height={48}
+      className={classNames.join(' ')}
       >
 
       <circle cx="12" cy="25" r="12" />
@@ -155,6 +160,23 @@ export function SingleLoaderSchedule() {
       <circle cx="104" cy="25" r="12" />
       <rect x="140" y="18" rx="6" ry="1" width="50%" height="14" />      
       </ContentLoader>
+  );
+}
+
+export function SkeletonScreenScheduleList()  {
+  const numLoaders = 10;
+  return (
+    <>
+    <div className='loader-schedule-list'>
+      {Array(numLoaders).fill().map((_, i) => 
+        <SingleLoaderSchedule
+          key={i}
+          isFirst={i === 0}
+          isLast={i === numLoaders - 1}
+        />
+      )}
+    </div>
+    </>
   );
 }
 
@@ -181,17 +203,6 @@ export function SkeletonScreenScheduleMatchday() {
 
       <rect x="0" y="0" rx="4" ry="4" width="100%" height="20" />  
       </ContentLoader>
-  );
-}
-
-export function SkeletonScreenScheduleList()  {
-  const numLoaders = 10;
-  return (
-    <>
-    <div className='loader-schedule'>
-      {Array(numLoaders).fill().map((_, i) => <SingleLoaderSchedule key={i} />)}
-    </div>
-    </>
   );
 }
 

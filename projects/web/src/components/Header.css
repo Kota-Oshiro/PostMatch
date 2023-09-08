@@ -183,7 +183,7 @@ body.no-scroll-header, body.no-scroll-header-pc {
   .header, .header-index {
     position: absolute;
     margin: 0 auto 0;
-    padding-top: 0;
+    padding: 0 24px;
     max-width: 1000px;
     height: 72px;
     background-color: transparent;

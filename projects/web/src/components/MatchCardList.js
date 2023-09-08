@@ -5,11 +5,11 @@ import './MatchCardList.css';
 export function MatchCards({ data }) {
   return (
     <>
-      {data.map((match, index) => (
-        <MatchCard 
+      {data.map((match, i) => (
+        <MatchCard  
           key={match.id} 
           match={match}
-          className={index === data.length - 1 ? 'last-match-card' : ''}
+          className={i === data.length - 1 ? 'last-match-card' : ''}
         />
       ))}
     </>

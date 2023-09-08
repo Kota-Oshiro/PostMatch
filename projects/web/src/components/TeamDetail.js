@@ -6,7 +6,6 @@ import { Helmet } from 'react-helmet';
 
 import axios from 'axios';
 
-import './TeamDetail.css';
 import './TabContent.css';
 import { ReactComponent as CrestIcon } from '../icons/crest.svg';
 
@@ -201,7 +200,7 @@ function TeamDetail() {
                 ) : (
                   <CrestIcon className='tab-header-icon'/>
                 )}
-                <span className='tab-header-name'>{ data.team.name_ja }</span>
+                <span className='tab-header-name-team'>{ data.team.name_ja }</span>
               </div>
             </div>
             <div className='activity-tab'>

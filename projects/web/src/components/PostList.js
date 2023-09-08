@@ -8,7 +8,7 @@ import NoContent from './NoContent';
 function PostList({ data, isLoading, isFetchingNextPage, ignitionPage }) {
 
   const totalCount = data?.pages.reduce((sum, page) => sum + page.results.length, 0);
-  
+
   if (totalCount === 0 && !isLoading) {
     return (
       <NoContent />
@@ -22,7 +22,7 @@ function PostList({ data, isLoading, isFetchingNextPage, ignitionPage }) {
       ) : (
         <>
           {data.pages.map((pageData, i) => (
-            <div key={i} className='posts'>
+            <div key={i}>
               {pageData.results.map(post => (
                 <PostCard key={post.id} post={post} />
               ))}
@@ -31,7 +31,7 @@ function PostList({ data, isLoading, isFetchingNextPage, ignitionPage }) {
         </>
       )}
       {isFetchingNextPage && <LoaderSpinner />}
-      <div ref={ignitionPage} style={{ height: '1px' }} />
+      <div ref={ignitionPage} style={{ height: '24px' }} />
     </>
   );
 }

@@ -31,7 +31,7 @@ function PlayerList({ data, dataMatch, isLoading, isFetchingNextPage, ignitionPa
         </>
       )}
       {isFetchingNextPage && <LoaderSpinner />}
-      <div ref={ignitionPage} style={{ height: '20px' }} />
+      <div ref={ignitionPage} style={{ height: '24px' }} />
     </>
   );
 }

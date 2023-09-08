@@ -1,7 +1,7 @@
 .tab-container {
   width: 100%;
   margin-bottom: 48px;
-  padding: 0 12px;
+  padding: 0 6px;
   box-sizing: border-box;
 }
 
@@ -35,13 +35,17 @@
   border-radius: 50%;
 }
 
-.tab-header-name {
+.tab-header-name, .tab-header-name-team {
   display: inline-flexbox;
   margin-right: 6px;
-  max-width: 168px;
   font-size: 1.6rem;
   font-weight: 900;
   color: #fff;
+}
+
+.tab-header-name {
+  max-width: 168px;
+
 }
 
 .activity-tab {
@@ -133,11 +137,9 @@
   box-sizing: border-box;
 }
 
-.activity-container.match-detail {
-  margin: 0 auto;
-  padding-bottom: 24px;
+.activity-container.post-list {
+  margin: 24px auto 0;
   width: calc(100% - 24px);
-  min-height: auto;
 }
 
 .activity-title {
@@ -193,9 +195,17 @@
   object-fit: cover;
 }
 
+.tab-sns-icon:hover, .team-tablinks:hover {
+  opacity: 0.8;
+}
+
+.tab-profile-link:hover {
+  text-decoration:underline;
+}
+
 @media (min-width: 800px) { 
     
-  .tab-container, .activity-container.match-detail{
+  .tab-container, .activity-container.post-list{
     max-width: 520px;
     margin: 48px auto;
     padding: 0;
@@ -203,11 +213,11 @@
   }
 
   .activity-content.padding {
-    padding: 24px;
+    padding: 24px 18px;
   }
   
   .activity-title {
-    padding: 24px 24px 0;
+    padding: 24px 18px 0;
   }
 
 }

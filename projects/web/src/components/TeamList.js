@@ -47,7 +47,7 @@ function TeamList() {
       <>
       <div className='bg'></div>
       <div className='team-list-container'>
-        <div className='content-bg' style={{backgroundImage: `linear-gradient(${competitionColor}, #f7f7f7 360px)`}} >
+        <div className='content-bg-double' style={{backgroundImage: `linear-gradient(${competitionColor}, #f7f7f7 360px)`}} >
           <LeagueSelecter
             isLeagueSelectModalVisible={isLeagueSelectModalVisible}
             setLeagueSelectModalVisible={setLeagueSelectModalVisible}
@@ -86,7 +86,7 @@ function TeamList() {
 
       <div className='bg'></div>
       <div className='team-list-container'>
-        <div className='content-bg' style={{backgroundImage: `linear-gradient(${competitionColor}, #f7f7f7 360px)`}} >
+        <div className='content-bg-double' style={{backgroundImage: `linear-gradient(${competitionColor}, #f7f7f7 360px)`}} >
           <LeagueSelecter
             isLeagueSelectModalVisible={isLeagueSelectModalVisible}
             setLeagueSelectModalVisible={setLeagueSelectModalVisible}

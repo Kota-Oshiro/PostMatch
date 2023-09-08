@@ -99,10 +99,6 @@ a {
   box-sizing: border-box;
 }
 
-.container.add-padding {
-  padding: 12px;
-}
-
 .container-title {
   padding: 0 12px 12px;
 }
@@ -320,7 +316,7 @@ input[type="submit"]:hover, button:hover, .button:hover  {
   z-index: -2;
 }
 
-.content-bg, .content-bg-narrow {
+.content-bg, .content-bg-double {
   width: 100%;
   height: 100%;
   border-radius: 12px;
@@ -329,11 +325,11 @@ input[type="submit"]:hover, button:hover, .button:hover  {
 }
 
 .content-bg {
-  padding: 12px;
+  padding: 6px;
 }
 
-.content-bg-narrow {
-  padding: 6px;
+.content-bg-double {
+  padding: 12px;
 }
 
 @media (min-width: 800px) {

@@ -1,7 +1,4 @@
-
-
-
-.loader, .loader-index, .loader-tab-content, .loader-posts, .load-spinner, .loader-teamcards, .loader-schedule-index, .loader-matchcards {
+.loader, .loader-index, .loader-tab-content, .loader-posts, .load-spinner, .loader-teamcards, .loader-matchcards {
     display: flex;
     justify-content: center;
     width: 100%;
@@ -37,12 +34,21 @@
     background-color: #f7f7f7;
 }
 
-.loader-schedule {
+.loader-schedule-list {
     display: flex;
     justify-content: center;
     flex-direction: column;
     align-items: center;
     width: 100%;
+    box-sizing: border-box;
+}
+
+.loader-schedulecard {
+    margin: 0;
+    padding: 0 12px;
+    height: 48px;
+    background-color: #fff;
+    border-bottom: solid 1px #eeeeee;
     box-sizing: border-box;
 }
 
@@ -64,24 +70,26 @@
     padding: 24px 0 312px;
 }
 
+.loader-schedulecard.first-schedule-card {
+    border-radius: 6px 6px 0 0;
+}
+
+.loader-schedulecard.last-schedule-card {
+    border-radius: 0 0 6px 6px;
+}
+
+/* 使ってない
 .loader-schedule-index {
     flex-direction: column;
     align-items: center;
     padding: 0 24px;
 }
 
-.loader-schedulecard {
-    margin-bottom: 6px;
-    padding: 0 12px;
-    height: 48px;
-    background-color: #fff;
-    border-radius: 6px;
-    box-sizing: border-box;
-}
 
 .loader-schedule-matchday {
     margin-top: 12px;
 }
+*/
 
 .loader-teamcards {
     flex-wrap: wrap;
@@ -117,6 +125,11 @@
         padding-top: 24px;
     }
 
+    .loader-schedulecard {
+        padding: 0 18px;
+
+    }
+    
     .loader-matchcards {
         max-width: 312px;
         height: fit-content;

@@ -4,12 +4,12 @@
   align-items: center;
   width: 100%;
   margin: 0 auto 48px;
-  padding: 12px;
+  padding: 6px;
   box-sizing: border-box;
 }
 
 .edit-form {
-  padding: 36px 12px 12px;
+  padding: 36px 18px 18px;
   background-color: #fff;
   border-radius: 12px;
   box-sizing: border-box;

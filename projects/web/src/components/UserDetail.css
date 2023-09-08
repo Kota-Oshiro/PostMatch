@@ -33,20 +33,8 @@
   object-fit: cover;
 }
 
-.user-support-crest, .user-edit-icon, .user-sns, .user-tablinks {
-  transition: opacity;
-}
-
-.user-support-crest:hover, .user-edit-icon:hover, .user-sns:hover, .user-tablinks:hover {
+.user-support-crest:hover, .user-edit-icon:hover {
   opacity: 0.8;
-}
-
-.user-profile-text-team {
-  transition: text-decoration;
-}
-
-.user-profile-text-team:hover {
-  text-decoration:underline;
 }
 
 @media (min-width: 800px) {

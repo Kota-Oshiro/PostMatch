@@ -9,6 +9,7 @@
 }
 
 .post.post-border {
+  padding-bottom: 24px;
   border-bottom: solid 1px #eeeeee;
   border-radius: 0;
 }
@@ -213,7 +214,7 @@
 }
 
 .post.post-expand {
-  padding-bottom: 60px;
+  padding-bottom: 50px;
 }
 
 .fade-out {
@@ -326,10 +327,15 @@
 
   .post.post-border {
     margin-top: 0;
+    padding: 24px 18px;
   }  
 
   .post-user-name {
     max-width: 22.4rem;
+  }
+
+  .post.post-expand {
+    padding-bottom: 62px;
   }
 
 }

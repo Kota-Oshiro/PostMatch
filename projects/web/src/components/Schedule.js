@@ -165,7 +165,7 @@ function Schedule() {
       <FetchContext.Provider value={{ fetchMatches, isLoading, setLoadingSchedule }}>
           {isLoading ? (
             <div className='schedule-container'>
-              <div className='content-bg-narrow' style={{backgroundImage: `linear-gradient(${competitionColor}, #f7f7f7 360px)`}} >
+              <div className='content-bg' style={{backgroundImage: `linear-gradient(${competitionColor}, #f7f7f7 360px)`}} >
                 <div className='schedule-header'>
                   <div className='schedule-league'>
                     <LeagueSelecter
@@ -192,7 +192,7 @@ function Schedule() {
             </div>
           ) : (
             <div className='schedule-container'>
-              <div className='content-bg-narrow' style={{backgroundImage: `linear-gradient(${competitionColor}, #f7f7f7 360px)`}} >
+              <div className='content-bg' style={{backgroundImage: `linear-gradient(${competitionColor}, #f7f7f7 360px)`}} >
                 <div className='schedule-header'>
                   <div className='schedule-league'>
                       <LeagueSelecter
@@ -216,8 +216,15 @@ function Schedule() {
                     {isLoadingSchedule ? (
                         <SkeletonScreenScheduleList />
                     ) : (
-                        matchesData && matchesData.map(match => (
-                            <ScheduleCard key={match.id} match={match} isScoreVisible={isScoreVisible} competitionId={competitionId} />
+                        matchesData && matchesData.map((match, i) => (
+                          <ScheduleCard
+                            key={match.id}
+                            match={match}
+                            isScoreVisible={isScoreVisible}
+                            competitionId={competitionId}
+                            isFirst={i === 0}
+                            isLast={i === matchesData.length - 1}
+                          />
                         ))
                     )}
                 </div>

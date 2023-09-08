@@ -6,19 +6,22 @@ import './ScheduleCard.css';
 import { ReactComponent as PostIcon } from '../icons/post.svg';
 import { ReactComponent as WatchedIconGrey } from '../icons/watched_grey.svg';
 
-function ScheduleCard({ match, isScoreVisible }) {
-
-    const competitionId = match.competition_id
+function ScheduleCard({ match, isScoreVisible, isFirst, isLast }) {
 
     const location = useLocation();
-    const isSchedules = location.pathname === "/schedules";
     const renderMatchScore = location.pathname.includes("/schedules") 
         ? renderMatchScoreForSchedule 
         : renderMatchScoreForWatch;
 
+    const classNames = ['schedule'];
+        if (isFirst) classNames.push('first-schedule-card');
+        if (isLast) classNames.push('last-schedule-card');
+
+    const competitionId = match.competition_id
+
     return (
         <Link to={`/match/${match.id}`} className='match-links'>
-        <div className={`schedule ${isSchedules ? '' : 'watch-list'}`}>
+        <div className={classNames.join(' ')}>
         <div className='schedule-block'>
             <div className='schedule-left'>
                 {competitionId !== 2119 ? (                
