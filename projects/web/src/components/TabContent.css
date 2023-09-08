@@ -140,6 +140,7 @@
 .activity-container.post-list {
   margin: 24px auto 144px;
   width: calc(100% - 24px);
+  min-height: auto;
 }
 
 .activity-title {
