@@ -18,12 +18,12 @@ function TeamList() {
   const { currentUser } = useContext(AuthContext);
 
   const initialCompetitionId = getDefaultCompetitionId(currentUser);
+
   const initialCompetitionName = getCompetitionName(initialCompetitionId);
   const initialCompetitionColor = getCompetitionColor(initialCompetitionId);
   const initialCompetitionIcon = getCompetitionIcon(initialCompetitionId);
   
   const [competitionId, setCompetitionId] = useState(initialCompetitionId);
-  const [seasonYear, setseasonYear] = useState(2023);
   const [competitionIcon, setCompetitionIcon] = useState(initialCompetitionIcon);
   const [competitionName, setCompetitionName] = useState(initialCompetitionName);
   const [competitionColor, setCompetitionColor] = useState(initialCompetitionColor);
@@ -32,11 +32,11 @@ function TeamList() {
 
   // teamのフェッチ
   const fetchTeams = async () => {
-    const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/team/${competitionId}/${seasonYear}`);
+    const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/team/${competitionId}/`);
     return res.data;
   };
   
-  const { data, isLoading, isError, error } = useQuery(['team', competitionId, seasonYear], fetchTeams, {
+  const { data, isLoading, isError, error } = useQuery(['team', competitionId], fetchTeams, {
     retry: 0,
   });
   

@@ -142,6 +142,19 @@
         border-radius: 12px;
     }
 
+    .loader-post {
+        padding: 24px;
+    }
+
+    .loader-teamcards {
+        padding: 12px;
+    }
+
+    .loader-teamcard {
+        margin-bottom: 24px;
+        width: calc(50% - 12px);
+    }
+
 }
 
 

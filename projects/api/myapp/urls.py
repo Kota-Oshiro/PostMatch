@@ -43,7 +43,7 @@ urlpatterns = [
     path('api/schedule/<int:competition_id>/<int:season_year>/', ScheduleList.as_view()),
     path('api/schedule/<int:competition_id>/<int:season_year>/<int:matchday>/', ScheduleMatchdayList.as_view()),
 
-    path('api/team/<int:competition_id>/<int:season_year>/', TeamList.as_view()),
+    path('api/team/<int:competition_id>/', TeamList.as_view()),
     path('api/team/<int:pk>/', TeamDetail.as_view()),
     path('api/team/<int:pk>/users/', TeamSupporter.as_view()),
     path('api/team/<int:pk>/posts/', TeamPost.as_view()),

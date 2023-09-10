@@ -616,8 +616,7 @@ class TeamList(generics.ListAPIView):
 
     def get_queryset(self):
         competition_id = self.kwargs['competition_id']
-        season_year = self.kwargs['season_year']
-        return Team.objects.filter(competition_id=competition_id, season_year=season_year).order_by('name')
+        return Team.objects.filter(competition_id=competition_id).order_by('name')
 
 class TeamBase(APIView):
     def get_team(self, pk):
