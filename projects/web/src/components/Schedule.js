@@ -134,13 +134,15 @@ function Schedule() {
   const handlers = useSwipeable({
     onSwipedLeft: () => {
       if (matchesData.length > 0) {
-        const newMatchday = Math.min(fetchedMatchday + 1, maxTab);
+        const newMatchday = Math.min(tabMatchday + 1, maxTab);
+        setTabMatchday(newMatchday);
         setFetchedMatchday(newMatchday);
       }
     },
     onSwipedRight: () => {
       if (matchesData.length > 0) {
-        const newMatchday = Math.max(fetchedMatchday - 1, minTab);
+        const newMatchday = Math.max(tabMatchday - 1, minTab);
+        setTabMatchday(newMatchday);
         setFetchedMatchday(newMatchday);
       }
     }
