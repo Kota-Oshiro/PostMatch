@@ -40,10 +40,10 @@ urlpatterns = [
     path('api/match/<int:pk>/post_create/', MatchPostCreateView.as_view()),
     path('api/match/<int:pk>/watch_create/<int:user_id>/', MatchWatchCreateView.as_view()),
 
-    path('api/schedule/<int:competition_id>/<int:season_id>/', ScheduleList.as_view()),
-    path('api/schedule/<int:competition_id>/<int:season_id>/<int:matchday>/', ScheduleMatchdayList.as_view()),
+    path('api/schedule/<int:competition_id>/<int:season_year>/', ScheduleList.as_view()),
+    path('api/schedule/<int:competition_id>/<int:season_year>/<int:matchday>/', ScheduleMatchdayList.as_view()),
 
-    path('api/team/<int:competition_id>/<int:season_id>/', TeamList.as_view()),
+    path('api/team/<int:competition_id>/<int:season_year>/', TeamList.as_view()),
     path('api/team/<int:pk>/', TeamDetail.as_view()),
     path('api/team/<int:pk>/users/', TeamSupporter.as_view()),
     path('api/team/<int:pk>/posts/', TeamPost.as_view()),

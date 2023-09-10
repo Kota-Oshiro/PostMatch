@@ -10,10 +10,10 @@ import { ReactComponent as ArrowUpIcon } from '../icons/arrow_up_white.svg';
 
 function LeagueSelecter ({
     isLeagueSelectModalVisible, setLeagueSelectModalVisible,
-    setCompetitionId, setSeasonId,
+    setCompetitionId,
     competitionIcon, setCompetitionIcon,
     competitionName, setCompetitionName,
-    competitionColor, setCompetitionColor
+    setCompetitionColor
   }) {
 
   let location = useLocation();
@@ -64,7 +64,6 @@ function LeagueSelecter ({
   const handleLeagueClick = (menu) => {
     setLeagueSelectModalVisible(false);
     setCompetitionId(menu.competition_id);
-    setSeasonId(menu.season_id);
     setCompetitionIcon(menu.icon);
     setCompetitionName(menu.name);
     setCompetitionColor(menu.color);

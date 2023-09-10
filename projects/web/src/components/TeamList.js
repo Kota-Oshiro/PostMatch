@@ -11,21 +11,19 @@ import TeamCard from './TeamCard';
 import LeagueSelecter from './LeagueSelecter';
 import NotFoundPage from './error/NotFoundPage';
 
-import { getDefaultCompetitionId, getDefaultSeasonId,getCompetitionName, getCompetitionColor, getCompetitionIcon } from './UtilityCompetition';
+import { getDefaultCompetitionId,getCompetitionName, getCompetitionColor, getCompetitionIcon } from './UtilityCompetition';
 
 function TeamList() {
   
   const { currentUser } = useContext(AuthContext);
 
   const initialCompetitionId = getDefaultCompetitionId(currentUser);
-  const initialSeasonId = getDefaultSeasonId(currentUser);
-  
   const initialCompetitionName = getCompetitionName(initialCompetitionId);
   const initialCompetitionColor = getCompetitionColor(initialCompetitionId);
   const initialCompetitionIcon = getCompetitionIcon(initialCompetitionId);
   
   const [competitionId, setCompetitionId] = useState(initialCompetitionId);
-  const [seasonId, setSeasonId] = useState(initialSeasonId);
+  const [seasonYear, setseasonYear] = useState(2023);
   const [competitionIcon, setCompetitionIcon] = useState(initialCompetitionIcon);
   const [competitionName, setCompetitionName] = useState(initialCompetitionName);
   const [competitionColor, setCompetitionColor] = useState(initialCompetitionColor);
@@ -34,11 +32,11 @@ function TeamList() {
 
   // teamのフェッチ
   const fetchTeams = async () => {
-    const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/team/${competitionId}/${seasonId}`);
+    const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/team/${competitionId}/${seasonYear}`);
     return res.data;
   };
   
-  const { data, isLoading, isError, error } = useQuery(['team', competitionId, seasonId], fetchTeams, {
+  const { data, isLoading, isError, error } = useQuery(['team', competitionId, seasonYear], fetchTeams, {
     retry: 0,
   });
   
@@ -53,12 +51,10 @@ function TeamList() {
             setLeagueSelectModalVisible={setLeagueSelectModalVisible}
             competitionId={competitionId}
             setCompetitionId={setCompetitionId}
-            setSeasonId={setSeasonId}
             competitionIcon={competitionIcon}
             setCompetitionIcon={setCompetitionIcon}
             competitionName={competitionName}
             setCompetitionName={setCompetitionName}
-            competitionColor={competitionColor}
             setCompetitionColor={setCompetitionColor}
           />
           <SkeletonScreenTeam />
@@ -92,12 +88,10 @@ function TeamList() {
             setLeagueSelectModalVisible={setLeagueSelectModalVisible}
             competitionId={competitionId}
             setCompetitionId={setCompetitionId}
-            setSeasonId={setSeasonId}
             competitionIcon={competitionIcon}
             setCompetitionIcon={setCompetitionIcon}
             competitionName={competitionName}
             setCompetitionName={setCompetitionName}
-            competitionColor={competitionColor}
             setCompetitionColor={setCompetitionColor}
           />
           <div className='team-cards'>

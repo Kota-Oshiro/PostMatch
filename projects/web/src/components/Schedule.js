@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, createContext, Suspense } from 'react';
+import React, { useState, useEffect, useContext, useRef, createContext, Suspense } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
 import { useSwipeable } from 'react-swipeable';
 import { Helmet } from 'react-helmet';
@@ -15,7 +15,7 @@ import LeagueSelecter from './LeagueSelecter';
 import ScoreVisibleSwitcher from './ScoreVisibleSwitcher';
 import NotFoundPage from './error/NotFoundPage';
 
-import { getDefaultCompetitionId, getDefaultSeasonId,getCompetitionName, getCompetitionColor, getCompetitionIcon } from './UtilityCompetition';
+import { getDefaultCompetitionId,getCompetitionName, getCompetitionColor, getCompetitionIcon } from './UtilityCompetition';
 
 const MatchCardListNational = React.lazy(() => import('./MatchCardListNational.js'));
 
@@ -27,18 +27,19 @@ function Schedule() {
 
   const { currentUser, apiBaseUrl } = useContext(AuthContext);
 
+  // 初回レンダリング
+  const [isInitialRender, setIsInitialRender] = useState(true);
+
   const initialCompetitionId = getDefaultCompetitionId(currentUser);
-  const initialSeasonId = getDefaultSeasonId(currentUser);
-  
   const initialCompetitionName = getCompetitionName(initialCompetitionId);
   const initialCompetitionColor = getCompetitionColor(initialCompetitionId);
   const initialCompetitionIcon = getCompetitionIcon(initialCompetitionId);
 
   const [competitionId, setCompetitionId] = useState(initialCompetitionId);
   // competitonIdが変わったときにisLoadingをtrueにするために使用
-  const [prevCompetitionId, setPrevCompetitionId] = useState(initialCompetitionId);
+  const prevCompetitionIdRef = useRef(competitionId);
 
-  const [seasonId, setSeasonId] = useState(initialSeasonId);
+  const [seasonYear, setseasonYear] = useState(2023);
 
   const [competitionIcon, setCompetitionIcon] = useState(initialCompetitionIcon);
   const [competitionName, setCompetitionName] = useState(initialCompetitionName);
@@ -47,17 +48,19 @@ function Schedule() {
   const minTab = 1;
   const maxTab = competitionId === 2119 ? 34 : 38;
 
-  const [currentMatchday, setCurrentMatchday] = useState(null);
+  // スケジュールタブ用のマッチデイとuseRefで前後記録
+  const [tabMatchday, setTabMatchday] = useState(null);
+  const prevTabMatchdayRef = useRef(tabMatchday);
+
+  // APIリクエスト用のマッチデイ
+  const [fetchedMatchday, setFetchedMatchday] = useState(null);
+  const prevFetchedMatchdayRef = useRef(fetchedMatchday);
 
   const [isLeagueSelectModalVisible, setLeagueSelectModalVisible] = useState(false);
   const [isScoreVisible, setScoreVisible] = useState(false);
 
-  // 初回レンダリングの判定
-  const [isInitialRender, setIsInitialRender] = useState(true);
-
   // グローバルのローディング
   const [isLoading, setLoading] = useState(true);
-
   // ローカルのローディング（scheduleList）
   const [isLoadingSchedule, setLoadingSchedule] = useState(false);
 
@@ -66,67 +69,79 @@ function Schedule() {
     return !!queryClient.getQueryData(key);
   }
 
-  const queryKey = ['matches', competitionId, seasonId, currentMatchday];
+  // 1. 初回レンダリング時はfetched_matchdayをセットせず、tab_matchdayのみセットするので、始めてのmatchdayタブ変更は両者のcurrentが異なる状態となる
+  const MatchdayStateDefault = prevTabMatchdayRef.current !==  prevFetchedMatchdayRef.current;
+  // 2. 始めてのmatchdayタブ変更はfetched_matchdayがnullから非nullとなる
+  const fetchedMatchdayNullToNonNull = prevFetchedMatchdayRef.current == null && fetchedMatchday !== null;
+  // 1 + 2 （初回レンダリング後に始めてtab_matchdayを変更した）
+  const TabMatchdayChangedFirst = MatchdayStateDefault && fetchedMatchdayNullToNonNull
+  
+  // 両matchdayのstateが同じ状態
+  const MatchdayStateSame = tabMatchday === fetchedMatchday;
+  // competition_idの変更
+  const competitionChanged = prevCompetitionIdRef.current !== competitionId;
+  
+  const NotFetchedMatchday = !MatchdayStateSame || competitionChanged;
 
-  // queryKeyがなく新規フェッチで初回レンダリングまたはcompetitionIdが変わったときにsetLoading（グローバルローディング）を表示し、それ以外はsetLoadingScheduleを表示
+  const queryKey = ['matches', competitionId, seasonYear, fetchedMatchday];
+
   useEffect(() => {
+    
     if (!isCached(queryKey)) {
-      if (isInitialRender || prevCompetitionId !== competitionId) {
+      if (isInitialRender || competitionChanged) {
         setLoading(true);
       } else {
         setLoadingSchedule(true);
       }
-      setPrevCompetitionId(competitionId);
     }
-  }, [competitionId, currentMatchday]);
+  
+  }, [competitionId, fetchedMatchday]);
 
-  // competitionIdが変わったときにcurrentMatchdayをリセット
-  useEffect(() => {
-    if (prevCompetitionId !== null && competitionId !== prevCompetitionId) {
-      setCurrentMatchday(null);
-    }
-  }, [competitionId]);
-
-  const fetchMatches = async (competitionId, seasonId, matchday) => {
-    const url = matchday 
-        ? `/schedule/${competitionId}/${seasonId}/${matchday}`
-        : `/schedule/${competitionId}/${seasonId}/`;
+  const fetchMatches = async (competitionId, seasonYear, matchday) => {
+    const url = matchday
+        ? `/schedule/${competitionId}/${seasonYear}/${matchday}`
+        : `/schedule/${competitionId}/${seasonYear}/`;
     const result = await apiBaseUrl.get(url);
     return result.data;
   };
-  
+
   const { data: matchesData } = useQuery(
     queryKey, 
-    () => fetchMatches(competitionId, seasonId, currentMatchday), 
+    () => fetchMatches(competitionId, seasonYear, NotFetchedMatchday ? null : fetchedMatchday), 
     {
       onSuccess: (data) => {
         setLoading(false);
-        setLoadingSchedule(false);
-        if (data.length > 0 && !currentMatchday) {
-          setCurrentMatchday(data[0].matchday);
-        }
-        if (isInitialRender) {
+        setLoadingSchedule(false);   
+        if (data.length > 0 && (isInitialRender || competitionChanged || !TabMatchdayChangedFirst)) {
+          setTabMatchday(data[0].matchday);
           setIsInitialRender(false);
+        } else {
+          setTabMatchday(data[0].matchday);
+          setFetchedMatchday(data[0].matchday);
         }
       },
       onError: () => {
         setLoading(false);
         setLoadingSchedule(false);
-      }
+      },
     }
   );
+
+  prevCompetitionIdRef.current = competitionId;
+  prevTabMatchdayRef.current = tabMatchday;
+  prevFetchedMatchdayRef.current = fetchedMatchday;
 
   const handlers = useSwipeable({
     onSwipedLeft: () => {
       if (matchesData.length > 0) {
-        const newMatchday = Math.min(currentMatchday + 1, maxTab);
-        setCurrentMatchday(newMatchday);
+        const newMatchday = Math.min(fetchedMatchday + 1, maxTab);
+        setFetchedMatchday(newMatchday);
       }
     },
     onSwipedRight: () => {
       if (matchesData.length > 0) {
-        const newMatchday = Math.max(currentMatchday - 1, minTab);
-        setCurrentMatchday(newMatchday);
+        const newMatchday = Math.max(fetchedMatchday - 1, minTab);
+        setFetchedMatchday(newMatchday);
       }
     }
   });
@@ -173,17 +188,15 @@ function Schedule() {
                       setLeagueSelectModalVisible={setLeagueSelectModalVisible}
                       competitionId={competitionId}
                       setCompetitionId={setCompetitionId}
-                      setSeasonId={setSeasonId}
                       competitionIcon={competitionIcon}
                       setCompetitionIcon={setCompetitionIcon}
                       competitionName={competitionName}
                       setCompetitionName={setCompetitionName}
-                      competitionColor={competitionColor}
                       setCompetitionColor={setCompetitionColor}
                     />
                     <ScoreVisibleSwitcher isScoreVisible={isScoreVisible} setScoreVisible={setScoreVisible} />
                   </div>
-                  <ScheduleTab currentMatchday={currentMatchday} setCurrentMatchday={setCurrentMatchday} minTab={minTab} maxTab={maxTab} />
+                  <ScheduleTab tabMatchday={tabMatchday} setTabMatchday={setTabMatchday} setFetchedMatchday={setFetchedMatchday} minTab={minTab} maxTab={maxTab} />
                 </div>
                 <div className= 'schedule-cards'>
                   <SkeletonScreenScheduleList />
@@ -200,17 +213,15 @@ function Schedule() {
                           setLeagueSelectModalVisible={setLeagueSelectModalVisible}
                           competitionId={competitionId}
                           setCompetitionId={setCompetitionId}
-                          setSeasonId={setSeasonId}
                           competitionIcon={competitionIcon}
                           setCompetitionIcon={setCompetitionIcon}
                           competitionName={competitionName}
                           setCompetitionName={setCompetitionName}
-                          competitionColor={competitionColor}
                           setCompetitionColor={setCompetitionColor}
                       />
                       <ScoreVisibleSwitcher isScoreVisible={isScoreVisible} setScoreVisible={setScoreVisible} />
                   </div>
-                  <ScheduleTab currentMatchday={currentMatchday} setCurrentMatchday={setCurrentMatchday} minTab={minTab} maxTab={maxTab} />
+                  <ScheduleTab tabMatchday={tabMatchday} setTabMatchday={setTabMatchday} setFetchedMatchday={setFetchedMatchday} minTab={minTab} maxTab={maxTab} />
                 </div>
                 <div {...handlers} className={`schedule-cards ${competitionId === 2119 ? 'schedule-cards-jleague' : ''}`}>
                     {isLoadingSchedule ? (

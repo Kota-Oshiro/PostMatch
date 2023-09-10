@@ -8,10 +8,6 @@ export const getDefaultCompetitionId = (currentUser) => {
   return currentUser && currentUser.support_team_competition ? currentUser.support_team_competition : 2021;
 }
 
-export const getDefaultSeasonId = (currentUser) => {
-  return currentUser && currentUser.support_team_season ? currentUser.support_team_season : 1564;
-}
-
 export const getCompetitionName = (competitionId) => {
   switch (competitionId) {
     case 2021: return 'プレミアリーグ';

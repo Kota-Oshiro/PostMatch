@@ -9,8 +9,8 @@ from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 from django.utils.decorators import method_decorator
 from django.db import connection
-from django.db.models import Count, Min, Q, Case, When, Value, IntegerField, F, ExpressionWrapper, FloatField, DurationField
-from django.db.models.functions import Abs, Extract
+from django.db.models import Count, Min, Q, F, Case, When, Value, IntegerField, ExpressionWrapper, FloatField, DurationField
+from django.db.models.functions import Abs, Extract, Coalesce
 
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt #一部のviewでCSRF保護を無効にする（開発環境でだけ使う）
@@ -392,7 +392,7 @@ class MatchDetail(APIView):
 
     def get(self, request, pk, format=None):
         match = get_object_or_404(Match.objects.select_related('home_team', 'away_team'), pk=pk)
-        goals = Goal.objects.select_related('player').filter(is_valid=True, match_id=pk).order_by('minute')
+        goals = (Goal.objects.select_related('player').filter(is_valid=True, match_id=pk).annotate(total_time=F('minute') + Coalesce(F('additional_time'), 0)).order_by('total_time'))
 
         if request.user.is_authenticated:
             current_account = Account.objects.select_related('support_team').get(pk=request.user.id)
@@ -556,13 +556,13 @@ class ScheduleList(generics.ListAPIView):
 
     def get_queryset(self):
         competition_id = self.kwargs.get('competition_id')
-        season_id = self.kwargs.get('season_id')
+        season_year = self.kwargs.get('season_year')
 
-        if season_id is None:
+        if season_year is None:
             raise ValidationError({"message": "Invalid parameters"})
 
         # 現在の時間に最も近いMatchを取得
-        closest_match = Match.objects.filter(season_id=season_id).annotate(
+        closest_match = Match.objects.filter(competition_id=competition_id, season_year=season_year).annotate(
             time_difference=ExpressionWrapper(
                 (Extract('started_at', 'epoch') - Extract(timezone.now(), 'epoch')), output_field=FloatField()
             )
@@ -577,7 +577,7 @@ class ScheduleList(generics.ListAPIView):
         closest_matchday = closest_match.matchday
 
         return Match.objects.filter(
-            competition_id=competition_id, season_id=season_id, matchday=closest_matchday
+            competition_id=competition_id, season_year=season_year, matchday=closest_matchday
         ).select_related('home_team', 'away_team').order_by('started_at', 'home_team_id')
 
 class ScheduleMatchdayList(generics.ListAPIView):
@@ -587,11 +587,11 @@ class ScheduleMatchdayList(generics.ListAPIView):
 
     def get_queryset(self):
         competition_id = self.kwargs.get('competition_id')
-        season_id = self.kwargs.get('season_id')
+        season_year = self.kwargs.get('season_year')
         matchday = self.kwargs.get('matchday')
 
         queryset = Match.objects.select_related('home_team', 'away_team') \
-            .filter(season_id=season_id, matchday=matchday) \
+            .filter(competition_id=competition_id, season_year=season_year, matchday=matchday) \
             .order_by('started_at', 'home_team_id')
 
         return queryset
@@ -616,8 +616,8 @@ class TeamList(generics.ListAPIView):
 
     def get_queryset(self):
         competition_id = self.kwargs['competition_id']
-        season_id = self.kwargs['season_id']
-        return Team.objects.filter(competition_id=competition_id, season_id=season_id).order_by('name')
+        season_year = self.kwargs['season_year']
+        return Team.objects.filter(competition_id=competition_id, season_year=season_year).order_by('name')
 
 class TeamBase(APIView):
     def get_team(self, pk):
