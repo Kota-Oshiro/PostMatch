@@ -1,7 +1,4 @@
-import json
-import pandas as pd
-import http.client
-import requests
+import json, pandas as pd, http.client, requests
 from datetime import datetime, timezone, timedelta
 
 from django.http import Http404, HttpResponse, JsonResponse
@@ -47,7 +44,7 @@ from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination, LimitOffsetPagination
 from rest_framework.exceptions import ValidationError
 
-from .models import Account, Team, Player, Match, Post, Watch, Goal
+from .models import Account, Team, Player, Match, Post, Watch, Goal, Standing
 from .serializers import MyTokenObtainPairSerializer, AccountSerializer, AccountHeaderSerializer, AccountEditSerializer, AccountEditTeamSerializer, TeamSerializer, TeamListSerializer, TeamSupporterSerializer, PlayerSerializer, MatchSerializer, MatchGoalSerializer, PostSerializer, MotmPlayerSerializer, MatchPlayerSerializer, MatchNationalPlayerSerializer, WatchSerializer
 
 #モデルのインクリメントを初期化
@@ -690,230 +687,167 @@ class PostDetail(RetrieveAPIView):
 # ▼ ここからTeamsのAPIデータ取得 ▼
 
 def fetch_teams_data(competition_code):
-    connection = http.client.HTTPConnection(settings.FOOTBALLDATA_API_URL)
-    headers = { 'X-Auth-Token': settings.FOOTBALLDATA_API_TOKEN }
-    connection.request('GET', f'/v4/competitions/{competition_code}/teams', None, headers)
-    response = json.loads(connection.getresponse().read().decode())
+    url = f"{settings.FOOTBALLDATA_API_URL}/v4/competitions/{competition_code}/teams"
+    headers = {'X-Auth-Token': settings.FOOTBALLDATA_API_TOKEN}
+    
+    response = requests.get(url, headers=headers)
+    response.raise_for_status()
+    response_data = response.json()
 
-    competition_id = response['competition']['id']
-    season_id = response['season']['id']
+    competition_id = response_data['competition']['id']
+    season_id = response_data['season']['id']
 
-    df_original = pd.DataFrame(response['teams'])
+    def extract_team_data(team):
+        return {
+            'id': team['id'],
+            'area_id': team['area']['id'],
+            'competition_id': competition_id,
+            'season_id': season_id,
+            'name': team['name'],
+            'short_name': team['shortName'],
+            'tla': team['tla'],
+            'crest_image_url': team['crest'],
+            'founded_year': team['founded'] if 'founded' in team else None,
+            'venue': team['venue'],
+            'coach_id': team['coach']['id'] if 'coach' in team else None,
+            'coach_name': team['coach']['name'] if 'coach' in team else None,
+            'api_updated_at': team['lastUpdated']
+        }
 
-    get_teams_data = lambda row: {
-        'id': row['id'],
-        'area_id': row['area']['id'],
-        'competition_id': competition_id,
-        'season_id': season_id,
-        'name': row['name'],
-        'short_name': row['shortName'],
-        'tla': row['tla'],
-        'crest_image_url': row['crest'],
-        'founded_year': row['founded'] if pd.notnull(row['founded']) else None,
-        'venue': row['venue'],
-        'coach_id': row['coach']['id'] if 'coach' in row else None,
-        'coach_name': row['coach']['name'] if 'coach' in row else None,
-        'last_updated_at': pd.to_datetime(row['lastUpdated'])
-    }
-
-    teams_data = [get_teams_data(row) for index, row in df_original.iterrows()]
-
+    teams_data = [extract_team_data(team) for team in response_data['teams']]
     existing_team_ids = [team_data['id'] for team_data in teams_data]
-    existing_teams = Team.objects.filter(id__in=existing_team_ids)
+    existing_teams = {team.id: team for team in Team.objects.filter(id__in=existing_team_ids)}
 
     updated_teams = []
     new_teams = []
 
     for team_data in teams_data:
-        try:
-            team = existing_teams.get(id=team_data['id'])
+        team = existing_teams.get(team_data['id'])
+        if team:
             for key, value in team_data.items():
                 setattr(team, key, value)
             updated_teams.append(team)
-        except Team.DoesNotExist:
+        else:
             new_teams.append(Team(**team_data))
 
     Team.objects.bulk_update(updated_teams, [
         'area_id', 'competition_id', 'season_id', 'name', 'short_name', 'tla',
         'crest_image_url', 'founded_year', 'venue', 'coach_id',
-        'coach_name', 'last_updated_at'
+        'coach_name', 'api_updated_at'
     ])
     Team.objects.bulk_create(new_teams)
 
 def fetch_teams_from_competitions():
-    competitions = ['JJL']
+    competitions = ['FL1']
     for competition in competitions:
         fetch_teams_data(competition)
 
 # ▼ ここからPlayersのAPIデータ取得 ▼
 
-#既存player_idを取得して新規をbulk_createで作成、既存をbulk_updateで作成
 def fetch_players_data(competition_code):
-    connection = http.client.HTTPConnection(settings.FOOTBALLDATA_API_URL)
+    url = f"{settings.FOOTBALLDATA_API_URL}/v4/competitions/{competition_code}/teams"
     headers = { 'X-Auth-Token': settings.FOOTBALLDATA_API_TOKEN }
-    connection.request('GET', f'/v4/competitions/{competition_code}/teams', None, headers)
-    response = json.loads(connection.getresponse().read().decode())
+    
+    response = requests.get(url, headers=headers)
+    response.raise_for_status()
+    response_data = response.json()
 
-    competition_id = response['competition']['id']
-    season_id = response['season']['id']
+    competition_id = response_data['competition']['id']
+    season_id = response_data['season']['id']
 
-    df_original = pd.DataFrame(response['teams'])
+    players_data = [
+        {
+            'id': player['id'],
+            'team_id': team['id'],
+            'competition_id': competition_id,
+            'season_id': season_id,
+            'name': player['name'],
+            'position': player['position'],
+            'birthday': player['dateOfBirth'],
+            'nationality': player['nationality'],
+            'shirt_number': player['shirtNumber'],
+            'api_updated_at': team['lastUpdated']
+        }
+        for team in response_data['teams']
+        for player in team['squad']
+    ]
 
-    players_data = []
-    for index, row in df_original.iterrows():
-        team_id = row['id']
-        for player in row['squad']:
-            player_data = {
-                'id': player['id'],
-                'team_id': team_id,
-                'competition_id': competition_id,
-                'season_id': season_id,
-                'name': player['name'],
-                'position': player['position'],
-                'birthday': player['dateOfBirth'],
-                'nationality': player['nationality'],
-                'shirt_number': player['shirtNumber'] if pd.notnull(player['shirtNumber']) else None,
-                'last_updated_at': row['lastUpdated'],
-            }
-            players_data.append(player_data)
-
-    df_players = pd.DataFrame(players_data)
-
-    # 取得したデータの中で重複があった場合のログ
-    duplicates = df_players[df_players.duplicated(subset='id')]
-    if not duplicates.empty:
-        print(f"Duplicated Player IDs: {duplicates['id'].tolist()}")
+    # 重複チェック
+    seen = set()
+    duplicates = [player['id'] for player in players_data if player['id'] in seen or seen.add(player['id'])]
+    if duplicates:
+        print(f"Duplicated Player IDs: {duplicates}")
 
     # 取得したデータの中での重複の除去
-    df_players = df_players.drop_duplicates(subset='id', keep='first')
+    players_data = {player['id']: player for player in players_data}.values()
 
-    df_players['last_updated_at'] = pd.to_datetime(df_players['last_updated_at'])
-    df_players['birthday'] = pd.to_datetime(df_players['birthday'])
-
-    player_ids = df_players['id'].tolist()
-
+    player_ids = [player['id'] for player in players_data]
     existing_player_ids = Player.objects.filter(id__in=player_ids).values_list('id', flat=True)
 
-    new_player_data = df_players[~df_players['id'].isin(existing_player_ids)]
-    update_player_data = df_players[df_players['id'].isin(existing_player_ids)]
+    new_players_data = [player for player in players_data if player['id'] not in existing_player_ids]
+    update_players_data = [player for player in players_data if player['id'] in existing_player_ids]
 
-    new_player_objects = []
-    for index, row in new_player_data.iterrows():
+    new_player_objects = [
+        Player(**player) for player in new_players_data if player['shirt_number'] is not None
+    ]
 
-        shirt_number = row['shirt_number']
-        if pd.isna(row['shirt_number']):
-            continue
-
-        new_player_objects.append(
-            Player(
-                id=row['id'],
-                team_id=row['team_id'],
-                competition_id=row['competition_id'],
-                season_id=row['season_id'],
-                name=row['name'],
-                nationality=row['nationality'],
-                position=row['position'], 
-                birthday=row['birthday'],
-                shirt_number=row['shirt_number'],
-                last_updated_at=row['last_updated_at']
-            )
-        )
+    update_player_objects = [
+        Player(**player) for player in update_players_data if player['shirt_number'] is not None
+    ]
 
     Player.objects.bulk_create(new_player_objects)
-
-    update_player_objects = []
-    for index, row in update_player_data.iterrows():
-
-        shirt_number = row['shirt_number']
-        if pd.isna(row['shirt_number']):
-            continue
-
-        update_player_objects.append(
-            Player(
-                id=row['id'],
-                team_id=row['team_id'],
-                competition_id=row['competition_id'],
-                season_id=row['season_id'],
-                name=row['name'],
-                nationality=row['nationality'],
-                position=row['position'], 
-                birthday=row['birthday'],
-                shirt_number=row['shirt_number'],
-                last_updated_at=row['last_updated_at']
-            )
-        )
-
-    Player.objects.bulk_update(update_player_objects, ['team_id', 'competition_id', 'season_id', 'name', 'nationality', 'position', 'birthday', 'shirt_number', 'last_updated_at'])
+    Player.objects.bulk_update(update_player_objects, ['team_id', 'competition_id', 'season_id', 'name', 'nationality', 'position', 'birthday', 'shirt_number', 'api_updated_at'])
 
 def fetch_players_from_competitions():
-    competitions = ['JJL']
+    competitions = ['FL1']
     for competition in competitions:
         fetch_players_data(competition)
 
 # ▼ ここからMatchesのAPIデータ取得 ▼
 
 def fetch_matches_data(competition_code):
-    connection = http.client.HTTPConnection(settings.FOOTBALLDATA_API_URL)
-    headers = { 'X-Auth-Token': settings.FOOTBALLDATA_API_TOKEN }
-    connection.request('GET', f'/v4/competitions/{competition_code}/matches', None, headers)
-    response = json.loads(connection.getresponse().read().decode())
+    url = f"{settings.FOOTBALLDATA_API_URL}/v4/competitions/{competition_code}/matches"
+    headers = {'X-Auth-Token': settings.FOOTBALLDATA_API_TOKEN}
+    response = requests.get(url, headers=headers)
+    response.raise_for_status()
+    data = response.json()
 
-    competition_id = response['competition']['id']   
-    df_original = pd.DataFrame(response['matches'])
+    competition_id = data['competition']['id']
+    season_id = data['matches'][0]['season']['id']
+    season_year = data['filters']['season']
 
-    get_matches_data = lambda row: pd.Series([
-        row['season']['id'],
-        row['id'],
-        row['matchday'],
-        row['homeTeam']['id'],
-        row['awayTeam']['id'],
-        row['utcDate'],
-        row['status'],
-        row['score'].get('winner', None),
-        int(row['score']['fullTime'].get('home', 0)) if row['score']['fullTime'].get('home') is not None else None,
-        int(row['score']['fullTime'].get('away', 0)) if row['score']['fullTime'].get('away') is not None else None,
-        int(row['referees'][0]['id']) if row['referees'] else None,
-        row['referees'][0]['name'] if row['referees'] else None,
-        row['lastUpdated'],
-        competition_id,
-    ], index=['season_id', 'id', 'matchday', 'home_team_id', 'away_team_id', 'started_at', 'status', 'winner', 'home_score', 'away_score', 'referees_id', 'referees_name', 'last_updated_at', 'competition_id'])
-
-    df_matches = df_original.apply(get_matches_data, axis=1)
-    df_matches['started_at'] = pd.to_datetime(df_matches['started_at'])
-    df_matches['last_updated_at'] = pd.to_datetime(df_matches['last_updated_at'])
-
-    match_ids = df_matches['id'].tolist()
-    existing_matches = Match.objects.filter(id__in=match_ids)
-    existing_match_ids = [match.id for match in existing_matches]
-
-    matches_to_create = []
-    matches_to_update = []
-    for index, row in df_matches.iterrows():
-        if pd.isna(row['id']):
-            continue
-        match_data = {
+    def extract_match_data(row, competition_id, season_id, season_year):
+        return {
             'id': row['id'],
-            'competition_id': row['competition_id'],
-            'season_id': row['season_id'],
+            'competition_id': competition_id,
+            'season_id': season_id,
+            'season_year': season_year,
             'matchday': row['matchday'],
-            'home_team_id': row['home_team_id'], 
-            'away_team_id': row['away_team_id'],
-            'started_at': row['started_at'],
+            'home_team_id': row['homeTeam']['id'],
+            'away_team_id': row['awayTeam']['id'],
+            'started_at': row['utcDate'],
             'status': row['status'],
-            'winner': row['winner'], 
-            'home_score': row['home_score'] if pd.notna(row['home_score']) else None,
-            'away_score': row['away_score'] if pd.notna(row['away_score']) else None,
-            'referees_id': row['referees_id'] if pd.notna(row['referees_id']) else None,
-            'referees_name': row['referees_name'] if pd.notna(row['referees_name']) else None,
-            'last_updated_at': row['last_updated_at'],
+            'winner': row['score'].get('winner'),
+            'home_score': row['score']['fullTime'].get('home'),
+            'away_score': row['score']['fullTime'].get('away'),
+            'referees_id': row['referees'][0]['id'] if row['referees'] else None,
+            'referees_name': row['referees'][0]['name'] if row['referees'] else None,
+            'last_updated_at': row['lastUpdated'],
         }
-        if row['id'] in existing_match_ids:
-            matches_to_update.append(Match(**match_data))
-        else:
-            matches_to_create.append(Match(**match_data))
+
+    #全期間の既存データを取得
+    matches_data = [extract_match_data(match, competition_id, season_id, season_year) for match in data['matches']]
+
+    #1日前以降の既存データを取得
+    #matches_data = [extract_match_data(match, competition_id, season_id, season_year) for match in data['matches'] if match['utcDate'] > (datetime.now() - timedelta(days=1)).isoformat()]
+
+    existing_match_ids = {match.id for match in Match.objects.filter(id__in=[m['id'] for m in matches_data])}
+
+    matches_to_create = [Match(**match_data) for match_data in matches_data if match_data['id'] not in existing_match_ids]
+    matches_to_update = [Match(**match_data) for match_data in matches_data if match_data['id'] in existing_match_ids]
 
     Match.objects.bulk_create(matches_to_create)
-    Match.objects.bulk_update(matches_to_update, ['competition_id', 'season_id', 'matchday', 'home_team_id', 'away_team_id', 'started_at', 'status', 'winner', 'home_score', 'away_score', 'referees_id', 'referees_name', 'last_updated_at'])
+    Match.objects.bulk_update(matches_to_update, ['competition_id', 'season_id', 'season_year', 'matchday', 'home_team_id', 'away_team_id', 'started_at', 'status', 'winner', 'home_score', 'away_score', 'referees_id', 'referees_name', 'last_updated_at'])
 
 def fetch_matches_from_competitions():
     competitions = ['PL', 'PD', 'SA', 'JJL']
@@ -923,49 +857,59 @@ def fetch_matches_from_competitions():
 # ▼ ここからGoalsのAPIデータ取得 ▼
 
 def fetch_goals_data(match_id):
-    connection = http.client.HTTPConnection(settings.FOOTBALLDATA_API_URL)
-    headers = { 'X-Auth-Token': settings.FOOTBALLDATA_API_TOKEN }
-    connection.request('GET', f'/v4/matches/{match_id}', None, headers)
-    response = json.loads(connection.getresponse().read().decode())
+    url = f"{settings.FOOTBALLDATA_API_URL}/v4/matches/{match_id}"
+    headers = {'X-Auth-Token': settings.FOOTBALLDATA_API_TOKEN}
+    response = requests.get(url, headers=headers)
+    response.raise_for_status()
+    data = response.json()
 
-    #df_original = pd.DataFrame(response['matches'])
-    df_original = pd.DataFrame([response])
-
-    #ここからGOALデータの抽出
     def extract_goals_data(row):
         goals = []
+
+        # 頻繁に使用する要素を変数として保存
+        competition_id = row['competition']['id']
+        season_id = row['season']['id']
+        match_id = row['id']
+
         for goal in row.get('goals', []):
             goal_data = {
-                'competition_id': row['competition']['id'],
-                'season_id': row['season']['id'],  
-                'match_id': row['id'],
+                'competition_id': competition_id,
+                'season_id': season_id,
+                'match_id': match_id,
                 'team_id': goal['team']['id'],
                 'player_id': goal['scorer']['id'],
                 'assist_player_id': goal['assist']['id'] if goal['assist'] else None,
                 'minute': goal['minute'],
-                'additional_time': goal['injuryTime'],
+                'additional_time': goal.get('injuryTime', None),
                 'type': goal['type'],
                 'home_score': goal['score']['home'],
                 'away_score': goal['score']['away'],
             }
             goals.append(goal_data)
         return goals
-    
-    goals_to_create = []
-    for _, row in df_original.iterrows():
-        goals_data = extract_goals_data(row)
-        for goal_data in goals_data:
-            # 既存のゴールデータが存在するか確認
-            exists = Goal.objects.filter(
-                match_id=goal_data['match_id'],
-                team_id=goal_data['team_id'],
-                player_id=goal_data['player_id'],
-                minute=goal_data['minute'],
-                additional_time=goal_data['additional_time']
-            ).exists()
-            if not exists:
-                goals_to_create.append(Goal(**goal_data))
 
+    goals_data = extract_goals_data(data)
+
+    unique_keys = [(goal['match_id'], goal['home_score'], goal['away_score']) for goal in goals_data]
+    existing_goals = Goal.objects.filter(match_id=match_id, home_score__in=[key[1] for key in unique_keys], away_score__in=[key[2] for key in unique_keys])
+    existing_goals_dict = {(goal.match_id, goal.home_score, goal.away_score): goal for goal in existing_goals}
+
+    goals_to_update = []
+    goals_to_create = []
+
+    for goal_data in goals_data:
+        unique_key = (goal_data['match_id'], goal_data['home_score'], goal_data['away_score'])
+        existing_goal = existing_goals_dict.get(unique_key)
+
+        if existing_goal:
+            for key, value in goal_data.items():
+                setattr(existing_goal, key, value)
+            # 既存のデータを更新用のdictにセット（既存のデータを上書き）
+            goals_to_update.append(existing_goal)
+        else:
+            goals_to_create.append(Goal(**goal_data))
+
+    Goal.objects.bulk_update(goals_to_update, ['competition_id', 'season_id', 'match_id', 'team_id', 'player_id', 'assist_player_id', 'additional_time', 'type', 'home_score', 'away_score'])
     Goal.objects.bulk_create(goals_to_create)
 
 def fetch_recent_match_goals():
@@ -978,6 +922,90 @@ def fetch_recent_match_goals():
     # 各match_idに対してfetch_goals_dataを実行
     for match_id in recent_match_ids:
         fetch_goals_data(match_id)
+
+def fetch_standings_data(competition_code):
+    url = f"{settings.FOOTBALLDATA_API_URL}/v4/competitions/{competition_code}/standings"
+    headers = {'X-Auth-Token': settings.FOOTBALLDATA_API_TOKEN}
+    response = requests.get(url, headers=headers)
+    data = response.json()
+
+    def extract_standings_data():
+        standings = []
+
+        # 頻繁に使用する要素を変数として保存
+        competition_id = data['competition']['id']
+        season_id = data['season']['id']
+        season_year = data['filters']['season']
+
+        for standing in data['standings']:
+            stage = standing['stage']
+            type_ = standing['type']
+            group = standing.get('group')
+
+            for table in standing['table']:
+                standing_data = {
+                    'competition_id': competition_id,
+                    'season_id': season_id,
+                    'season_year': season_year,
+                    'stage': stage,
+                    'type': type_,
+                    'group': group,
+                    'position': table['position'],
+                    'team_id': table['team']['id'],
+                    'played_matches': table['playedGames'],
+                    'points': table['points'],
+                    'won': table['won'],
+                    'draw': table['draw'],
+                    'lost': table['lost'],
+                    'goals_for': table['goalsFor'],
+                    'goals_against': table['goalsAgainst'],
+                    'goal_difference': table['goalDifference'],
+                    'form': table.get('form'),
+                }
+                standings.append(standing_data)
+        return standings
+
+    standings_data = extract_standings_data()
+
+    # standings_dataからのteam_idを取得して、クエリするときに辞書として使用
+    team_ids = {standing['team_id'] for standing in standings_data}
+    teams = Team.objects.filter(id__in=team_ids)
+    team_lookup = {team.id: team for team in teams}
+
+    # 既存の standings を一度のクエリで取得
+    existing_standings = Standing.objects.filter(
+        competition_id=data['competition']['id'],
+        season_id=data['season']['id']
+    )
+
+    # この結果を辞書に格納
+    existing_standings_lookup = {(standing.stage, standing.group, standing.position, standing.team_id): standing for standing in existing_standings}
+
+    standings_to_update = []
+    standings_to_create = []
+
+    for standing_data in standings_data:
+ 
+        # 辞書を使ってteam_idに対応するTeamインスタンスを取得
+        key = (standing_data['stage'], standing_data['group'], standing_data['position'], standing_data['team_id'])
+
+        # 辞書を使ってteam_idに対応するTeamインスタンスを取得    
+        existing_standing = existing_standings_lookup.get(key)
+
+        if existing_standing:
+            for k, value in standing_data.items():
+                setattr(existing_standing, k, value)
+            standings_to_update.append(existing_standing)
+        else:
+            standings_to_create.append(Standing(**standing_data))
+
+    Standing.objects.bulk_update(standings_to_update, ['competition_id', 'season_id', 'stage', 'type', 'group', 'position', 'team_id', 'played_matches', 'points', 'won', 'draw', 'lost', 'goals_for', 'goals_against', 'goal_difference', 'form'])
+    Standing.objects.bulk_create(standings_to_create)
+
+def fetch_standings_from_competitions():
+    competitions = ['PL', 'PD', 'SA', 'JJL']
+    for competition in competitions:
+        fetch_standings_data(competition)
 
 ''' メールログイン関連（廃止）
 

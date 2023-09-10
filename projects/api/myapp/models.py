@@ -20,7 +20,7 @@ class Team(models.Model):
     coach_name = models.CharField(max_length=255, null=True)
     founded_year = models.IntegerField(null=True)
     venue = models.CharField(max_length=255, null=True)
-    last_updated_at = models.DateTimeField()
+    api_updated_at = models.DateTimeField()
     name_ja = models.CharField(max_length=255, null=True)
     crest_image = models.ImageField(null=True)
     crest_badge_image = models.ImageField(null=True)
@@ -29,6 +29,8 @@ class Team(models.Model):
     club_color_code_second = models.CharField(max_length=7, default='#FFFFFF')
     coach_name_ja = models.CharField(max_length=255, null=True)
     venue_ja = models.CharField(max_length=255, null=True)
+    created_at = models.DateTimeField(default=timezone.now, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
 
     class Meta:
         db_table = 'teams'
@@ -43,13 +45,15 @@ class Player(models.Model):
     nationality = models.CharField(max_length=255, null=True)
     position = models.CharField(max_length=255, null=True)
     birthday = models.DateField(null=True)
-    last_updated_at = models.DateTimeField(null=True)
+    api_updated_at = models.DateTimeField(null=True)
     name_ja = models.CharField(max_length=255, null=True)
     is_active = models.BooleanField(default=True)
     shirt_number = models.IntegerField(null=True)
     is_national = models.BooleanField(default=False)
     national_team_id = models.IntegerField(null=True)
     national_shirt_number = models.IntegerField(null=True)
+    created_at = models.DateTimeField(default=timezone.now, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
 
     class Meta:
         db_table = 'players'
@@ -132,6 +136,7 @@ class Match(models.Model):
     id = models.IntegerField(primary_key=True)
     competition_id = models.IntegerField(null=True)
     season_id = models.IntegerField(null=True)
+    season_year = models.IntegerField(null=True)
     matchday = models.IntegerField(null=True)
     home_team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='home_matches', db_column='home_team_id')
     away_team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='away_matches', db_column='away_team_id')
@@ -224,6 +229,34 @@ class Goal(models.Model):
     home_score = models.IntegerField(null=True)
     away_score = models.IntegerField(null=True)
     is_valid = models.BooleanField(default=True)
+    created_at = models.DateTimeField(default=timezone.now, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
 
     class Meta:
         db_table = 'goals'
+
+# 順位情報
+class Standing(models.Model):
+    competition_id = models.IntegerField()
+    season_id = models.IntegerField()
+    season_year = models.IntegerField(null=True)
+    stage = models.CharField(max_length=255)
+    type = models.CharField(max_length=255)
+    group = models.CharField(max_length=255, default=1, null=True)
+    position = models.IntegerField()
+    team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='team_standings', db_column='team_id')
+    played_matches = models.IntegerField(default=0)
+    points = models.IntegerField(default=0)
+    won = models.IntegerField(default=0)
+    draw = models.IntegerField(default=0)
+    lost = models.IntegerField(default=0)
+    goals_for = models.IntegerField(default=0)
+    goals_against = models.IntegerField(default=0)
+    goal_difference = models.IntegerField(default=0)
+    form = models.CharField(max_length=255, null=True)
+    created_at = models.DateTimeField(default=timezone.now, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
+
+    class Meta:
+        db_table = 'standings'
+        unique_together = ('competition_id', 'season_id', 'stage', 'group', 'position', 'team' )
