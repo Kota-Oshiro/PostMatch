@@ -440,7 +440,7 @@ class MatchPostPlayerList(generics.ListAPIView):
     
     def get_players(self, team_id, is_national, position_order):
         if is_national:
-            return Player.objects.filter(national_team_id=team_id, is_active=True).annotate(sort_order=position_order).order_by('sort_order', 'national_shirt_number', 'name')
+            return Player.objects.filter(national_team_id=team_id, is_national=True).annotate(sort_order=position_order).order_by('sort_order', 'national_shirt_number', 'name')
         else:
             return Player.objects.filter(team_id=team_id, is_active=True).exclude(shirt_number=None).annotate(sort_order=position_order).order_by('sort_order', 'shirt_number', 'name')
         
