@@ -32,7 +32,7 @@ function TeamList() {
 
   // teamのフェッチ
   const fetchTeams = async () => {
-    const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/team/${competitionId}/`);
+    const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/teams/${competitionId}/`);
     return res.data;
   };
   
