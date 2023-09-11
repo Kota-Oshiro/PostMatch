@@ -236,7 +236,7 @@ function Match() {
       />
       {!isAuthenticated && <Login /> }
   
-      <div className='activity-container post-list'>
+      <div className='activity-container match-post-list'>
         <div className='activity-tab match-detail'>
           <div className={`activity-tab-column match-detail ${currentTab === 'posts' ? 'active' : ''}`} onClick={() => openForm('posts')}>
             <span>ポスト</span>
