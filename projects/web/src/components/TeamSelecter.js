@@ -13,12 +13,12 @@ function TeamSelecter({ teams, handleTeamClick }) {
           onClick={() => handleTeamClick({
             id: team.id, 
             competition_id: team.competition_id, 
-            tla: team.tla, 
+            crest_name: team.crest_name, 
             name: team.name_ja
           })}
         >
           {team.competition_id !== 2119 ? (
-            <img src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/crest-${team.tla}.webp`} className='team-selecter-img'/>
+            <img src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/${team.crest_name}.webp`} className='team-selecter-img'/>
           ) : (
             <CrestIcon className='team-selecter-img' />
           )}

@@ -729,15 +729,16 @@ def fetch_teams_data(competition_code):
         else:
             new_teams.append(Team(**team_data))
 
-    Team.objects.bulk_update(updated_teams, [
-        'area_id', 'competition_id', 'season_id', 'name', 'short_name', 'tla',
-        'crest_image_url', 'founded_year', 'venue', 'coach_id',
-        'coach_name', 'api_updated_at'
-    ])
+    # Team.objects.bulk_update(updated_teams, [
+    #    'area_id', 'competition_id', 'season_id', 'name', 'short_name', 'tla',
+    #    'crest_image_url', 'founded_year', 'venue', 'coach_id',
+    #    'coach_name', 'api_updated_at'
+    #])
+
     Team.objects.bulk_create(new_teams)
 
 def fetch_teams_from_competitions():
-    competitions = ['FL1']
+    competitions = ['PL', 'PD', 'SA']
     for competition in competitions:
         fetch_teams_data(competition)
 
@@ -795,10 +796,10 @@ def fetch_players_data(competition_code):
     ]
 
     Player.objects.bulk_create(new_player_objects)
-    Player.objects.bulk_update(update_player_objects, ['team_id', 'competition_id', 'season_id', 'name', 'nationality', 'position', 'birthday', 'shirt_number', 'api_updated_at'])
+    # Player.objects.bulk_update(update_player_objects, ['team_id', 'competition_id', 'season_id', 'name', 'nationality', 'position', 'birthday', 'shirt_number', 'api_updated_at'])
 
 def fetch_players_from_competitions():
-    competitions = ['FL1']
+    competitions = ['CL']
     for competition in competitions:
         fetch_players_data(competition)
 
@@ -822,6 +823,8 @@ def fetch_matches_data(competition_code):
             'season_id': season_id,
             'season_year': season_year,
             'matchday': row['matchday'],
+            'stage': row['stage'],
+            'group': row['group'],
             'home_team_id': row['homeTeam']['id'],
             'away_team_id': row['awayTeam']['id'],
             'started_at': row['utcDate'],
@@ -835,10 +838,10 @@ def fetch_matches_data(competition_code):
         }
 
     #全期間の既存データを取得
-    matches_data = [extract_match_data(match, competition_id, season_id, season_year) for match in data['matches']]
+    #matches_data = [extract_match_data(match, competition_id, season_id, season_year) for match in data['matches']]
 
     #1日前以降の既存データを取得
-    #matches_data = [extract_match_data(match, competition_id, season_id, season_year) for match in data['matches'] if match['utcDate'] > (datetime.now() - timedelta(days=1)).isoformat()]
+    matches_data = [extract_match_data(match, competition_id, season_id, season_year) for match in data['matches'] if match['utcDate'] > (datetime.now() - timedelta(days=1)).isoformat()]
 
     existing_match_ids = {match.id for match in Match.objects.filter(id__in=[m['id'] for m in matches_data])}
 
@@ -846,7 +849,7 @@ def fetch_matches_data(competition_code):
     matches_to_update = [Match(**match_data) for match_data in matches_data if match_data['id'] in existing_match_ids]
 
     Match.objects.bulk_create(matches_to_create)
-    Match.objects.bulk_update(matches_to_update, ['competition_id', 'season_id', 'season_year', 'matchday', 'home_team_id', 'away_team_id', 'started_at', 'status', 'winner', 'home_score', 'away_score', 'referees_id', 'referees_name', 'last_updated_at'])
+    Match.objects.bulk_update(matches_to_update, ['competition_id', 'season_id', 'season_year', 'matchday', 'stage', 'group', 'home_team_id', 'away_team_id', 'started_at', 'status', 'winner', 'home_score', 'away_score', 'referees_id', 'referees_name', 'last_updated_at'])
 
 def fetch_matches_from_competitions():
     competitions = ['PL', 'PD', 'SA', 'JJL']

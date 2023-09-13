@@ -268,7 +268,7 @@ function UserDetail() {
                     { account.support_team && account.support_team.competition_id !== 2119 &&
 
                       <Link to={`/team/${account.support_team.id}`}>
-                        <img src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/crest-${account.support_team.tla}.webp`} className='user-support-crest'/>
+                        <img src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/${account.support_team.crest_name}.webp`} className='user-support-crest'/>
                       </Link>
                     }
                   </div>

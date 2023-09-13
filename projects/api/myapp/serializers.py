@@ -14,12 +14,12 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 class TeamListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Team
-        fields = ['id', 'competition_id', 'name_ja', 'tla', 'total_supporter_count', 'club_color_code_first']
+        fields = ['id', 'competition_id', 'name_ja', 'crest_name', 'total_supporter_count', 'club_color_code_first']
 
 class TeamSerializer(serializers.ModelSerializer):
     class Meta:
         model = Team
-        fields = ['id', 'competition_id', 'tla', 'founded_year', 'name_ja', 'total_supporter_count', 'club_color_code_first', 'coach_name_ja', 'venue_ja']
+        fields = ['id', 'competition_id', 'tla', 'crest_name', 'founded_year', 'name_ja', 'total_supporter_count', 'club_color_code_first', 'coach_name_ja', 'venue_ja']
 
 class TeamSupporterSerializer(serializers.ModelSerializer):
     class Meta:
@@ -63,19 +63,19 @@ class AccountHeaderSerializer(serializers.ModelSerializer):
 class AccountEditTeamSerializer(serializers.ModelSerializer):
     class Meta:
         model = Team
-        fields = ['competition_id', 'season_id', 'id', 'name_ja', 'tla']
+        fields = ['competition_id', 'season_id', 'id', 'name_ja', 'crest_name']
 
 class AccountEditSerializer(serializers.ModelSerializer):
     support_team = serializers.PrimaryKeyRelatedField(queryset=Team.objects.all(), allow_null=True)
     support_team_competition = serializers.SerializerMethodField()
     support_team_season = serializers.SerializerMethodField()
     support_team_name_ja = serializers.SerializerMethodField()
-    support_team_tla = serializers.SerializerMethodField()
+    support_team_crest_name = serializers.SerializerMethodField()
     supported_at = serializers.DateTimeField(allow_null=True)
 
     class Meta:
         model = Account
-        fields = ['id', 'name', 'profile_image', 'support_team', 'support_team_competition', 'support_team_season', 'support_team_name_ja', 'support_team_tla', 'supported_at', 'description', 'twitter_id']
+        fields = ['id', 'name', 'profile_image', 'support_team', 'support_team_competition', 'support_team_season', 'support_team_name_ja', 'support_team_crest_name', 'supported_at', 'description', 'twitter_id']
 
     def get_support_team_competition(self, obj):
         if obj.support_team is not None:
@@ -95,9 +95,9 @@ class AccountEditSerializer(serializers.ModelSerializer):
         else:
             return None
 
-    def get_support_team_tla(self, obj):
+    def get_support_team_crest_name(self, obj):
         if obj.support_team is not None:
-            return obj.support_team.tla
+            return obj.support_team.crest_name
         else:
             return None
 
@@ -106,7 +106,7 @@ class AccountEditSerializer(serializers.ModelSerializer):
 class PostTeamSerializer(serializers.ModelSerializer):
     class Meta:
         model = Team
-        fields = ['id', 'competition_id', 'tla', 'name_ja', 'club_color_code_first']
+        fields = ['id', 'competition_id', 'tla', 'badge_name', 'name_ja', 'club_color_code_first']
 
 class PostAccountSerializer(serializers.ModelSerializer):
     support_team = PostTeamSerializer(read_only=True)
@@ -143,7 +143,7 @@ class MotmTeamSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Team
-        fields = ['id', 'tla', 'crest_image', 'crest_badge_image']
+        fields = ['id', 'tla', 'crest_name', 'badge_name']
 
 class MotmPlayerSerializer(serializers.ModelSerializer):
     team = MotmTeamSerializer()
@@ -159,7 +159,7 @@ class MatchTeamSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Team
-        fields = ['id', 'name_ja', 'tla', 'crest_image', 'club_color_code_first']
+        fields = ['id', 'name_ja', 'tla', 'crest_name', 'club_color_code_first']
 
 class MatchSerializer(serializers.ModelSerializer):
     home_team = MatchTeamSerializer(read_only=True)
@@ -167,7 +167,7 @@ class MatchSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Match
-        fields = ['id', 'competition_id', 'season_year', 'matchday', 'home_team', 'away_team', 'started_at', 'status', 'home_score', 'away_score', 'total_watch_count', 'total_post_count']
+        fields = ['id', 'competition_id', 'season_year', 'matchday', 'stage', 'group', 'home_team', 'away_team', 'started_at', 'status', 'home_score', 'away_score', 'total_watch_count', 'total_post_count']
 
 class MatchPlayerSerializer(serializers.ModelSerializer):
 

@@ -31,7 +31,7 @@ function MatchCard({ match, className }) {
           <div className='match-card-scoreboard'>
             {match.competition_id !== 2119 ? (
               <img
-              src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/crest-${match.home_team.tla}.webp`}
+              src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/${match.home_team.crest_name}.webp`}
               className='match-card-crest-home'
               alt={match.home_team.tla}
               />
@@ -40,7 +40,7 @@ function MatchCard({ match, className }) {
             )}
             {match.competition_id !== 2119 ? (
               <img
-              src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/crest-${match.away_team.tla}.webp`}
+              src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/${match.away_team.crest_name}.webp`}
               className='match-card-crest-away'
               alt={match.away_team.tla}
               />

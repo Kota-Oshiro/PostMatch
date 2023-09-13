@@ -46,7 +46,17 @@ function Schedule() {
   const [competitionColor, setCompetitionColor] = useState(initialCompetitionColor);
 
   const minTab = 1;
-  const maxTab = competitionId === 2119 ? 34 : 38;
+  const getMaxTab = (id) => {
+    switch(id) {
+      case 2119:
+        return 34;
+      case 2001:
+        return 13;
+      default:
+        return 38;
+    }
+  }
+  const maxTab = getMaxTab(competitionId);
 
   // スケジュールタブ用のマッチデイとuseRefで前後記録
   const [tabMatchday, setTabMatchday] = useState(null);

@@ -43,7 +43,7 @@ function UserEditForm() {
 
   const [supportTeam, setSupportTeam] = useState('');
   const [supportTeamCompetition, setSupportTeamCompetition] = useState('');
-  const [supportTeamTla, setSupportTeamTla] = useState('');
+  const [supportTeamCrest, setSupportTeamCrest] = useState('');
   const [supportTeamName, setSupportTeamName] = useState('');
   const [supportedAtYear, setSupportedAtYear] = useState('');
   const [supportedAtMonth, setSupportedAtMonth] = useState('');
@@ -98,7 +98,7 @@ function UserEditForm() {
               if (data.name) setName(data.name);
               if (data.support_team) setSupportTeam(data.support_team);
               if (data.support_team) setSupportTeamCompetition(data.support_team_competition);
-              if (data.support_team) setSupportTeamTla(data.support_team_tla);
+              if (data.support_team) setSupportTeamCrest(data.support_team_crest_name);
               if (data.support_team) setSupportTeamName(data.support_team_name_ja);
               if (data.description) setDescription(data.description);
               if (data.twitter_id) setTwitterId(data.twitter_id);
@@ -215,7 +215,7 @@ function UserEditForm() {
   const handleTeamClick = (team) => {
     setSupportTeam(team.id);
     setSupportTeamCompetition(team.competition_id);
-    setSupportTeamTla(team.tla);
+    setSupportTeamCrest(team.crest_name);
     setSupportTeamName(team.name);
     setLeagueSelectModalVisible(false);
     setTeamSelecterVisible(false);
@@ -224,7 +224,7 @@ function UserEditForm() {
   const handleClearSettingClick = () => {
     setSupportTeam('');
     setSupportTeamCompetition('');
-    setSupportTeamTla('');
+    setSupportTeamCrest('');
     setSupportTeamName('');
     setSupportedAtYear('');
     setSupportedAtMonth('');
@@ -393,7 +393,7 @@ function UserEditForm() {
               <>
                 <div className='custom-form-selecter-default'>
                   {supportTeamCompetition !== 2119 ? (
-                    <img src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/crest-${supportTeamTla}.webp`} className='custom-form-selecter-icon'/>
+                    <img src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/${supportTeamCrest}.webp`} className='custom-form-selecter-icon'/>
                   ) : (
                     <CrestIcon className='custom-form-selecter-icon' />
                   )}

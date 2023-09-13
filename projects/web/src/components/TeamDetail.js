@@ -242,7 +242,7 @@ function TeamDetail() {
               <div className='tab-header'>
                 <div className='tab-header-left'>
                   {team.competition_id !== 2119 ? (
-                    <img src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/crest-${team.tla}.webp`} className='tab-header-icon' style={{transition: 'none'}}/>
+                    <img src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/${team.crest_name}.webp`} className='tab-header-icon' style={{transition: 'none'}}/>
                   ) : (
                     <CrestIcon className='tab-header-icon'/>
                   )}

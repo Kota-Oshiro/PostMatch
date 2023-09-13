@@ -9,13 +9,13 @@ const PostCardTagMatch = ({ post }) => {
   return (
     <div className='post-tag-match' onClick={(e) => {e.stopPropagation(); navigation(`/match/${post.match.id}`)}}>
       {post.match.competition_id !== 2119 ? (
-        <img src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Badge/badge-${ post.match.home_team.tla }.webp`} className='post-match-icon'/>
+        <img src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Badge/${ post.match.home_team.badge_name }.webp`} className='post-match-icon'/>
       ) : (
         <span className='post-match-tla'>{ post.match.home_team.tla }</span>
       )}
       {postTagStatus(post)}
       {post.match.competition_id !== 2119 ? (
-        <img src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Badge/badge-${ post.match.away_team.tla }.webp`} className='post-match-icon'/>
+        <img src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Badge/${ post.match.away_team.badge_name }.webp`} className='post-match-icon'/>
       ) : (
         <span className='post-match-tla'>{ post.match.away_team.tla}</span>
       )}

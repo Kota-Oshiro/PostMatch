@@ -29,7 +29,7 @@ function MatchDetail({ match, goals }) {
           <Link to={`/team/${match.home_team.id}`} className='match-crest-home'>
             {match.competition_id !== 2119 ? (
             <img
-              src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/crest-${match.home_team.tla}.webp`}
+              src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/${match.home_team.crest_name}.webp`}
               alt={match.home_team.tla}
               className='match-crest-img'
             />
@@ -40,7 +40,7 @@ function MatchDetail({ match, goals }) {
           <Link to={`/team/${match.away_team.id}`} className='match-crest-away'>
             {match.competition_id !== 2119 ? (
             <img
-              src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/crest-${match.away_team.tla}.webp`}
+              src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/${match.away_team.crest_name}.webp`}
               alt={match.away_team.tla}
               className='match-crest-img'
             />

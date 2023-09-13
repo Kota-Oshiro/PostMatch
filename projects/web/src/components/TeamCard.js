@@ -11,7 +11,7 @@ function TeamCard({ team }) {
     <div className='team-card'>
       <div className='team-list-block'>
         {team.competition_id !== 2119 ? (
-          <img src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/crest-${team.tla}.webp`} className='team-list-crest'/>
+          <img src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/${team.crest_name}.webp`} className='team-list-crest'/>
         ) : (
           <CrestIcon className='team-list-crest' />
         )}

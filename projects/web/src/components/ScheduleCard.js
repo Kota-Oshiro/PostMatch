@@ -26,7 +26,7 @@ function ScheduleCard({ match, isScoreVisible, isFirst, isLast }) {
             <div className='schedule-left'>
                 {competitionId !== 2119 ? (                
                     <img
-                    src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/crest-${match.home_team.tla}.webp`}
+                    src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/${match.home_team.crest_name}.webp`}
                     alt={match.home_team.tla}
                     className='schedule-crest'
                     />
@@ -39,7 +39,7 @@ function ScheduleCard({ match, isScoreVisible, isFirst, isLast }) {
                 {renderMatchScore(match, isScoreVisible, competitionId)}
                 {competitionId !== 2119 ? (                
                     <img
-                    src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/crest-${match.away_team.tla}.webp`}
+                    src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/${match.away_team.crest_name}.webp`}
                     alt={match.away_team.tla}
                     className='schedule-crest'
                     />

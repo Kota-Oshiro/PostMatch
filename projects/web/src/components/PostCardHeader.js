@@ -53,7 +53,7 @@ const PostCardHeader = ({ post }) => {
             <span className='post-user-name' onClick={(e) => {e.stopPropagation(); navigation(`/user/${post.user.id}`)}}>{post.user.name}</span>
             {post.user.support_team && post.user.support_team.competition_id !== 2119 &&
             <div className='post-user-support' onClick={(e) => {e.stopPropagation(); navigation(`/team/${post.user.support_team.id}`)}}>
-              <img src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Badge/badge-${post.user.support_team.tla}.webp`} className='post-user-crest'/>
+              <img src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Badge/${post.user.support_team.badge_name}.webp`} className='post-user-crest'/>
             </div>
             }
           </div>

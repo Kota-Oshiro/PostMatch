@@ -9,7 +9,7 @@ function LeagueSelectModal({ match, postPlayerList, handlePlayerClick, handleMod
     <div id='motm-select-modal'>
       <label className='player-lists-group' style={{ backgroundColor: match.home_team.club_color_code_first }}>
         {match.competition_id !== 2119 ? (
-          <img src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/crest-${match.home_team.tla}.webp`} className='custom-form-selecter-icon'/>
+          <img src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/${match.home_team.crest_name}.webp`} className='custom-form-selecter-icon'/>
         ) : (
           <CrestIcon className='custom-form-selecter-icon'/>
         )}
@@ -23,7 +23,7 @@ function LeagueSelectModal({ match, postPlayerList, handlePlayerClick, handleMod
       ))}
       <label className='player-lists-group' style={{ backgroundColor: match.away_team.club_color_code_first }}>
         {match.competition_id !== 2119 ? (
-          <img src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/crest-${match.away_team.tla}.webp`} className='custom-form-selecter-icon'/>
+          <img src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/${match.away_team.crest_name}.webp`} className='custom-form-selecter-icon'/>
         ) : (
           <CrestIcon className='custom-form-selecter-icon'/>
         )}
