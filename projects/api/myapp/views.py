@@ -867,7 +867,7 @@ def fetch_matches_data(competition_code):
     Match.objects.bulk_update(matches_to_update, ['competition_id', 'season_id', 'season_year', 'matchday', 'stage', 'group', 'home_team_id', 'away_team_id', 'started_at', 'status', 'winner', 'home_score', 'away_score', 'referees_id', 'referees_name', 'last_updated_at'])
 
 def fetch_matches_from_competitions():
-    competitions = ['PL', 'PD', 'SA', 'JJL']
+    competitions = ['PL', 'PD', 'SA', 'JJL', 'CL']
     for competition in competitions:
         fetch_matches_data(competition)
 
@@ -1020,7 +1020,7 @@ def fetch_standings_data(competition_code):
     Standing.objects.bulk_create(standings_to_create)
 
 def fetch_standings_from_competitions():
-    competitions = ['PL', 'PD', 'SA', 'JJL']
+    competitions = ['PL', 'PD', 'SA', 'JJL', 'CL']
     for competition in competitions:
         fetch_standings_data(competition)
 
