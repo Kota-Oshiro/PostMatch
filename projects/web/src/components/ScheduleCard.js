@@ -5,8 +5,9 @@ import './ScheduleCard.css';
 
 import { ReactComponent as PostIcon } from '../icons/post.svg';
 import { ReactComponent as WatchedIconGrey } from '../icons/watched_grey.svg';
+import { ReactComponent as CrestIcon } from '../icons/crest.svg';
 
-function ScheduleCard({ match, isScoreVisible, isFirst, isLast }) {
+function ScheduleCard({ match, isScoreVisible, isFirst, isLast, isSingle }) {
 
     const location = useLocation();
     const renderMatchScore = location.pathname.includes("/schedules") 
@@ -16,56 +17,84 @@ function ScheduleCard({ match, isScoreVisible, isFirst, isLast }) {
     const classNames = ['schedule'];
         if (isFirst) classNames.push('first-schedule-card');
         if (isLast) classNames.push('last-schedule-card');
+        if (isSingle) classNames.push('single-schedule-card');
 
     const competitionId = match.competition_id
 
     return (
-        <Link to={`/match/${match.id}`} className='match-links'>
-        <div className={classNames.join(' ')}>
-        <div className='schedule-block'>
-            <div className='schedule-left'>
-                {competitionId !== 2119 ? (                
-                    <img
-                    src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/${match.home_team.crest_name}.webp`}
-                    alt={match.home_team.tla}
-                    className='schedule-crest'
-                    />
-                ) : (
-                    <div className='schedule-tmp-crest'>
-                        <TmpCrest color={match.home_team.club_color_code_first}/>
-                        <span className='schedule-tla'>{match.home_team.tla}</span>
-                    </div>
-                )}
-                {renderMatchScore(match, isScoreVisible, competitionId)}
-                {competitionId !== 2119 ? (                
-                    <img
-                    src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/${match.away_team.crest_name}.webp`}
-                    alt={match.away_team.tla}
-                    className='schedule-crest'
-                    />
-                ) : (
-                    <div className='schedule-tmp-crest'>
-                        <TmpCrest color={match.away_team.club_color_code_first} />
-                        <span className='schedule-tla'>{match.away_team.tla}</span>
-                    </div>
-                )}
-            </div>
-            <div className='schedule-right'>
-                {renderMatchDateTime(match)}
-                <div className='schedule-record'>
-                    <div className='schedule-record-block'>
-                        <WatchedIconGrey className='schedule-icon' />
-                        <span className='schedule-record-count'>{match.total_watch_count}</span>
-                    </div>
-                    <div className='schedule-record-block'>
-                        <PostIcon className='schedule-icon' />
-                        <span className='schedule-record-count'>{match.total_post_count}</span>
+        <>
+        {match.home_team ? (
+            <Link to={`/match/${match.id}`} className='match-links'>
+            <div className={classNames.join(' ')}>
+            <div className='schedule-block'>
+                <div className='schedule-left'>
+                    {competitionId !== 2119 ? (                
+                        <img
+                        src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/${match.home_team.crest_name}.webp`}
+                        alt={match.home_team.tla}
+                        className='schedule-crest'
+                        />
+                    ) : (
+                        <div className='schedule-tmp-crest'>
+                            <TmpCrest color={match.home_team.club_color_code_first}/>
+                            <span className='schedule-tla'>{match.home_team.tla}</span>
+                        </div>
+                    )}
+                    {renderMatchScore(match, isScoreVisible, competitionId)}
+                    {competitionId !== 2119 ? (                
+                        <img
+                        src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/${match.away_team.crest_name}.webp`}
+                        alt={match.away_team.tla}
+                        className='schedule-crest'
+                        />
+                    ) : (
+                        <div className='schedule-tmp-crest'>
+                            <TmpCrest color={match.away_team.club_color_code_first} />
+                            <span className='schedule-tla'>{match.away_team.tla}</span>
+                        </div>
+                    )}
+                </div>
+                <div className='schedule-right'>
+                    {renderMatchDateTime(match)}
+                    <div className='schedule-record'>
+                        <div className='schedule-record-block'>
+                            <WatchedIconGrey className='schedule-icon' />
+                            <span className='schedule-record-count'>{match.total_watch_count}</span>
+                        </div>
+                        <div className='schedule-record-block'>
+                            <PostIcon className='schedule-icon' />
+                            <span className='schedule-record-count'>{match.total_post_count}</span>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        </div>
-        </Link>
+            </div>
+            </Link>
+        ) : (
+            <div className={classNames.join(' ')}>
+                <div className='schedule-block'>
+                    <div className='schedule-left'>                   
+                        <CrestIcon className='schedule-crest'/>
+                        {renderMatchScore(match, isScoreVisible, competitionId)}
+                        <CrestIcon className='schedule-crest'/>
+                    </div>
+                    <div className='schedule-right'>
+                        {renderMatchDateTime(match)}
+                        <div className='schedule-record'>
+                            <div className='schedule-record-block'>
+                                <WatchedIconGrey className='schedule-icon' />
+                                <span className='schedule-record-count'>{match.total_watch_count}</span>
+                            </div>
+                            <div className='schedule-record-block'>
+                                <PostIcon className='schedule-icon' />
+                                <span className='schedule-record-count'>{match.total_post_count}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        )}
+        </>
     );
 }
 

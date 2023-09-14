@@ -9,7 +9,8 @@
 
 .league-header.league-select-schedule {
   padding: 0;
-  width: auto;
+  width: calc(100% - 144px);
+  height: 32px;
 }
 
 .league-header > div {
@@ -19,7 +20,7 @@
   width: 100%;
 }
 
-.league-header.league-select-schedule > div {
+.league-header > div {
   justify-content: unset;
 }
 
@@ -27,6 +28,11 @@
   display: flex;
   align-items: center;
   cursor: pointer;
+  width: 100%;
+}
+
+.league-name.league-select-schedule {
+  justify-content: center;
 }
 
 .league-icon {
@@ -37,6 +43,7 @@
 
 .league-text {
   margin: 0 6px;
+  max-width: calc(100% - 46px);
   font-size: 1.4rem;
   color: #fff;
 }

@@ -4,23 +4,35 @@ import { useLocation } from 'react-router-dom';
 import TeamSelecter from './TeamSelecter';
 
 import './LeagueSelectModal.css';
-import { ReactComponent as NationEngIcon } from '../icons/nation_eng.svg';
-import { ReactComponent as NationEspIcon } from '../icons/nation_esp.svg';
-import { ReactComponent as NationItaIcon } from '../icons/nation_ita.svg';
-import { ReactComponent as NationJpnIcon } from '../icons/nation_jpn.svg';
+import { getCompetitionName, getCompetitionColor, getCompetitionIcon } from './UtilityCompetition';
+
 import { ReactComponent as CloseIcon } from '../icons/close.svg';
 
 function LeagueSelectModal({ handleLeagueClick, handleTeamClick, handleModalClose, handleClearSettingClick, isTeamSelecterVisible, filteredTeams}) {
 
   let location = useLocation();
-  const isUserEdit = location.pathname === ("/user/edit") 
+  const isUserEdit = location.pathname === ("/user/edit")
+  const isSchedule = location.pathname.includes("/schedules")
+ 
+  const basicLeagueInfo = [
+    { key: 'eng1', competition_id: 2021 },
+    { key: 'jpn1', competition_id: 2119 },
+    { key: 'esp1', competition_id: 2014 },
+    { key: 'ita1', competition_id: 2019 },
+  ];
 
-  const leagueLists = [
-    { key: 'eng1', competition_id: 2021, season_id: '1564', color: '#38003c', icon: NationEngIcon, name: 'プレミアリーグ' },
-    { key: 'jpn1', competition_id: 2119, season_id: '1544', color: '#000000', icon: NationJpnIcon, name: 'J1リーグ' },
-    { key: 'esp1', competition_id: 2014, season_id: '1577', color: '#FF4B44', icon: NationEspIcon, name: 'ラ・リーガ' },
-    { key: 'ita1', competition_id: 2019, season_id: '1600', color: '#171D8D', icon: NationItaIcon, name: 'セリエA' },
-  ]
+  if (isSchedule) {
+    basicLeagueInfo.push({ key: 'ucl', competition_id: 2001 });
+  } else {
+    basicLeagueInfo.push({ key: 'others', competition_id: 'others' });
+  }
+
+  const leagueLists = basicLeagueInfo.map(league => ({
+    ...league,
+    color: getCompetitionColor(league.competition_id),
+    icon: getCompetitionIcon(league.competition_id),
+    name: getCompetitionName(league.competition_id)
+  }));
 
   return (
     <div id='league-selecter-modal'>
@@ -37,17 +49,14 @@ function LeagueSelectModal({ handleLeagueClick, handleTeamClick, handleModalClos
         <div className={`league-lists-container ${isTeamSelecterVisible ? 'invisible' : ''}`}>
           {leagueLists.map((menu) => {
             const LeagueIcon = menu.icon;
-            const bgColor = {
-              backgroundColor: menu.color
-            };
             return (
-              <div key={menu.key} className='league-selecter-item' style={bgColor} onClick={() => handleLeagueClick(menu)}>
+              <div key={menu.key} className='league-selecter-item' style={{backgroundImage: `linear-gradient(${menu.color}, #f7f7f7 400%)`}} onClick={() => handleLeagueClick(menu)}>
                 <LeagueIcon key={menu.key} className='league-selecter-img' />
                 <span className='league-selecter-text'>{menu.name}</span>
               </div>
             );
           })}
-          {isUserEdit && <div className='league-selecter-item clear-setting'  onClick={() => handleClearSettingClick()}>設定をクリア</div>}
+          {isUserEdit && <div className='league-selecter-item clear-setting' onClick={() => handleClearSettingClick()}>設定をクリア</div>}
         </div>
         {isTeamSelecterVisible && <TeamSelecter teams={filteredTeams} handleTeamClick={handleTeamClick} />}
     </div>

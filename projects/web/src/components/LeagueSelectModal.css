@@ -48,6 +48,9 @@
   justify-content: center;
   margin-bottom: 24px;
   height: 72px;
+  color: #fff;
+  font-weight: 700;
+  font-size: 1rem;
   border-radius: 8px;
   box-sizing: border-box;
   cursor: pointer;

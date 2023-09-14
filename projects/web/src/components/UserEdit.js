@@ -206,7 +206,12 @@ function UserEditForm() {
 
   // support_teamを選ぶモーダル内でリーグがクリックされたときの関数
   const handleLeagueClick = (menu) => {
-    const filtered = teams.filter(team => team.competition_id === menu.competition_id);
+    let filtered;
+    if (menu.competition_id === 'others') {
+      filtered = teams.filter(team => team.competition_id === null);
+    } else {
+      filtered = teams.filter(team => team.competition_id === menu.competition_id);
+    }
     setFilteredTeams(filtered);
     setTeamSelecterVisible(true);
   };

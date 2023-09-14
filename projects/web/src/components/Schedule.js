@@ -17,7 +17,8 @@ import NotFoundPage from './error/NotFoundPage';
 
 import { getDefaultCompetitionId,getCompetitionName, getCompetitionColor, getCompetitionIcon } from './UtilityCompetition';
 
-const MatchCardListNational = React.lazy(() => import('./MatchCardListNational.js'));
+// nationalバナー枠用、使うときだけ
+// const MatchCardListNational = React.lazy(() => import('./MatchCardListNational.js'));
 
 export const FetchContext = createContext();
 
@@ -107,24 +108,81 @@ function Schedule() {
   
   }, [competitionId, fetchedMatchday]);
 
+  // fetch用のURL生成
+  const getUrlForMatchday = (competitionId, seasonYear, matchday) => {
+    let baseUrl = `/schedule/${competitionId}/${seasonYear}/`;
+  
+    if (competitionId === 2001) {
+      if (!matchday) {
+        return baseUrl;
+      }
+      switch (matchday) {
+        case 1:
+        case 2:
+        case 3:
+        case 4:
+        case 5:
+        case 6:
+          return `${baseUrl}?stage=GROUP_STAGE&matchday=${matchday}`;
+        case 7:
+          return `${baseUrl}?stage=LAST_16&matchday=1`;
+        case 8:
+          return `${baseUrl}?stage=LAST_16&matchday=2`;
+        case 9:
+          return `${baseUrl}?stage=QUARTER_FINALS&matchday=1`;
+        case 10:
+          return `${baseUrl}?stage=QUARTER_FINALS&matchday=2`;
+        case 11:
+          return `${baseUrl}?stage=SEMI_FINALS&matchday=1`;
+        case 12:
+          return `${baseUrl}?stage=SEMI_FINALS&matchday=2`;
+        case 13:
+          return `${baseUrl}?stage=FINAL`;
+        default:
+          return `${baseUrl}?matchday=${matchday}`;
+      }      
+    } else if (matchday) {
+      return `${baseUrl}?matchday=${matchday}`;
+    } else {
+      return `${baseUrl}`;
+    }
+  }
+
+  // tabセット用
+  const determineTabMatchday = (stage, matchday) => {
+    if (stage === 'LAST_16') {
+      return matchday === 1 ? 7 : 8;
+    } else if (stage === 'QUARTER_FINALS') {
+      return matchday === 1 ? 9 : 10;
+    } else if (stage === 'SEMI_FINALS') {
+      return matchday === 1 ? 11 : 12;
+    } else if (stage === 'FINAL') {
+      return 13;
+    }
+    return matchday;
+  };
+    
   const fetchMatches = async (competitionId, seasonYear, matchday) => {
-    const url = matchday
-        ? `/schedule/${competitionId}/${seasonYear}/${matchday}`
-        : `/schedule/${competitionId}/${seasonYear}/`;
+    const url = getUrlForMatchday(competitionId, seasonYear, matchday);
     const result = await apiBaseUrl.get(url);
     return result.data;
   };
 
-  const { data: matchesData } = useQuery(
+  const { data: matchesData, isError, error } = useQuery(
     queryKey, 
     () => fetchMatches(competitionId, seasonYear, NotFetchedMatchday ? null : fetchedMatchday), 
     {
       onSuccess: (data) => {
         setLoading(false);
-        setLoadingSchedule(false);   
-        if (data.length > 0 && (isInitialRender || competitionChanged || !TabMatchdayChangedFirst)) {
-          setTabMatchday(data[0].matchday);
-          setIsInitialRender(false);
+        setLoadingSchedule(false);
+        if (data.length > 0 && (isInitialRender || competitionChanged || !TabMatchdayChangedFirst) || competitionId === 2001) {
+          const tabMatchday = determineTabMatchday(data[0].stage, data[0].matchday);
+          setTabMatchday(tabMatchday);
+          if (data.length > 0 && (isInitialRender || competitionChanged || !TabMatchdayChangedFirst)) {
+            setIsInitialRender(false);
+          } else {
+            setFetchedMatchday(tabMatchday);
+          }
         } else {
           setTabMatchday(data[0].matchday);
           setFetchedMatchday(data[0].matchday);
@@ -158,16 +216,27 @@ function Schedule() {
     }
   });
 
+  /*
+
   // NationalMatchListのfetch
   const fetchNationalMatch = async () => {
     const res = await apiBaseUrl.get(`/national_matches/`);
     return res.data;
   };
+
     
-  const { data: matchCardData, isLoading: isLoadingMatchCardList, isError, error } = useQuery(
+  const { data: matchCardData, isLoading: isLoadingMatchCardList, isError: isErrorMatchCardList, error: errorMatchCardList } = useQuery(
     ['match'], 
     fetchNationalMatch,
   );
+
+  */
+
+  // UIでgroup名で日本語変換する（UCL用）
+  const getGroupLabel = (groupKey) => {
+    const groupNumber = groupKey.split('_')[1];
+    return `グループ${groupNumber}`;
+  };
 
   if (isError) {
     return(
@@ -233,29 +302,55 @@ function Schedule() {
                       />
                       <ScoreVisibleSwitcher isScoreVisible={isScoreVisible} setScoreVisible={setScoreVisible} />
                   </div>
-                  <ScheduleTab tabMatchday={tabMatchday} setTabMatchday={setTabMatchday} setFetchedMatchday={setFetchedMatchday} minTab={minTab} maxTab={maxTab} />
+                  <ScheduleTab competitionId={competitionId} tabMatchday={tabMatchday} setTabMatchday={setTabMatchday} setFetchedMatchday={setFetchedMatchday} minTab={minTab} maxTab={maxTab} />
                 </div>
                 <div {...handlers} className={`schedule-cards ${competitionId === 2119 ? 'schedule-cards-jleague' : ''}`}>
-                    {isLoadingSchedule ? (
-                        <SkeletonScreenScheduleList />
-                    ) : (
-                        matchesData && matchesData.map((match, i) => (
-                          <ScheduleCard
-                            key={match.id}
-                            match={match}
-                            isScoreVisible={isScoreVisible}
-                            competitionId={competitionId}
-                            isFirst={i === 0}
-                            isLast={i === matchesData.length - 1}
-                          />
+                  {isLoadingSchedule ? (
+                    <SkeletonScreenScheduleList />
+                  ) : (
+                    // uclのときのgroup化処理
+                    competitionId === 2001 && matchesData && matchesData.length > 0 && matchesData[0].stage === "GROUP_STAGE" ? (
+                      Object.entries(
+                        matchesData.reduce((acc, match) => {
+                          (acc[match.group] = acc[match.group] || []).push(match);
+                          return acc;
+                        }, {})
+                      ).map(([group, matches]) => (
+                        <div key={group}>
+                          <h2 className='schedule-group-title'>{getGroupLabel(group)}</h2>
+                          {matches.map((match, i) => (
+                            <ScheduleCard
+                              key={match.id}
+                              match={match}
+                              isScoreVisible={isScoreVisible}
+                              competitionId={competitionId}
+                              // isFirst={i === 0}
+                              isLast={i === matches.length - 1}
+                            />
+                          ))}
+                        </div>
                         ))
-                    )}
+                      ) : (
+                          matchesData && matchesData.map((match, i) => (
+                              <ScheduleCard
+                                  key={match.id}
+                                  match={match}
+                                  isScoreVisible={isScoreVisible}
+                                  competitionId={competitionId}
+                                  isFirst={i === 0 && match.stage !== 'FINAL'}
+                                  isLast={i === matchesData.length - 1 && match.stage !== 'FINAL'}
+                                  isSingle={match.stage === 'FINAL'}
+                              />
+                          ))
+                      )
+                  )}
                 </div>
               </div>
             </div>
           )}
       </FetchContext.Provider>
 
+      {/*
       <Suspense fallback={<SkeletonMatchCardList />}>
         {isLoadingMatchCardList ? (
           <SkeletonMatchCardList />
@@ -263,6 +358,7 @@ function Schedule() {
           matchCardData && <MatchCardListNational data={matchCardData} />
         )}
       </Suspense>
+      */}
 
       </div>
         

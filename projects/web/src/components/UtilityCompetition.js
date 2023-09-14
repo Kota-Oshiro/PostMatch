@@ -2,6 +2,7 @@ import { ReactComponent as NationEngIcon } from '../icons/nation_eng.svg';
 import { ReactComponent as NationEspIcon } from '../icons/nation_esp.svg';
 import { ReactComponent as NationItaIcon } from '../icons/nation_ita.svg';
 import { ReactComponent as NationJpnIcon } from '../icons/nation_jpn.svg';
+import { ReactComponent as NationUclIcon } from '../icons/nation_ucl.svg';
 import { ReactComponent as EarthIcon } from '../icons/earth.svg';
 
 export const getDefaultCompetitionId = (currentUser) => {
@@ -14,9 +15,10 @@ export const getCompetitionName = (competitionId) => {
     case 2014: return 'ラ・リーガ';
     case 2019: return 'セリエA';
     case 2119: return 'J1リーグ';
-    case 2001: return 'UEFAチャンピオンズリーグ';
+    case 2001: return 'チャンピオンズリーグ';
     case 10000001: return '国際親善試合';
     case 10000002: return 'キリンチャレンジカップ';
+    case 'others': return 'その他';
     default: return 'マッチアップ';
   }
 }
@@ -31,7 +33,8 @@ export const getCompetitionIcon = (competitionId) => {
     case 2014: return NationEspIcon;
     case 2019: return NationItaIcon;
     case 2119: return NationJpnIcon;
-    case 2001: return NationJpnIcon;
+    case 2001: return NationUclIcon;
+    case 'others': return EarthIcon;
     default: return EarthIcon;
   }
 }
@@ -42,9 +45,10 @@ export const getCompetitionColor = (competitionId) => {
     case 2014: return '#FF4B44';
     case 2019: return '#171D8D';
     case 2119: return '#000000';
-    case 2001: return '#000000';
+    case 2001: return '#091442';
     case 10000001:
     case 10000002: return '#052667';
+    case 'others': return '#888888';
     default: return'#3465FF';
   }
 }

@@ -79,7 +79,7 @@ function LeagueSelecter ({
           {isLeagueSelectModalVisible &&
             <LeagueSelectModal handleLeagueClick={handleLeagueClick} handleModalClose={handleModalClose} />
           }
-          <div className='league-name' onClick={handleLeagueSelectModal}>
+          <div className={`league-name ${!isSchedule ? 'league-select-schedule' : '' }`} onClick={handleLeagueSelectModal}>
             <CompetitionIcon className='league-icon' />
             <h2 className='league-text'>{competitionName}</h2>
             {isLeagueSelectModalVisible ? (

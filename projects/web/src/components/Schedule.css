@@ -50,6 +50,18 @@
     min-height: 441px;
 }
 
+.schedule-group-title {
+    margin-top: 6px;
+    padding: 0 12px;
+    height: 36px;
+    line-height: 36px;
+    background-color: #fff;
+    font-size: 1.2rem;
+    border-radius: 6px 6px 0 0;
+    border-bottom: solid 1px #eeeeee;
+    box-sizing: border-box;
+}
+
 @media (min-width: 800px) {
     
     .schedule-wrapper {

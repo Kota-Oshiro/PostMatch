@@ -16,7 +16,6 @@ from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt #一部のviewでCSRF保護を無効にする（開発環境でだけ使う）
 from django.contrib.auth import get_user_model, authenticate, login, logout
 from django.contrib.auth.tokens import PasswordResetTokenGenerator, default_token_generator #メアド認証用のトークン生成用
-from rest_framework.authtoken.models import Token
 from django.contrib.auth.views import PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
 from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -36,6 +35,7 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.tokens import RefreshToken, UntypedToken, TokenError
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
+from rest_framework.authtoken.models import Token
 
 from rest_framework.views import APIView, status
 from rest_framework.generics import RetrieveAPIView
@@ -222,13 +222,13 @@ class FeaturedMatches(APIView):
             matches_without_support_team = all_matches_past.exclude(Q(home_team=current_account.support_team) | Q(away_team=current_account.support_team))
             recent_matches_past = list(matches_without_support_team)[:30]
 
-            # competition_idでフィルタリングして、ポスト数が多い順に2試合を取得
-            top_matches = matches_without_support_team.filter(home_team__competition_id=current_account.support_team.competition_id).order_by('-started_at', '-total_post_count', 'home_team')[:2]
+            # competition_idでフィルタリングして、ポスト数が多い順に3試合を取得
+            top_matches = matches_without_support_team.order_by('-started_at', '-total_post_count', 'home_team')[:3]
             featured_matches.extend(top_matches)
 
         else:
             recent_matches_past = all_matches_past[:30]
-            top_matches = sorted(recent_matches_past, key=lambda match: (match.total_post_count, match.started_at), reverse=True)[:3]
+            top_matches = sorted(recent_matches_past, key=lambda match: (match.total_post_count, match.started_at), reverse=True)[:4]
             featured_matches.extend(top_matches)
 
         if not featured_matches:
@@ -374,7 +374,7 @@ class UserEditTeamList(generics.ListAPIView):
     authentication_classes = (CustomJWTAuthentication,)
     permission_classes = (IsAuthenticated,)
 
-    queryset = Team.objects.order_by('name')
+    queryset = Team.objects.filter(is_national=False).order_by('name')
     serializer_class = AccountEditTeamSerializer
     pagination_class = None
 
@@ -558,43 +558,49 @@ class ScheduleList(generics.ListAPIView):
         competition_id = self.kwargs.get('competition_id')
         season_year = self.kwargs.get('season_year')
 
-        if season_year is None:
-            raise ValidationError({"message": "Invalid parameters"})
+        stage = self.request.query_params.get('stage', None)
+        matchday = self.request.query_params.get('matchday', None)
 
-        # 現在の時間に最も近いMatchを取得
-        closest_match = Match.objects.filter(competition_id=competition_id, season_year=season_year).annotate(
-            time_difference=ExpressionWrapper(
-                (Extract('started_at', 'epoch') - Extract(timezone.now(), 'epoch')), output_field=FloatField()
-            )
-        ).annotate(
-            abs_time_difference=Abs('time_difference')
-        ).order_by('abs_time_difference').first()
+        if stage and matchday:
+            return Match.objects.filter(
+                competition_id=competition_id,
+                season_year=season_year,
+                stage=stage,
+                matchday=matchday
+            ).select_related('home_team', 'away_team').order_by('group', 'home_team__name', 'started_at')
 
-        if not closest_match:
-            return Match.objects.none()  # 一致する試合がない場合、空のクエリセットを返します
+        elif matchday and not stage:
+            return Match.objects.filter(
+                competition_id=competition_id,
+                season_year=season_year,
+                matchday=matchday
+            ).select_related('home_team', 'away_team').order_by('started_at', 'home_team__name')
 
-        # そのMatchのmatchdayを取得
-        closest_matchday = closest_match.matchday
+        elif not matchday and stage:
+            return Match.objects.filter(
+                competition_id=competition_id,
+                season_year=season_year,
+                stage=stage
+            ).select_related('home_team', 'away_team').order_by('matchday', 'started_at', 'home_team__name')
 
-        return Match.objects.filter(
-            competition_id=competition_id, season_year=season_year, matchday=closest_matchday
-        ).select_related('home_team', 'away_team').order_by('started_at', 'home_team_id')
+        else:
+            closest_match = Match.objects.filter(competition_id=competition_id, season_year=season_year).annotate(
+                time_difference=ExpressionWrapper(
+                    (Extract('started_at', 'epoch') - Extract(timezone.now(), 'epoch')), output_field=FloatField()
+                )
+            ).annotate(
+                abs_time_difference=Abs('time_difference')
+            ).order_by('abs_time_difference').first()
 
-class ScheduleMatchdayList(generics.ListAPIView):
+            if not closest_match:
+                return Match.objects.none()
 
-    permission_classes = [AllowAny]
-    serializer_class = MatchSerializer
+            closest_stage = closest_match.stage
+            closest_matchday = closest_match.matchday
 
-    def get_queryset(self):
-        competition_id = self.kwargs.get('competition_id')
-        season_year = self.kwargs.get('season_year')
-        matchday = self.kwargs.get('matchday')
-
-        queryset = Match.objects.select_related('home_team', 'away_team') \
-            .filter(competition_id=competition_id, season_year=season_year, matchday=matchday) \
-            .order_by('started_at', 'home_team_id')
-
-        return queryset
+            return Match.objects.filter(
+                competition_id=competition_id, season_year=season_year, stage=closest_stage, matchday=closest_matchday
+            ).select_related('home_team', 'away_team').order_by('group', 'home_team_id')
 
 class NationalMatches(generics.ListAPIView):
 
@@ -615,8 +621,17 @@ class TeamList(generics.ListAPIView):
     serializer_class = TeamListSerializer
 
     def get_queryset(self):
-        competition_id = self.kwargs['competition_id']
-        return Team.objects.filter(competition_id=competition_id).order_by('name')
+        competition_id = self.kwargs.get('competition_id')
+
+        if str(competition_id) == 'others':
+            return Team.objects.filter(competition_id__isnull=True, is_national=False).order_by('id')
+        else:
+            return Team.objects.filter(competition_id=competition_id).order_by('name')
+
+class TeamBase(APIView):
+    def get_team(self, pk):
+        return get_object_or_404(Team.objects, pk=pk)
+
 
 class TeamBase(APIView):
     def get_team(self, pk):
@@ -838,10 +853,10 @@ def fetch_matches_data(competition_code):
         }
 
     #全期間の既存データを取得
-    #matches_data = [extract_match_data(match, competition_id, season_id, season_year) for match in data['matches']]
+    matches_data = [extract_match_data(match, competition_id, season_id, season_year) for match in data['matches']]
 
     #1日前以降の既存データを取得
-    matches_data = [extract_match_data(match, competition_id, season_id, season_year) for match in data['matches'] if match['utcDate'] > (datetime.now() - timedelta(days=1)).isoformat()]
+    #matches_data = [extract_match_data(match, competition_id, season_id, season_year) for match in data['matches'] if match['utcDate'] > (datetime.now() - timedelta(days=1)).isoformat()]
 
     existing_match_ids = {match.id for match in Match.objects.filter(id__in=[m['id'] for m in matches_data])}
 

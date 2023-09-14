@@ -31,6 +31,7 @@ class Team(models.Model):
     venue_ja = models.CharField(max_length=255, null=True)
     created_at = models.DateTimeField(default=timezone.now, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
+    is_national = models.BooleanField(default=False)
 
     class Meta:
         db_table = 'teams'
