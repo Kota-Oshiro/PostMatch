@@ -223,12 +223,12 @@ class FeaturedMatches(APIView):
             recent_matches_past = list(matches_without_support_team)[:30]
 
             # competition_idでフィルタリングして、ポスト数が多い順に3試合を取得
-            top_matches = matches_without_support_team.order_by('-started_at', '-total_post_count', 'home_team')[:3]
+            top_matches = matches_without_support_team.order_by('-started_at', '-total_post_count', 'home_team')[:4]
             featured_matches.extend(top_matches)
 
         else:
             recent_matches_past = all_matches_past[:30]
-            top_matches = sorted(recent_matches_past, key=lambda match: (match.total_post_count, match.started_at), reverse=True)[:4]
+            top_matches = sorted(recent_matches_past, key=lambda match: (match.total_post_count, match.started_at), reverse=True)[:5]
             featured_matches.extend(top_matches)
 
         if not featured_matches:
@@ -853,10 +853,10 @@ def fetch_matches_data(competition_code):
         }
 
     #全期間の既存データを取得
-    matches_data = [extract_match_data(match, competition_id, season_id, season_year) for match in data['matches']]
+    #matches_data = [extract_match_data(match, competition_id, season_id, season_year) for match in data['matches']]
 
     #1日前以降の既存データを取得
-    #matches_data = [extract_match_data(match, competition_id, season_id, season_year) for match in data['matches'] if match['utcDate'] > (datetime.now() - timedelta(days=1)).isoformat()]
+    matches_data = [extract_match_data(match, competition_id, season_id, season_year) for match in data['matches'] if match['utcDate'] > (datetime.now() - timedelta(days=1)).isoformat()]
 
     existing_match_ids = {match.id for match in Match.objects.filter(id__in=[m['id'] for m in matches_data])}
 
