@@ -220,8 +220,8 @@ class FeaturedMatches(APIView):
             matches_without_support_team = all_matches_past.exclude(Q(home_team=current_account.support_team) | Q(away_team=current_account.support_team))
             recent_matches_past = list(matches_without_support_team)[:30]
             
-            # competition_idでフィルタリングして、ポスト数が多い順に3試合を取得
-            top_matches = matches_without_support_team.order_by('-started_at', '-total_post_count', 'home_team')[:3]
+            # ポスト数が多い順に3試合を取得
+            top_matches = sorted(recent_matches_past, key=lambda match: (match.total_post_count, match.started_at), reverse=True)[:3]
             
             if user_team_match:
                 featured_matches.append(user_team_match)
@@ -605,7 +605,7 @@ class ScheduleList(generics.ListAPIView):
 
             return Match.objects.filter(
                 competition_id=competition_id, season_year=season_year, stage=closest_stage, matchday=closest_matchday
-            ).select_related('home_team', 'away_team').order_by('group', 'home_team_id')
+            ).select_related('home_team', 'away_team').order_by('group', 'started_at', 'home_team_id')
 
 class NationalMatches(generics.ListAPIView):
 
