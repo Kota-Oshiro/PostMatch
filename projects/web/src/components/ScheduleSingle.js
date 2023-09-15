@@ -1,55 +1,46 @@
-import React, { useState, useEffect, useContext, useRef, createContext, Suspense } from 'react';
+import React, { useState, useEffect, useContext, useRef, createContext } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
 import { useSwipeable } from 'react-swipeable';
+import { useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 
 import { AuthContext } from '../AuthContext';
 
 import './Schedule.css';
 
-import { SkeletonScreenScheduleList, SkeletonMatchCardList } from './Loader';
+import { SkeletonScreenScheduleList } from './Loader';
 
 import ScheduleCard from './ScheduleCard';
 import ScheduleTab from './ScheduleTab';
-import LeagueSelecter from './LeagueSelecter';
 import ScoreVisibleSwitcher from './ScoreVisibleSwitcher';
-import BannerList from './BannerList';
 import NotFoundPage from './error/NotFoundPage';
 
-import { getDefaultCompetitionId,getCompetitionName, getCompetitionColor, getCompetitionIcon } from './UtilityCompetition';
-
-// nationalバナー枠用、使うときだけ
-// const MatchCardListNational = React.lazy(() => import('./MatchCardListNational.js'));
+import { getSingleCompetitionId, getCompetitionName, getCompetitionColor, getCompetitionIcon } from './UtilityCompetition';
 
 export const FetchContext = createContext();
 
-function Schedule() {  
+function ScheduleSingle() {
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
+  const { id } = useParams();
+
   const queryClient = useQueryClient();
 
-  const { currentUser, apiBaseUrl } = useContext(AuthContext);
+  const { apiBaseUrl } = useContext(AuthContext);
 
   // 初回レンダリング
   const [isInitialRender, setIsInitialRender] = useState(true);
 
-  const initialCompetitionId = getDefaultCompetitionId(currentUser);
-  const initialCompetitionName = getCompetitionName(initialCompetitionId);
-  const initialCompetitionColor = getCompetitionColor(initialCompetitionId);
-  const initialCompetitionIcon = getCompetitionIcon(initialCompetitionId);
-
-  const [competitionId, setCompetitionId] = useState(initialCompetitionId);
-  // competitonIdが変わったときにisLoadingをtrueにするために使用
-  const prevCompetitionIdRef = useRef(competitionId);
+  const competitionCode = (id);
+  const competitionId = getSingleCompetitionId(competitionCode);
+  const competitionName = getCompetitionName(competitionId);
+  const competitionColor = getCompetitionColor(competitionId);
+  const CompetitionIcon = getCompetitionIcon(competitionId);
 
   const [seasonYear, setseasonYear] = useState(2023);
-
-  const [competitionIcon, setCompetitionIcon] = useState(initialCompetitionIcon);
-  const [competitionName, setCompetitionName] = useState(initialCompetitionName);
-  const [competitionColor, setCompetitionColor] = useState(initialCompetitionColor);
 
   const minTab = 1;
   const getMaxTab = (id) => {
@@ -72,7 +63,6 @@ function Schedule() {
   const [fetchedMatchday, setFetchedMatchday] = useState(null);
   const prevFetchedMatchdayRef = useRef(fetchedMatchday);
 
-  const [isLeagueSelectModalVisible, setLeagueSelectModalVisible] = useState(false);
   const [isScoreVisible, setScoreVisible] = useState(false);
 
   // グローバルのローディング
@@ -94,17 +84,15 @@ function Schedule() {
   
   // 両matchdayのstateが同じ状態
   const MatchdayStateSame = tabMatchday === fetchedMatchday;
-  // competition_idの変更
-  const competitionChanged = prevCompetitionIdRef.current !== competitionId;
   
-  const NotFetchedMatchday = !MatchdayStateSame || competitionChanged;
+  const NotFetchedMatchday = !MatchdayStateSame;
 
   const queryKey = ['matches', competitionId, seasonYear, fetchedMatchday];
 
   useEffect(() => {
     
     if (!isCached(queryKey)) {
-      if (isInitialRender || competitionChanged) {
+      if (isInitialRender) {
         setLoading(true);
       } else {
         setLoadingSchedule(true);
@@ -180,10 +168,10 @@ function Schedule() {
       onSuccess: (data) => {
         setLoading(false);
         setLoadingSchedule(false);
-        if (data.length > 0 && (isInitialRender || competitionChanged || !TabMatchdayChangedFirst) || competitionId === 2001) {
+        if (data.length > 0 && (isInitialRender || !TabMatchdayChangedFirst) || competitionId === 2001) {
           const tabMatchday = determineTabMatchday(data[0].stage, data[0].matchday);
           setTabMatchday(tabMatchday);
-          if (data.length > 0 && (isInitialRender || competitionChanged || !TabMatchdayChangedFirst)) {
+          if (data.length > 0 && (isInitialRender || !TabMatchdayChangedFirst)) {
             setIsInitialRender(false);
           } else {
             setFetchedMatchday(tabMatchday);
@@ -200,7 +188,6 @@ function Schedule() {
     }
   );
 
-  prevCompetitionIdRef.current = competitionId;
   prevTabMatchdayRef.current = tabMatchday;
   prevFetchedMatchdayRef.current = fetchedMatchday;
 
@@ -220,22 +207,6 @@ function Schedule() {
       }
     }
   });
-
-  /*
-
-  // NationalMatchListのfetch
-  const fetchNationalMatch = async () => {
-    const res = await apiBaseUrl.get(`/national_matches/`);
-    return res.data;
-  };
-
-    
-  const { data: matchCardData, isLoading: isLoadingMatchCardList, isError: isErrorMatchCardList, error: errorMatchCardList } = useQuery(
-    ['match'], 
-    fetchNationalMatch,
-  );
-
-  */
 
   // UIでgroup名で日本語変換する（UCL用）
   const getGroupLabel = (groupKey) => {
@@ -269,20 +240,17 @@ function Schedule() {
               <div className='content-bg' style={{backgroundImage: `linear-gradient(${competitionColor}, #f7f7f7 360px)`}} >
                 <div className='schedule-header'>
                   <div className='schedule-league'>
-                    <LeagueSelecter
-                      isLeagueSelectModalVisible={isLeagueSelectModalVisible}
-                      setLeagueSelectModalVisible={setLeagueSelectModalVisible}
-                      competitionId={competitionId}
-                      setCompetitionId={setCompetitionId}
-                      competitionIcon={competitionIcon}
-                      setCompetitionIcon={setCompetitionIcon}
-                      competitionName={competitionName}
-                      setCompetitionName={setCompetitionName}
-                      setCompetitionColor={setCompetitionColor}
-                    />
+                    <div className='league-header league-select-schedule'>
+                      <div>
+                        <div className='league-name'>
+                          <CompetitionIcon className='league-icon' />
+                          <h2 className='league-text'>{competitionName}</h2>
+                        </div>
+                      </div>
+                    </div>
                     <ScoreVisibleSwitcher isScoreVisible={isScoreVisible} setScoreVisible={setScoreVisible} />
                   </div>
-                  <ScheduleTab tabMatchday={tabMatchday} setTabMatchday={setTabMatchday} setFetchedMatchday={setFetchedMatchday} minTab={minTab} maxTab={maxTab} />
+                  <ScheduleTab competitionId={competitionId} tabMatchday={tabMatchday} setTabMatchday={setTabMatchday} setFetchedMatchday={setFetchedMatchday} minTab={minTab} maxTab={maxTab} />
                 </div>
                 <div className= 'schedule-cards'>
                   <SkeletonScreenScheduleList />
@@ -292,20 +260,17 @@ function Schedule() {
           ) : (
             <div className='schedule-container'>
               <div className='content-bg' style={{backgroundImage: `linear-gradient(${competitionColor}, #f7f7f7 360px)`}} >
-                <div className='schedule-header'>
+              <div className='schedule-header'>
                   <div className='schedule-league'>
-                      <LeagueSelecter
-                          isLeagueSelectModalVisible={isLeagueSelectModalVisible}
-                          setLeagueSelectModalVisible={setLeagueSelectModalVisible}
-                          competitionId={competitionId}
-                          setCompetitionId={setCompetitionId}
-                          competitionIcon={competitionIcon}
-                          setCompetitionIcon={setCompetitionIcon}
-                          competitionName={competitionName}
-                          setCompetitionName={setCompetitionName}
-                          setCompetitionColor={setCompetitionColor}
-                      />
-                      <ScoreVisibleSwitcher isScoreVisible={isScoreVisible} setScoreVisible={setScoreVisible} />
+                    <div className='league-header league-select-schedule'>
+                      <div>
+                        <div className='league-name'>
+                          <CompetitionIcon className='league-icon' />
+                          <h2 className='league-text'>{competitionName}</h2>
+                        </div>
+                      </div>
+                    </div>
+                    <ScoreVisibleSwitcher isScoreVisible={isScoreVisible} setScoreVisible={setScoreVisible} />
                   </div>
                   <ScheduleTab competitionId={competitionId} tabMatchday={tabMatchday} setTabMatchday={setTabMatchday} setFetchedMatchday={setFetchedMatchday} minTab={minTab} maxTab={maxTab} />
                 </div>
@@ -355,21 +320,10 @@ function Schedule() {
           )}
       </FetchContext.Provider>
 
-      <BannerList />
-
-      {/*
-      <Suspense fallback={<SkeletonMatchCardList />}>
-        {isLoadingMatchCardList ? (
-          <SkeletonMatchCardList />
-        ) : (
-          matchCardData && <MatchCardListNational data={matchCardData} />
-        )}
-      </Suspense>
-      */}
       </div>
         
     </>
   );
 }
   
-export default Schedule;
+export default ScheduleSingle;

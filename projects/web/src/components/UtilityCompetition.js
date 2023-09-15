@@ -9,6 +9,17 @@ export const getDefaultCompetitionId = (currentUser) => {
   return currentUser && currentUser.support_team_competition ? currentUser.support_team_competition : 2021;
 }
 
+export const getSingleCompetitionId = (competitionCode) => {
+  switch (competitionCode) {
+    case 'premier-league': return 2021;
+    case 'la-liga': return 2014;
+    case 'serie-a': return 2019;
+    case 'j1-league': return 2119;
+    case 'champions-league': return 2001;
+    default: return 2021;
+  }
+}
+
 export const getCompetitionName = (competitionId) => {
   switch (competitionId) {
     case 2021: return 'プレミアリーグ';

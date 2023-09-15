@@ -1,0 +1,107 @@
+.banners-container {
+  position: relative;
+  padding: 12px;
+  box-sizing: border-box;
+}
+
+.banners-wrapper {
+  overflow: scroll;
+  scroll-snap-type: x mandatory;
+  margin: 24px 0;
+  width: 100%;
+}
+
+.banner {
+  position: relative;
+  display: flex;
+  align-items: start;
+  margin: 0 auto;
+  width: 100%;
+  max-width: 520px;
+  cursor: pointer;
+}
+
+.banner:hover {
+  opacity: 0.8;
+}
+
+.banner::before {
+  content: "";
+  display: block;
+  padding-top: 56.25%; /* 9/16の値 */
+  visibility: hidden;
+}
+
+.banner-content {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 24px;
+  background: linear-gradient(135deg, #6594C0, #091442);
+  box-shadow: 0px 3px 9px 0px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+  border-radius: 12px;
+}
+
+.banner-img {
+  width: auto;
+  height: 80%;
+}
+
+.banner-block {
+  display: flex;
+  flex-direction: column;
+}
+
+.banner-textarea {
+  display: flex;
+  flex-direction: column;
+  margin-right: 24px;
+}
+
+.banner-title {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.banner-icon {
+  margin-right: 6px;
+  width: 2rem;
+  height: auto;
+}
+
+
+.banner-title > h2 {
+
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.banner-description {
+  font-size: 1.2rem;
+  font-weight: 400;
+  color: #fff;
+}
+
+@media (min-width: 800px) {
+
+  .banners-container {
+    width: 360px;
+    height: fit-content;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0px 3px 9px 0px rgba(0, 0, 0, 0.1);
+  }
+
+  .banner-content {
+    box-shadow: none;
+  }
+
+}

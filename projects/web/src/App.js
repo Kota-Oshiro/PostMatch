@@ -18,6 +18,7 @@ import TeamList from './components/TeamList';
 import TeamDetail from './components/TeamDetail';
 import Match from './components/Match';
 import Schedule from './components/Schedule';
+import ScheduleSingle from './components/ScheduleSingle';
 import Posts from './components/Posts';
 import PostDetail from './components/PostDetail';
 
@@ -182,6 +183,7 @@ function App() {
                 <Route path='/team/:id' element={<TeamDetail />} />
                 <Route path='/match/:id' element={<Match />} />
                 <Route path='/schedules' element={<Schedule />} />
+                <Route path='/schedule/:id' element={<ScheduleSingle />} />
                 <Route path='/posts/' element={<Posts />} />
                 <Route path='/post/:id' element={<PostDetail />} />
                 <Route path='/privacy' element={<Privacy />} />

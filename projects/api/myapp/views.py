@@ -215,20 +215,25 @@ class FeaturedMatches(APIView):
         if current_account and current_account.support_team:
             # ユーザーがサポートチームを持っている場合、その最新の試合を取得
             user_team_match = all_matches_past.filter(Q(home_team=current_account.support_team) | Q(away_team=current_account.support_team)).first()
-            if user_team_match:
-                featured_matches.append(user_team_match)
 
             # サポートチームの試合を除外
             matches_without_support_team = all_matches_past.exclude(Q(home_team=current_account.support_team) | Q(away_team=current_account.support_team))
             recent_matches_past = list(matches_without_support_team)[:30]
-
+            
             # competition_idでフィルタリングして、ポスト数が多い順に3試合を取得
-            top_matches = matches_without_support_team.order_by('-started_at', '-total_post_count', 'home_team')[:4]
-            featured_matches.extend(top_matches)
+            top_matches = matches_without_support_team.order_by('-started_at', '-total_post_count', 'home_team')[:3]
+            
+            if user_team_match:
+                featured_matches.append(user_team_match)
+                # 既に1つの試合がフィーチャードされている場合は、トップ3のうち2つのみを取得する
+                featured_matches.extend(top_matches[:2])
+            else:
+                # user_team_matchが取得できない場合、上記のトップ3をフィーチャードする
+                featured_matches.extend(top_matches)
 
         else:
             recent_matches_past = all_matches_past[:30]
-            top_matches = sorted(recent_matches_past, key=lambda match: (match.total_post_count, match.started_at), reverse=True)[:5]
+            top_matches = sorted(recent_matches_past, key=lambda match: (match.total_post_count, match.started_at), reverse=True)[:3]
             featured_matches.extend(top_matches)
 
         if not featured_matches:
