@@ -819,7 +819,7 @@ def fetch_players_data(competition_code):
     # Player.objects.bulk_update(update_player_objects, ['team_id', 'competition_id', 'season_id', 'name', 'nationality', 'position', 'birthday', 'shirt_number', 'api_updated_at'])
 
 def fetch_players_from_competitions():
-    competitions = ['CL']
+    competitions = ['PL', 'PD', 'SA', 'JJL']
     for competition in competitions:
         fetch_players_data(competition)
 

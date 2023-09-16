@@ -40,9 +40,9 @@ function PostDetailFloatButton({ post }) {
       <a className='share-button-x' href={`https://twitter.com/intent/tweet?url=https://post-match.com/post/${post.id}&hashtags=ポストマッチ&via=postmatch_jp&text=${post.user.name}さんの観戦記録（${post.match.home_team.name_ja} vs ${post.match.away_team.name_ja}）`} target='_blank'>
         <XIcon className='post-share-icon' />
       </a>
-      <button onClick={handleCopyClick} className='share-button'>
+      <div onClick={handleCopyClick} className='share-button'>
         <CopyIcon className='post-share-icon'/>
-      </button>
+      </div>
     </div>
   );
 }

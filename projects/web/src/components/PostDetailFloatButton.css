@@ -32,14 +32,6 @@
 .share-button {
   background-color: #fff;
 }
-
-.share-button:hover {
-  background-color: #fff;
-}
-
-.share-button-x:hover, .share-button:hover {
-  opacity: 0.8;
-}
   
 .post-share-icon {
   height: 2rem;
@@ -84,6 +76,14 @@
 
   .share-button-x {
     margin: 0 12px 0 0;
+  }
+
+  .share-button:hover {
+    background-color: #fff;
+  }
+  
+  .share-button-x:hover, .share-button:hover {
+    opacity: 0.8;
   }
 
 }
