@@ -24,7 +24,7 @@ function PostList({ data, isLoading, isFetchingNextPage, ignitionPage }) {
           {data.pages.map((pageData, i) => (
             <div key={i}>
               {pageData.results.map(post => (
-                <PostCard key={post.id} post={post} />
+                <PostCard key={post.id} post={post}/>
               ))}
             </div>
           ))}

@@ -9,6 +9,7 @@ import axios from 'axios';
 import { Loader } from './Loader';
 
 import PostCard from './PostCard';
+import PostDetailFloatButton  from './PostDetailFloatButton';
 import NotFoundPage from './error/NotFoundPage';
 
 function Posts() {
@@ -53,6 +54,7 @@ function Posts() {
       <div className='bg'></div>
       <div className='container'>
         <PostCard post={data}/>
+        <PostDetailFloatButton post={data}/>
       </div>
     </>
   )

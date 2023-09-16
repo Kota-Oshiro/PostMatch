@@ -7,7 +7,7 @@ import { formatUsing, formats } from '../DateFormat.js';
 
 import { ReactComponent as ThreeDotLeaderIcon } from '../icons/three_dot_leader.svg';
 import { ReactComponent as XIcon } from '../icons/x_blue.svg';
-import { ReactComponent as CopyIcon } from '../icons/copy.svg';
+import { ReactComponent as CopyIcon } from '../icons/link.svg';
 
 const PostCardHeader = ({ post }) => {
 

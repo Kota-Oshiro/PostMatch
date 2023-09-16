@@ -42,6 +42,9 @@ body.no-scroll-header, body.no-scroll-header-pc {
 .nav-left, .nav-login-register, .menu-right {
   display: flex;
   align-items: center;
+}
+
+.nav-left-back, .nav-login-register, .menu-right {
   cursor: pointer;
 }
 

@@ -240,7 +240,7 @@ function ScheduleSingle() {
               <div className='content-bg' style={{backgroundImage: `linear-gradient(${competitionColor}, #f7f7f7 360px)`}} >
                 <div className='schedule-header'>
                   <div className='schedule-league'>
-                    <div className='league-header league-select-schedule'>
+                    <div className='league-header league-header-single'>
                       <div>
                         <div className='league-name'>
                           <CompetitionIcon className='league-icon' />
@@ -262,7 +262,7 @@ function ScheduleSingle() {
               <div className='content-bg' style={{backgroundImage: `linear-gradient(${competitionColor}, #f7f7f7 360px)`}} >
               <div className='schedule-header'>
                   <div className='schedule-league'>
-                    <div className='league-header league-select-schedule'>
+                    <div className='league-header league-header-single'>
                       <div>
                         <div className='league-name'>
                           <CompetitionIcon className='league-icon' />

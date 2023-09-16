@@ -1,0 +1,89 @@
+.post-share-container {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  right: 24px;
+  bottom: 76px;
+  box-sizing: border-box;
+  z-index: 2;
+}
+  
+.share-button-x, .share-button {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  box-shadow: 0px 3px 9px 0px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  box-sizing: border-box;
+}
+  
+.share-button-x {
+  margin-bottom: 12px;
+  background-color: #242424;
+}
+  
+.share-button {
+  background-color: #fff;
+}
+
+.share-button:hover {
+  background-color: #fff;
+}
+
+.share-button-x:hover, .share-button:hover {
+  opacity: 0.8;
+}
+  
+.post-share-icon {
+  height: 2rem;
+  width: auto;
+}
+  
+.post-share-text, .post-share-text-x {
+  font-weight: 700;
+  font-size: 1rem;
+}
+  
+.post-share-text-x {
+  color: #fff;
+}
+
+@media (min-width: 800px) {
+
+  .post-share-container {
+    position: static;
+    flex-direction: row;
+    justify-content: end;
+    align-items: center;
+    margin: 0 auto;
+    padding: 12px 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    max-width: 520px;
+    background-color: transparent;
+    box-sizing: border-box;
+    z-index: 1;
+  }
+
+  .share-button-x, .share-button {
+    width: 36px;
+    height: 36px;
+  }
+
+  .post-share-icon {
+    height: 1.6rem;
+  }
+
+  .share-button-x {
+    margin: 0 12px 0 0;
+  }
+
+}

@@ -18,6 +18,9 @@ function Toast({ id, message, type }) {
       case 'delete':
         Delete();
         break;
+      case 'notify':
+        Notify();
+        break;
       default:
         if (process.env.NODE_ENV !== 'production') {
           console.log('Invalid type');
@@ -47,6 +50,14 @@ function Toast({ id, message, type }) {
     style: {
       background: '#242424',
       color: '#fff',
+    },
+    duration: 2000,
+  });
+
+  const Notify = () => toast(message, {
+    style: {
+      background: '#fff',
+      color: '#000',
     },
     duration: 2000,
   });

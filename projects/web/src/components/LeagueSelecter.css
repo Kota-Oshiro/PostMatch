@@ -5,12 +5,17 @@
   padding: 18px;
   width: 100%;
   box-sizing: border-box;
+  cursor: pointer;
 }
 
-.league-header.league-select-schedule {
+.league-header.league-header-schedule, .league-header.league-header-single {
   padding: 0;
-  width: calc(100% - 144px);
+  width: calc(100% - 132px);
   height: 32px;
+}
+
+.league-header.league-header-single {
+  cursor: default;
 }
 
 .league-header > div {
@@ -27,11 +32,10 @@
 .league-name {
   display: flex;
   align-items: center;
-  cursor: pointer;
   width: 100%;
 }
 
-.league-name.league-select-schedule {
+.league-name.league-name-team {
   justify-content: center;
 }
 

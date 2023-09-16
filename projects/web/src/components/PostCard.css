@@ -8,6 +8,11 @@
   cursor: pointer;
 }
 
+.post.post-detail {
+  cursor: default;
+
+}
+
 .post.post-border {
   padding-bottom: 24px;
   border-bottom: solid 1px #eeeeee;
