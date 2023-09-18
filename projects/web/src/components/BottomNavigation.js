@@ -8,8 +8,8 @@ import { ReactComponent as ScheduleIcon } from '../icons/schedule.svg';
 import { ReactComponent as ScheduleIconActive } from '../icons/schedule_active.svg';
 import { ReactComponent as PostIcon } from '../icons/post.svg';
 import { ReactComponent as PostIconActive } from '../icons/post_active.svg';
-import { ReactComponent as TeamIcon } from '../icons/team.svg';
-import { ReactComponent as TeamIconActive } from '../icons/team_active.svg';
+import { ReactComponent as StandingIcon } from '../icons/standing.svg';
+import { ReactComponent as StandingIconActive } from '../icons/standing_active.svg';
 
 function BottomNavigation() {
   const location = useLocation();
@@ -17,8 +17,8 @@ function BottomNavigation() {
   const menus = [
     { key: 'home', link: '/', icon: HomeIcon, activeIcon: HomeIconActive, text: 'トップ' },
     { key: 'schedule', link: '/schedules', icon: ScheduleIcon, activeIcon: ScheduleIconActive, text: 'スケジュール' },
+    { key: 'standing', link: '/standings', icon: StandingIcon, activeIcon: StandingIconActive, text: 'リーグ' },
     { key: 'post', link: '/posts', icon: PostIcon, activeIcon: PostIconActive, text: 'ポスト' },
-    { key: 'team', link: '/teams', icon: TeamIcon, activeIcon: TeamIconActive, text: 'チーム' }
   ]
 
   return (

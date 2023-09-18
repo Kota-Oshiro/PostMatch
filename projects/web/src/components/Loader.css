@@ -39,7 +39,7 @@
     z-index: 1000;
 }
 
-.loader-schedule-list {
+.loader-schedule-list, .loader-standing-list {
     display: flex;
     justify-content: center;
     flex-direction: column;
@@ -48,12 +48,11 @@
     box-sizing: border-box;
 }
 
-.loader-schedulecard {
+.loader-schedulecard, .loader-standingcard {
     margin: 0;
     padding: 0 12px;
     height: 48px;
     background-color: #fff;
-    border-bottom: solid 1px #eeeeee;
     box-sizing: border-box;
 }
 
@@ -82,19 +81,6 @@
 .loader-schedulecard.last-schedule-card {
     border-radius: 0 0 6px 6px;
 }
-
-/* 使ってない
-.loader-schedule-index {
-    flex-direction: column;
-    align-items: center;
-    padding: 0 24px;
-}
-
-
-.loader-schedule-matchday {
-    margin-top: 12px;
-}
-*/
 
 .loader-teamcards {
     flex-wrap: wrap;

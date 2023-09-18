@@ -3,7 +3,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 from . import views
-from .views import ObtainTokenPairWithColorView, CustomTokenRefresh, GoogleLoginView, FeaturedMatches, NationalMatches, UserDetail, UserMotm, UserWatch, UserPost, UserEditTeamList, TeamList, TeamSupporter, TeamDetail, TeamPost, TeamMotm, MatchList, MatchDetail, MatchPost, MatchMotm, MatchPostPlayerList, MatchPostCreateView, MatchWatchCreateView, ScheduleList, PostList, PostDetail
+from .views import ObtainTokenPairWithColorView, CustomTokenRefresh, GoogleLoginView, FeaturedMatches, NationalMatches, UserDetail, UserMotm, UserWatch, UserPost, UserEditTeamList, TeamList, TeamSupporter, TeamDetail, TeamPost, TeamMotm, MatchList, MatchDetail, MatchPost, MatchMotm, MatchPostPlayerList, MatchPostCreateView, MatchWatchCreateView, ScheduleList, PostList, PostDetail, StandingList
 
 urlpatterns = [
 
@@ -44,6 +44,8 @@ urlpatterns = [
 
     path('api/teams/<int:competition_id>/', TeamList.as_view()),
     path('api/teams/others/', TeamList.as_view(), {'competition_id': 'others'}),
+
+    path('api/standing/<int:competition_id>/', StandingList.as_view()),
 
     path('api/team/<int:pk>/', TeamDetail.as_view()),
     path('api/team/<int:pk>/users/', TeamSupporter.as_view()),

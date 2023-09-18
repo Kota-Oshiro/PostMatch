@@ -180,29 +180,35 @@ export function SkeletonScreenScheduleList()  {
   );
 }
 
-export function SkeletonScreenSchedule()  {
-  const numLoaders = 10;
-  return (
-    <div className='loader-schedule-index'>
-      <HeaderLoaderSchedule />
-      {Array(numLoaders).fill().map((_, i) => <SingleLoaderSchedule key={i} />)}
-    </div>
-  );
-}
+export function SingleLoaderStanding() {
 
-export function SkeletonScreenScheduleMatchday() {
   return (
       <ContentLoader 
       speed={2}
       backgroundColor="#f3f3f3"
       foregroundColor="#ecebeb"
       width="100%"
-      height={20}
-      className='loader-schedule-matchday'
+      height={48}
+      className='loader-standingcard'
       >
 
-      <rect x="0" y="0" rx="4" ry="4" width="100%" height="20" />  
+      <rect x="0" y="17" rx="6" ry="1" width="24" height="14" /> 
+      <circle cx="42" cy="24" r="12" />
+      <rect x="60" y="17" rx="6" ry="1" width="100%" height="14" /> 
       </ContentLoader>
+  );
+}
+
+export function SkeletonScreenStandingList()  {
+  const numLoaders = 20;
+  return (
+    <>
+    <div className='loader-standing-list'>
+      {Array(numLoaders).fill().map((_, i) => 
+        <SingleLoaderStanding key={i} />
+      )}
+    </div>
+    </>
   );
 }
 

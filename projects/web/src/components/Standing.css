@@ -1,0 +1,154 @@
+.standing-container {
+    padding: 6px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.standing-container.hidden {
+    display: none;
+}
+
+.standing-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 18px 12px 12px;
+    z-index: 1;
+}
+
+.standing-league {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    width: 100%;
+}
+
+.standing-league-text-sub {
+    display: flex;
+    align-items: center;
+    color: #fff;
+}
+
+.standing-title {
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    height: 48px;
+    font-size: 1.4rem;
+    background-color: #ECF0FF;
+}
+
+.standing-column, .standing-column-groupstage, .standing-group-title, .standing-discription {
+    display: flex;
+    width: 100%;
+    background-color: #fff;
+    box-sizing: border-box;
+}
+
+.standing-column, .standing-column-groupstage, .standing-group-title {
+    justify-content: space-between;
+    padding: 0 12px;
+    height: 36px;
+    line-height: 36px;
+}
+
+.standing-group-title {
+    margin-top: 6px;
+    font-size: 1.2rem;
+    border-radius: 6px 6px 0 0;
+}
+
+.standing-column {
+    border-radius: 6px 6px 0 0;
+}
+
+.standing-column-block {
+    display: flex;
+    align-items: center;
+}
+
+.standing-column-name {
+    text-align: center;
+    font-size: 1.2rem;
+    width: 24px;
+    font-weight: 700;
+    color: #888888;
+}
+
+.standing-column-name.standing-column-long {
+    width: 60px;
+}
+
+.standing-column-name.standing-column-last {
+    margin-left: 12px;
+}
+
+.standing-discription {
+    flex-direction: column;
+    margin-top: 6px;
+    padding: 12px;
+    border-radius: 6px;
+}
+
+.standing-discription-circle {
+    margin-right: 6px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50px;
+}
+
+.standing-discription-circle.circle-ucl {
+    background-color: #3465FF;
+}
+
+.standing-discription-circle.circle-uel {
+    background-color: #FF6900;
+}
+
+.standing-discription-circle.circle-uecl {
+    background-color: #00BE14;
+}
+
+.standing-discription-circle.circle-demotion {
+    background-color: #DF5656;
+}
+
+.standing-discription-text {
+    font-size: 1rem;
+    color: #888888;
+    font-weight: 700;
+}
+
+.standing-cards {
+    position: relative;
+    min-height: 490px;
+    border-radius: 12px;
+}
+
+.standing-cards.standing-cards-jleague {
+    min-height: 441px;
+}
+
+@media (min-width: 800px) {
+    
+    .standing-wrapper {
+        display: flex;
+        justify-content: center;
+        gap: 24px;
+        margin: 48px auto 96px;
+        max-width: 1080px;
+    }
+
+    .standing-container {
+        width: calc(100% - 384px);
+        max-width: 520px;
+        padding: 0;
+    }
+
+    .standing-header {
+        padding: 18px 18px 12px;
+    }
+  
+  }

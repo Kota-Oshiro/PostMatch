@@ -21,6 +21,7 @@ import Schedule from './components/Schedule';
 import ScheduleSingle from './components/ScheduleSingle';
 import Posts from './components/Posts';
 import PostDetail from './components/PostDetail';
+import Standing from './components/Standing';
 
 import News from './components/article/News';
 import NewsArticleFormat  from './components/article/NewsArticleFormat';
@@ -186,6 +187,7 @@ function App() {
                 <Route path='/schedule/:id' element={<ScheduleSingle />} />
                 <Route path='/posts/' element={<Posts />} />
                 <Route path='/post/:id' element={<PostDetail />} />
+                <Route path='/standings' element={<Standing />} />
                 <Route path='/privacy' element={<Privacy />} />
                 <Route path='/terms' element={<Term />} />
                 <Route path='/blog' element={<News />} />

@@ -13,6 +13,7 @@ function LeagueSelectModal({ handleLeagueClick, handleTeamClick, handleModalClos
   let location = useLocation();
   const isUserEdit = location.pathname === ("/user/edit")
   const isSchedule = location.pathname.includes("/schedules")
+  const isStanding = location.pathname.includes("/standings")
  
   const basicLeagueInfo = [
     { key: 'eng1', competition_id: 2021 },
@@ -21,7 +22,7 @@ function LeagueSelectModal({ handleLeagueClick, handleTeamClick, handleModalClos
     { key: 'ita1', competition_id: 2019 },
   ];
 
-  if (isSchedule) {
+  if (isSchedule || isStanding) {
     basicLeagueInfo.push({ key: 'ucl', competition_id: 2001 });
   } else {
     basicLeagueInfo.push({ key: 'others', competition_id: 'others' });

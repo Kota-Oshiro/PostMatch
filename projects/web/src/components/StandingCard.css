@@ -1,51 +1,96 @@
-.schedule {
+.standing-card {
+    position: relative;
     display: flex;
-    flex-direction: column;
+    justify-content: space-between;
     padding: 12px;
     background-color: #fff;
     box-sizing: border-box;
 }
 
-.schedule.first-schedule-card {
-    border-radius: 6px 6px 0 0;
-}
-
-.schedule.last-schedule-card {
+.standing-card.last-standing-card {
     border-radius: 0 0 6px 6px;
 }
 
-.schedule.single-schedule-card {
-    border-radius: 6px;
-}
-  
-.schedule:hover {
-    background-color: #EFF1F1;
+.standing-bar {
+    position: absolute;
+    top: calc(50% - 12px);
+    left: 6px;
+    width: 3px;
+    height: 24px;
+    border-radius: 50px
 }
 
-.schedule-block {
-    display: flex;
-    justify-content: space-between;
+.standing-bar.first-position {
+    background-color: #3465FF;
 }
-  
-.schedule-left, .schedule-right {
-    position: relative;
+
+.standing-bar.second-position {
+    background-color: #FF6900;
+}
+
+.standing-bar.third-position {
+    background-color: #00BE14;
+}
+
+.standing-bar.bottom-position {
+    background-color: #DF5656;
+}
+
+.standing-card-block {
     display: flex;
     align-items: center;
 }
-  
-.schedule-crest {
-    width: 2.4rem;
-    height: auto;
-    object-fit: cover;
+
+.standing-text, .standing-tla {
+    text-align: center;
+    width: 24px;
+    line-height: 24px;
 }
 
-.schedule-tmp-crest {
+.standing-text.standing-text-bold, .standing-tla {
+    font-weight: 700;
+}
+
+.standing-card.single-standing-card {
+    border-radius: 6px;
+}
+
+.standing-name {
+    display: none;
+}
+  
+.standing-card:hover {
+    background-color: #EFF1F1;
+}
+
+.standing-crest, .standing-crest-next {
+    width: 2.4rem;
+    height: auto;
+}
+
+.standing-crest {
+    margin: 0 6px;
+}
+
+.standing-crest-next {
+    margin-left: 6px;
+}
+
+.standing-tmp-crest, .standing-tmp-crest-next {
     position: relative;
     width: 24px;
     height: 24px;
 }
 
-.schedule-tla{
+.standing-tmp-crest {
+    margin: 0 16px;
+}
+
+.standing-crest-next, .standing-tmp-crest-next {
+    margin-left: 12px;
+}
+
+.standing-tmp-crest-tla {
     position: absolute;
     text-align: center;
     top: 4px;
@@ -115,23 +160,20 @@
     width: 24px;
 }
 
-@media (max-width: 799px) {
-    
-    .schedule-text.schedule-narrow {
-        margin: 0 6px;
-    }
-
-    .schedule-record.schedule-narrow {
-        margin-left: 6px;
-        padding-left: 6px;
-    }
-  
-}
-
 @media (min-width: 800px) {
 
-    .schedule {
-        padding: 12px 18px;
+    .standing-tla {
+        display: none;
+    }
+
+    .standing-text {
+        font-size: 1.2rem;
+    }
+
+    .standing-name {
+        display: block;
+        font-size: 1rem;
+        font-weight: 700;
     }
 
 }

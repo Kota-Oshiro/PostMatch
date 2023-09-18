@@ -45,7 +45,7 @@ from rest_framework.pagination import PageNumberPagination, LimitOffsetPaginatio
 from rest_framework.exceptions import ValidationError
 
 from .models import Account, Team, Player, Match, Post, Watch, Goal, Standing
-from .serializers import MyTokenObtainPairSerializer, AccountSerializer, AccountHeaderSerializer, AccountEditSerializer, AccountEditTeamSerializer, TeamSerializer, TeamListSerializer, TeamSupporterSerializer, PlayerSerializer, MatchSerializer, MatchGoalSerializer, PostSerializer, MotmPlayerSerializer, MatchPlayerSerializer, MatchNationalPlayerSerializer, WatchSerializer
+from .serializers import MyTokenObtainPairSerializer, AccountSerializer, AccountHeaderSerializer, AccountEditSerializer, AccountEditTeamSerializer, TeamSerializer, TeamListSerializer, TeamSupporterSerializer, PlayerSerializer, MatchSerializer, MatchGoalSerializer, PostSerializer, MotmPlayerSerializer, MatchPlayerSerializer, MatchNationalPlayerSerializer, WatchSerializer, StandingSerializer
 
 #モデルのインクリメントを初期化
 def reset_sequence(model):
@@ -218,7 +218,7 @@ class FeaturedMatches(APIView):
 
             # サポートチームの試合を除外
             matches_without_support_team = all_matches_past.exclude(Q(home_team=current_account.support_team) | Q(away_team=current_account.support_team))
-            recent_matches_past = list(matches_without_support_team)[:30]
+            recent_matches_past = list(matches_without_support_team)[:10]
             
             # ポスト数が多い順に3試合を取得
             top_matches = sorted(recent_matches_past, key=lambda match: (match.total_post_count, match.started_at), reverse=True)[:3]
@@ -637,11 +637,6 @@ class TeamBase(APIView):
     def get_team(self, pk):
         return get_object_or_404(Team.objects, pk=pk)
 
-
-class TeamBase(APIView):
-    def get_team(self, pk):
-        return get_object_or_404(Team.objects, pk=pk)
-
 class TeamDetail(TeamBase):
     permission_classes = [AllowAny]
 
@@ -702,6 +697,49 @@ class PostDetail(RetrieveAPIView):
 
     def get_queryset(self):
         return Post.objects.select_related('user', 'user__support_team', 'player', 'match', 'match__home_team', 'match__away_team')
+
+#ここからStanding
+
+class StandingList(APIView):
+    permission_classes = [AllowAny]
+    serializer_class = StandingSerializer
+
+    def get(self, request, *args, **kwargs):
+        competition_id = kwargs.get('competition_id')
+        standings = list(Standing.objects.select_related('team').filter(competition_id=competition_id).order_by('group', 'position', 'team__name'))
+        team_ids = [standing.team_id for standing in standings]
+
+        one_day_ago = timezone.now() - timedelta(days=1)
+        
+        # 全ての未来の試合を取得
+        future_matches = Match.objects.filter(
+            Q(home_team_id__in=team_ids) | Q(away_team_id__in=team_ids),
+            started_at__gte=one_day_ago,
+            competition_id=competition_id
+        ).exclude(
+            status='FINISHED'
+        ).order_by('started_at')
+
+        # 各チームの最も近い未来の試合を取得
+        next_opponents = {}
+        for team_id in team_ids:
+            for match in future_matches:
+                if match.home_team_id == team_id:
+                    next_opponents[team_id] = match.away_team_id
+                    break
+                elif match.away_team_id == team_id:
+                    next_opponents[team_id] = match.home_team_id
+                    break
+
+        next_opponent_teams = Team.objects.in_bulk(list(next_opponents.values()))
+
+        for standing in standings:
+            standing.next_opponent_team = next_opponent_teams.get(next_opponents.get(standing.team_id))
+
+        response = {
+            'standings': self.serializer_class(standings, many=True).data
+        }
+        return Response(response)
 
 # ▼ ここからTeamsのAPIデータ取得 ▼
 
@@ -1000,18 +1038,27 @@ def fetch_standings_data(competition_code):
         season_id=data['season']['id']
     )
 
-    # この結果を辞書に格納
-    existing_standings_lookup = {(standing.stage, standing.group, standing.position, standing.team_id): standing for standing in existing_standings}
+    existing_standings_lookup = {}
+    for standing in existing_standings:
+        if standing.stage == "GROUP_STAGE":
+            key = (standing.competition_id, standing.season_id, standing.stage, standing.group, standing.team_id)
+        else:
+            key = (standing.competition_id, standing.season_id, standing.stage, standing.position)
+            if standing.group:
+                key += (standing.group,)
+        existing_standings_lookup[key] = standing
 
     standings_to_update = []
     standings_to_create = []
 
     for standing_data in standings_data:
- 
-        # 辞書を使ってteam_idに対応するTeamインスタンスを取得
-        key = (standing_data['stage'], standing_data['group'], standing_data['position'], standing_data['team_id'])
+        if standing_data['stage'] == "GROUP_STAGE":
+            key = (standing_data['competition_id'], standing_data['season_id'], standing_data['stage'], standing_data['group'], standing_data['team_id'])
+        else:
+            key = (standing_data['competition_id'], standing_data['season_id'], standing_data['stage'], standing_data['position'])
+            if standing_data.get('group'):
+                key += (standing_data['group'],)
 
-        # 辞書を使ってteam_idに対応するTeamインスタンスを取得    
         existing_standing = existing_standings_lookup.get(key)
 
         if existing_standing:
@@ -1020,7 +1067,7 @@ def fetch_standings_data(competition_code):
             standings_to_update.append(existing_standing)
         else:
             standings_to_create.append(Standing(**standing_data))
-
+            
     Standing.objects.bulk_update(standings_to_update, ['competition_id', 'season_id', 'stage', 'type', 'group', 'position', 'team_id', 'played_matches', 'points', 'won', 'draw', 'lost', 'goals_for', 'goals_against', 'goal_difference', 'form'])
     Standing.objects.bulk_create(standings_to_create)
 

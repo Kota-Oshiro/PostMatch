@@ -1,6 +1,6 @@
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
-from .models import Account, Team, Match, Post, Watch, Player, Goal
+from .models import Account, Team, Match, Post, Watch, Player, Goal, Standing
 
 #トークン発行
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -14,7 +14,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 class TeamListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Team
-        fields = ['id', 'competition_id', 'name_ja', 'crest_name', 'total_supporter_count', 'club_color_code_first']
+        fields = ['id', 'competition_id', 'name_ja', 'tla', 'crest_name', 'total_supporter_count', 'club_color_code_first']
 
 class TeamSerializer(serializers.ModelSerializer):
     class Meta:
@@ -200,4 +200,18 @@ class WatchSerializer(serializers.ModelSerializer):
     class Meta:
         model = Watch
         fields = '__all__'
+
+class StandingSerializer(serializers.ModelSerializer):
+    team = TeamListSerializer(read_only=True)
+    next_opponent_team = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Standing
+        fields = ['competition_id', 'season_year', 'stage', 'group', 'position', 'team', 'played_matches', 'points', 'won', 'draw', 'lost', 'goals_for', 'goals_against', 'goal_difference', 'next_opponent_team']
+
+    def get_next_opponent_team(self, obj):
+        if hasattr(obj, 'next_opponent_team') and obj.next_opponent_team:
+            return TeamListSerializer(obj.next_opponent_team).data
+        return None
+
 

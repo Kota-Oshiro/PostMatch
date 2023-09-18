@@ -16,9 +16,9 @@ import { ReactComponent as ScheduleIconActive } from '../icons/schedule_active.s
 import { ReactComponent as PostIcon } from '../icons/post.svg';
 import { ReactComponent as PostIconIndex } from '../icons/post_white.svg';
 import { ReactComponent as PostIconActive } from '../icons/post_active.svg';
-import { ReactComponent as TeamIcon } from '../icons/team.svg';
-import { ReactComponent as TeamIconIndex } from '../icons/team_white.svg';
-import { ReactComponent as TeamIconActive } from '../icons/team_active.svg';
+import { ReactComponent as StandingIcon } from '../icons/standing.svg';
+import { ReactComponent as StandingIconIndex } from '../icons/standing_white.svg';
+import { ReactComponent as StandingIconActive } from '../icons/standing_active.svg';
 import { ReactComponent as BackIcon } from '../icons/arrow_left.svg';
 import { ReactComponent as CloseIcon } from '../icons/close.svg';
 
@@ -56,8 +56,8 @@ function Header() {
   const menus = [
     { key: 'home', link: '/', icon: HomeIcon, activeIcon: HomeIconActive, indexIcon:HomeIconIndex, text: 'トップ' },
     { key: 'schedule', link: '/schedules', icon: ScheduleIcon, activeIcon: ScheduleIconActive, indexIcon:ScheduleIconIndex, text: 'スケジュール' },
+    { key: 'standing', link: '/standings', icon: StandingIcon, activeIcon: StandingIconActive, indexIcon:StandingIconIndex, text: 'リーグ' },
     { key: 'post', link: '/posts', icon: PostIcon, activeIcon: PostIconActive, indexIcon:PostIconIndex, text: 'ポスト' },
-    { key: 'team', link: '/teams', icon: TeamIcon, activeIcon: TeamIconActive, indexIcon:TeamIconIndex, text: 'チーム' }
   ]
 
   const currentMenu = menus.find(menu => menu.link === location.pathname);

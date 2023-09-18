@@ -17,8 +17,7 @@ function LeagueSelecter ({
   }) {
 
   let location = useLocation();
-  const isSchedules = location.pathname.includes("/schedules") 
-  const isTeams = location.pathname.includes("/teams") 
+  const isSchedule = location.pathname.includes("/schedule") 
 
   const handleLeagueSelectModal = (e) => {
     e.stopPropagation();
@@ -75,12 +74,12 @@ function LeagueSelecter ({
   return (
     <>
       <div className={`modal-overlay ${isLeagueSelectModalVisible ? '' : 'hidden'}`}></div>
-      <div className={`league-header ${isSchedules ? 'league-header-schedule' : '' }`}>
+      <div className={`league-header ${!isSchedule ? 'league-header-padding' : '' }`}>
         <div>
           {isLeagueSelectModalVisible &&
             <LeagueSelectModal handleLeagueClick={handleLeagueClick} handleModalClose={handleModalClose} />
           }
-          <div className={`league-name ${isTeams ? 'league-name-team' : '' }`} onClick={handleLeagueSelectModal}>
+          <div className='league-name' onClick={handleLeagueSelectModal}>
             <CompetitionIcon className='league-icon' />
             <h2 className='league-text'>{competitionName}</h2>
             {isLeagueSelectModalVisible ? (

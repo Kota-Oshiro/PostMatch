@@ -2,16 +2,18 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 18px;
-  width: 100%;
+  padding: 0;
+  width: calc(100% - 132px);
+  height: 32px;
+
   box-sizing: border-box;
   cursor: pointer;
 }
 
-.league-header.league-header-schedule, .league-header.league-header-single {
-  padding: 0;
-  width: calc(100% - 132px);
-  height: 32px;
+.league-header.league-header-padding {
+  padding: 18px;
+  width: 100%;
+  height: auto;
 }
 
 .league-header.league-header-single {
