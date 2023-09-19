@@ -9,8 +9,9 @@ from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 from django.utils.decorators import method_decorator
 from django.db import connection
-from django.db.models import Count, Min, Q, F, Case, When, Value, IntegerField, ExpressionWrapper, FloatField, DurationField
-from django.db.models.functions import Abs, Extract, Coalesce
+from django.db.models import Count, Min, Max, Q, F, Case, When, Value, IntegerField, ExpressionWrapper, FloatField, DurationField
+from django.db.models.functions import Abs, Extract, Coalesce, RowNumber
+from django.db.models.expressions import Window
 
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt #一部のviewでCSRF保護を無効にする（開発環境でだけ使う）
@@ -397,7 +398,22 @@ class MatchDetail(APIView):
 
     def get(self, request, pk, format=None):
         match = get_object_or_404(Match.objects.select_related('home_team', 'away_team'), pk=pk)
-        goals = (Goal.objects.select_related('player').filter(is_valid=True, match_id=pk).annotate(total_time=F('minute') + Coalesce(F('additional_time'), 0)).order_by('total_time'))
+        goals = (
+            Goal.objects.select_related('player')
+            .filter(is_valid=True, match_id=pk,
+                    match__home_score__gte=F('home_score'), 
+                    match__away_score__gte=F('away_score'))
+            .annotate(
+                total_time=F('minute') + Coalesce(F('additional_time'), 0),
+                row_number=Window(
+                    expression=RowNumber(),
+                    order_by=F('created_at').desc(),
+                    partition_by=[F('home_score'), F('away_score')]
+                )
+            )
+            .filter(row_number=1)
+            .order_by('total_time')
+        )
 
         if request.user.is_authenticated:
             current_account = Account.objects.select_related('support_team').get(pk=request.user.id)
