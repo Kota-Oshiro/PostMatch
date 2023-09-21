@@ -27,12 +27,7 @@ function ScheduleSingle() {
 
   const { id } = useParams();
 
-  const queryClient = useQueryClient();
-
   const { apiBaseUrl } = useContext(AuthContext);
-
-  // 初回レンダリング
-  const [isInitialRender, setIsInitialRender] = useState(true);
 
   const competitionCode = (id);
   const competitionId = getSingleCompetitionId(competitionCode);
@@ -65,16 +60,6 @@ function ScheduleSingle() {
 
   const [isScoreVisible, setScoreVisible] = useState(false);
 
-  // グローバルのローディング
-  const [isLoading, setLoading] = useState(true);
-  // ローカルのローディング（scheduleList）
-  const [isLoadingSchedule, setLoadingSchedule] = useState(false);
-
-  // fetchMatchesがキャッシュされていればtrue、そうでなければfalseを返す
-  const isCached = (key) => {
-    return !!queryClient.getQueryData(key);
-  }
-
   // 1. 初回レンダリング時はfetched_matchdayをセットせず、tab_matchdayのみセットするので、始めてのmatchdayタブ変更は両者のcurrentが異なる状態となる
   const MatchdayStateDefault = prevTabMatchdayRef.current !==  prevFetchedMatchdayRef.current;
   // 2. 始めてのmatchdayタブ変更はfetched_matchdayがnullから非nullとなる
@@ -82,25 +67,9 @@ function ScheduleSingle() {
   // 1 + 2 （初回レンダリング後に始めてtab_matchdayを変更した）
   const TabMatchdayChangedFirst = MatchdayStateDefault && fetchedMatchdayNullToNonNull
   
-  // 両matchdayのstateが同じ状態
-  const MatchdayStateSame = tabMatchday === fetchedMatchday;
+  // 両matchdayのstateが異なる状態
+  const MatchdayStateWrong = tabMatchday !== fetchedMatchday;
   
-  const NotFetchedMatchday = !MatchdayStateSame;
-
-  const queryKey = ['matches', competitionId, seasonYear, fetchedMatchday];
-
-  useEffect(() => {
-    
-    if (!isCached(queryKey)) {
-      if (isInitialRender) {
-        setLoading(true);
-      } else {
-        setLoadingSchedule(true);
-      }
-    }
-  
-  }, [competitionId, fetchedMatchday]);
-
   // fetch用のURL生成
   const getUrlForMatchday = (competitionId, seasonYear, matchday) => {
     let baseUrl = `/schedule/${competitionId}/${seasonYear}/`;
@@ -161,30 +130,19 @@ function ScheduleSingle() {
     return result.data;
   };
 
-  const { data: matchesData, isError, error } = useQuery(
-    queryKey, 
-    () => fetchMatches(competitionId, seasonYear, NotFetchedMatchday ? null : fetchedMatchday), 
+  const queryKey = ['matches', competitionId, seasonYear, fetchedMatchday];
+
+  const { data: matchesData, isLoading, isError, error } = useQuery(queryKey, () => fetchMatches(competitionId, seasonYear, MatchdayStateWrong ? null : fetchedMatchday), 
     {
       onSuccess: (data) => {
-        setLoading(false);
-        setLoadingSchedule(false);
-        if (data.length > 0 && (isInitialRender || !TabMatchdayChangedFirst) || competitionId === 2001) {
+        if (data.length > 0 && !TabMatchdayChangedFirst || competitionId === 2001) {
           const tabMatchday = determineTabMatchday(data[0].stage, data[0].matchday);
           setTabMatchday(tabMatchday);
-          if (data.length > 0 && (isInitialRender || !TabMatchdayChangedFirst)) {
-            setIsInitialRender(false);
-          } else {
-            setFetchedMatchday(tabMatchday);
-          }
         } else {
           setTabMatchday(data[0].matchday);
           setFetchedMatchday(data[0].matchday);
         }
-      },
-      onError: () => {
-        setLoading(false);
-        setLoadingSchedule(false);
-      },
+      }
     }
   );
 
@@ -234,90 +192,72 @@ function ScheduleSingle() {
 
       <div className='schedule-wrapper'>
 
-      <FetchContext.Provider value={{ fetchMatches, isLoading, setLoadingSchedule }}>
-          {isLoading ? (
-            <div className='schedule-container'>
-              <div className='content-bg' style={{backgroundImage: `linear-gradient(${competitionColor}, #f7f7f7 360px)`}} >
-                <div className='schedule-header'>
-                  <div className='schedule-league'>
-                    <div className='league-header league-header-single'>
-                      <div>
-                        <div className='league-name'>
-                          <CompetitionIcon className='league-icon' />
-                          <h2 className='league-text'>{competitionName}</h2>
-                        </div>
-                      </div>
+      <FetchContext.Provider value={{ fetchMatches, isLoading }}>
+        <div className='schedule-container'>
+          <div className='content-bg' style={{backgroundImage: `linear-gradient(${competitionColor}, #f7f7f7 360px)`}} >
+            <div className='schedule-header'>
+              <div className='schedule-league'>
+                <div className='league-header league-header-single'>
+                  <div>
+                    <div className='league-name'>
+                      <CompetitionIcon className='league-icon' />
+                      <h2 className='league-text'>{competitionName}</h2>
                     </div>
-                    <ScoreVisibleSwitcher isScoreVisible={isScoreVisible} setScoreVisible={setScoreVisible} />
                   </div>
-                  <ScheduleTab competitionId={competitionId} tabMatchday={tabMatchday} setTabMatchday={setTabMatchday} setFetchedMatchday={setFetchedMatchday} minTab={minTab} maxTab={maxTab} />
                 </div>
-                <div className= 'schedule-cards'>
+                <ScoreVisibleSwitcher isScoreVisible={isScoreVisible} setScoreVisible={setScoreVisible} />
+              </div>
+              <ScheduleTab competitionId={competitionId} tabMatchday={tabMatchday} setTabMatchday={setTabMatchday} setFetchedMatchday={setFetchedMatchday} minTab={minTab} maxTab={maxTab} />
+            </div>
+            {isLoading ? (
+              <div className= 'schedule-cards'>
+                <SkeletonScreenScheduleList />
+              </div>
+            ) : (
+              <div {...handlers} className={`schedule-cards ${competitionId === 2119 ? 'schedule-cards-jleague' : ''}`}>
+                {isLoading ? (
                   <SkeletonScreenScheduleList />
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div className='schedule-container'>
-              <div className='content-bg' style={{backgroundImage: `linear-gradient(${competitionColor}, #f7f7f7 360px)`}} >
-              <div className='schedule-header'>
-                  <div className='schedule-league'>
-                    <div className='league-header league-header-single'>
-                      <div>
-                        <div className='league-name'>
-                          <CompetitionIcon className='league-icon' />
-                          <h2 className='league-text'>{competitionName}</h2>
-                        </div>
+                ) : (
+                  // uclのときのgroup化処理
+                  competitionId === 2001 && matchesData && matchesData.length > 0 && matchesData[0].stage === "GROUP_STAGE" ? (
+                    Object.entries(
+                      matchesData.reduce((acc, match) => {
+                        (acc[match.group] = acc[match.group] || []).push(match);
+                        return acc;
+                      }, {})
+                    ).map(([group, matches]) => (
+                      <div key={group}>
+                        <h2 className='schedule-group-title'>{getGroupLabel(group)}</h2>
+                        {matches.map((match, i) => (
+                          <ScheduleCard
+                            key={match.id}
+                            match={match}
+                            isScoreVisible={isScoreVisible}
+                            competitionId={competitionId}
+                            // isFirst={i === 0}
+                            isLast={i === matches.length - 1}
+                          />
+                        ))}
                       </div>
-                    </div>
-                    <ScoreVisibleSwitcher isScoreVisible={isScoreVisible} setScoreVisible={setScoreVisible} />
-                  </div>
-                  <ScheduleTab competitionId={competitionId} tabMatchday={tabMatchday} setTabMatchday={setTabMatchday} setFetchedMatchday={setFetchedMatchday} minTab={minTab} maxTab={maxTab} />
-                </div>
-                <div {...handlers} className={`schedule-cards ${competitionId === 2119 ? 'schedule-cards-jleague' : ''}`}>
-                  {isLoadingSchedule ? (
-                    <SkeletonScreenScheduleList />
+                      ))
                   ) : (
-                    // uclのときのgroup化処理
-                    competitionId === 2001 && matchesData && matchesData.length > 0 && matchesData[0].stage === "GROUP_STAGE" ? (
-                      Object.entries(
-                        matchesData.reduce((acc, match) => {
-                          (acc[match.group] = acc[match.group] || []).push(match);
-                          return acc;
-                        }, {})
-                      ).map(([group, matches]) => (
-                        <div key={group}>
-                          <h2 className='schedule-group-title'>{getGroupLabel(group)}</h2>
-                          {matches.map((match, i) => (
-                            <ScheduleCard
-                              key={match.id}
-                              match={match}
-                              isScoreVisible={isScoreVisible}
-                              competitionId={competitionId}
-                              // isFirst={i === 0}
-                              isLast={i === matches.length - 1}
-                            />
-                          ))}
-                        </div>
-                        ))
-                      ) : (
-                          matchesData && matchesData.map((match, i) => (
-                              <ScheduleCard
-                                  key={match.id}
-                                  match={match}
-                                  isScoreVisible={isScoreVisible}
-                                  competitionId={competitionId}
-                                  isFirst={i === 0 && match.stage !== 'FINAL'}
-                                  isLast={i === matchesData.length - 1 && match.stage !== 'FINAL'}
-                                  isSingle={match.stage === 'FINAL'}
-                              />
-                          ))
-                      )
-                  )}
-                </div>
+                    matchesData && matchesData.map((match, i) => (
+                      <ScheduleCard
+                        key={match.id}
+                        match={match}
+                        isScoreVisible={isScoreVisible}
+                        competitionId={competitionId}
+                        isFirst={i === 0 && match.stage !== 'FINAL'}
+                        isLast={i === matchesData.length - 1 && match.stage !== 'FINAL'}
+                        isSingle={match.stage === 'FINAL'}
+                      />
+                    ))
+                  )
+                )}
               </div>
-            </div>
-          )}
+              )}
+          </div>
+        </div>
       </FetchContext.Provider>
 
       </div>

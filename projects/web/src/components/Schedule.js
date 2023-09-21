@@ -264,95 +264,74 @@ function Schedule() {
       <div className='schedule-wrapper'>
 
       <FetchContext.Provider value={{ fetchMatches, isLoading, setLoadingSchedule }}>
-          {isLoading ? (
-            <div className='schedule-container'>
-              <div className='content-bg' style={{backgroundImage: `linear-gradient(${competitionColor}, #f7f7f7 360px)`}} >
-                <div className='schedule-header'>
-                  <div className='schedule-league'>
-                    <LeagueSelecter
-                      isLeagueSelectModalVisible={isLeagueSelectModalVisible}
-                      setLeagueSelectModalVisible={setLeagueSelectModalVisible}
-                      competitionId={competitionId}
-                      setCompetitionId={setCompetitionId}
-                      competitionIcon={competitionIcon}
-                      setCompetitionIcon={setCompetitionIcon}
-                      competitionName={competitionName}
-                      setCompetitionName={setCompetitionName}
-                      setCompetitionColor={setCompetitionColor}
-                    />
-                    <ScoreVisibleSwitcher isScoreVisible={isScoreVisible} setScoreVisible={setScoreVisible} />
-                  </div>
-                  <ScheduleTab tabMatchday={tabMatchday} setTabMatchday={setTabMatchday} setFetchedMatchday={setFetchedMatchday} minTab={minTab} maxTab={maxTab} />
-                </div>
-                <div className= 'schedule-cards'>
+        <div className='schedule-container'>
+          <div className='content-bg' style={{backgroundImage: `linear-gradient(${competitionColor}, #f7f7f7 360px)`}} >
+            <div className='schedule-header'>
+              <div className='schedule-league'>
+                <LeagueSelecter
+                  isLeagueSelectModalVisible={isLeagueSelectModalVisible}
+                  setLeagueSelectModalVisible={setLeagueSelectModalVisible}
+                  competitionId={competitionId}
+                  setCompetitionId={setCompetitionId}
+                  competitionIcon={competitionIcon}
+                  setCompetitionIcon={setCompetitionIcon}
+                  competitionName={competitionName}
+                  setCompetitionName={setCompetitionName}
+                  setCompetitionColor={setCompetitionColor}
+                />
+                <ScoreVisibleSwitcher isScoreVisible={isScoreVisible} setScoreVisible={setScoreVisible} />
+              </div>
+              <ScheduleTab tabMatchday={tabMatchday} setTabMatchday={setTabMatchday} setFetchedMatchday={setFetchedMatchday} minTab={minTab} maxTab={maxTab} />
+            </div>
+            {isLoading ? (
+              <div className= 'schedule-cards'>
+                <SkeletonScreenScheduleList />
+              </div>
+            ) : (
+              <div {...handlers} className={`schedule-cards ${competitionId === 2119 ? 'schedule-cards-jleague' : ''}`}>
+                {isLoadingSchedule ? (
                   <SkeletonScreenScheduleList />
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div className='schedule-container'>
-              <div className='content-bg' style={{backgroundImage: `linear-gradient(${competitionColor}, #f7f7f7 360px)`}} >
-                <div className='schedule-header'>
-                  <div className='schedule-league'>
-                      <LeagueSelecter
-                          isLeagueSelectModalVisible={isLeagueSelectModalVisible}
-                          setLeagueSelectModalVisible={setLeagueSelectModalVisible}
-                          competitionId={competitionId}
-                          setCompetitionId={setCompetitionId}
-                          competitionIcon={competitionIcon}
-                          setCompetitionIcon={setCompetitionIcon}
-                          competitionName={competitionName}
-                          setCompetitionName={setCompetitionName}
-                          setCompetitionColor={setCompetitionColor}
-                      />
-                      <ScoreVisibleSwitcher isScoreVisible={isScoreVisible} setScoreVisible={setScoreVisible} />
-                  </div>
-                  <ScheduleTab competitionId={competitionId} tabMatchday={tabMatchday} setTabMatchday={setTabMatchday} setFetchedMatchday={setFetchedMatchday} minTab={minTab} maxTab={maxTab} />
-                </div>
-                <div {...handlers} className={`schedule-cards ${competitionId === 2119 ? 'schedule-cards-jleague' : ''}`}>
-                  {isLoadingSchedule ? (
-                    <SkeletonScreenScheduleList />
+                ) : (
+                  // uclのときのgroup化処理
+                  competitionId === 2001 && matchesData && matchesData.length > 0 && matchesData[0].stage === "GROUP_STAGE" ? (
+                    Object.entries(
+                      matchesData.reduce((acc, match) => {
+                        (acc[match.group] = acc[match.group] || []).push(match);
+                        return acc;
+                      }, {})
+                    ).map(([group, matches]) => (
+                      <div key={group}>
+                        <h2 className='schedule-group-title'>{getGroupLabel(group)}</h2>
+                        {matches.map((match, i) => (
+                          <ScheduleCard
+                            key={match.id}
+                            match={match}
+                            isScoreVisible={isScoreVisible}
+                            competitionId={competitionId}
+                            // isFirst={i === 0}
+                            isLast={i === matches.length - 1}
+                          />
+                        ))}
+                      </div>
+                      ))
                   ) : (
-                    // uclのときのgroup化処理
-                    competitionId === 2001 && matchesData && matchesData.length > 0 && matchesData[0].stage === "GROUP_STAGE" ? (
-                      Object.entries(
-                        matchesData.reduce((acc, match) => {
-                          (acc[match.group] = acc[match.group] || []).push(match);
-                          return acc;
-                        }, {})
-                      ).map(([group, matches]) => (
-                        <div key={group}>
-                          <h2 className='schedule-group-title'>{getGroupLabel(group)}</h2>
-                          {matches.map((match, i) => (
-                            <ScheduleCard
-                              key={match.id}
-                              match={match}
-                              isScoreVisible={isScoreVisible}
-                              competitionId={competitionId}
-                              // isFirst={i === 0}
-                              isLast={i === matches.length - 1}
-                            />
-                          ))}
-                        </div>
-                        ))
-                      ) : (
-                          matchesData && matchesData.map((match, i) => (
-                              <ScheduleCard
-                                  key={match.id}
-                                  match={match}
-                                  isScoreVisible={isScoreVisible}
-                                  competitionId={competitionId}
-                                  isFirst={i === 0 && match.stage !== 'FINAL'}
-                                  isLast={i === matchesData.length - 1 && match.stage !== 'FINAL'}
-                                  isSingle={match.stage === 'FINAL'}
-                              />
-                          ))
-                      )
-                  )}
-                </div>
+                    matchesData && matchesData.map((match, i) => (
+                      <ScheduleCard
+                        key={match.id}
+                        match={match}
+                        isScoreVisible={isScoreVisible}
+                        competitionId={competitionId}
+                        isFirst={i === 0 && match.stage !== 'FINAL'}
+                        isLast={i === matchesData.length - 1 && match.stage !== 'FINAL'}
+                        isSingle={match.stage === 'FINAL'}
+                      />
+                    ))
+                  )
+                )}
               </div>
-            </div>
-          )}
+            )}
+          </div>
+        </div>
       </FetchContext.Provider>
 
       <BannerList />

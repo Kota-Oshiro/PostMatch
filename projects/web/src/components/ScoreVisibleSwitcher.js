@@ -5,12 +5,12 @@ import './ScoreVisibleSwitcher.css';
 function ScoreVisibleSwitcher({ isScoreVisible, setScoreVisible }) {
 
   // タブをクリックしたときにタブを切り替える
-  const openForm = (formName) => {
-    setScoreVisible(formName);
+  const handleScoreVisible = () => {
+    setScoreVisible(prevState => !prevState);
   };
 
   return (
-  <div className='switcher' onClick={() => setScoreVisible(!isScoreVisible)}>
+  <div className='switcher' onClick={handleScoreVisible}>
       <div className={`switch-slider ${isScoreVisible ? 'right' : 'left'}`}></div>
       <div className='switch-status'>
         <span className={`switch-text ${!isScoreVisible ? 'active' : ''}`}>OFF</span>

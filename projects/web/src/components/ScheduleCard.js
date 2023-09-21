@@ -10,7 +10,7 @@ import { ReactComponent as CrestIcon } from '../icons/crest.svg';
 function ScheduleCard({ match, isScoreVisible, isFirst, isLast, isSingle }) {
 
     const location = useLocation();
-    const renderMatchScore = location.pathname.includes("/schedules") 
+    const renderMatchScore = location.pathname.includes("/schedule") 
         ? renderMatchScoreForSchedule 
         : renderMatchScoreForWatch;
 
