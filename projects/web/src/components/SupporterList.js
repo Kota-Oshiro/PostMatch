@@ -37,8 +37,11 @@ function SupporterList({ data, isLoading, isFetchingNextPage, ignitionPage }) {
           ))}
         </>
       )}
-      {isFetchingNextPage && <LoaderSpinner />}
-      <div ref={ignitionPage} style={{ height: '20px' }} />
+      {isFetchingNextPage ? (
+        <LoaderSpinner />
+      ) : (
+        <div ref={ignitionPage} style={{ height: '24px' }} />
+      )}
     </>
   );
 }

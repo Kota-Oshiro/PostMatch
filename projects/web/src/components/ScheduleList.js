@@ -31,8 +31,11 @@ function ScheduleList({ data, isLoading, isFetchingNextPage, ignitionPage }) {
           ))}
         </>
       )}
-      {isFetchingNextPage && <LoaderSpinner />}
-      <div ref={ignitionPage} style={{ height: '24px' }} />
+      {isFetchingNextPage ? (
+        <LoaderSpinner />
+      ) : (
+        <div ref={ignitionPage} style={{ height: '24px' }} />
+      )}
     </>
   );
 }

@@ -127,45 +127,54 @@ function TeamDetail() {
   const ignitionPageMotms = useRef(null);
   const ignitionPageUsers = useRef(null);
 
- // 各タブのuseEffect
- useEffect(() => {
-  if (!observerPosts.current) {
-    observerPosts.current = new IntersectionObserver(
-        entries => {
-            if (entries[0].isIntersecting && hasNextPagePosts && !isFetchingNextPagePosts && currentTab === 'posts') {
-                fetchNextPageMotms();
-            }
-        },
-        { threshold: 1 }
-    );
-  }
+  // 各タブのuseEffect
+  useEffect(() => {
 
-  // タブがアクティブであり、エラーやローディング状態でない場合、observer をアクティブにする
-  if (!isLoadingPosts && !isErrorPosts && ignitionPagePosts.current) {
-    observerPosts.current.observe(ignitionPagePosts.current);
-  }
+    const observerCallback = entries => {
+      if (entries[0].isIntersecting && hasNextPagePosts && !isFetchingNextPagePosts && currentTab === 'posts') {
+        fetchNextPagePosts();
+      }
+    };
 
-  // useEffect のクリーンアップ関数
-  return () => {
-    sourceRefPosts.current.cancel("Operation cancelled by user.");
-    sourceRefPosts.current = axios.CancelToken.source(); 
-    // observer が存在する場合、監視を停止
-    if (observerPosts.current) {
-      observerPosts.current.disconnect();
+    if (!observerPosts.current) {
+      observerPosts.current = new IntersectionObserver(observerCallback, { threshold: 1 });
+    } else {
+      observerPosts.current.disconnect();  // Disconnect first
+      observerPosts.current = new IntersectionObserver(observerCallback, { threshold: 1 });  // Then re-assign
     }
-  };
-}, [dataPosts, isLoadingPosts, ignitionPagePosts, hasNextPagePosts, isFetchingNextPagePosts, currentTab, fetchNextPagePosts]);
+
+    if (!isLoadingPosts && !isErrorPosts && ignitionPagePosts.current) {
+      observerPosts.current.observe(ignitionPagePosts.current);
+    }
+
+    return () => {
+      try {
+        sourceRefPosts.current.cancel("Operation cancelled by user.");
+      } catch (cancelError) {
+        console.error("Error cancelling:", cancelError);
+      }
+      sourceRefPosts.current = axios.CancelToken.source();
+
+      if (observerPosts.current) {
+        observerPosts.current.disconnect();
+      }
+    };
+  }, [dataPosts, isLoadingPosts, ignitionPagePosts, hasNextPagePosts, currentTab, fetchNextPagePosts]);
+
 
   useEffect(() => {
+
+    const observerCallback = entries => {
+      if (entries[0].isIntersecting && hasNextPageMotms && !isFetchingNextPageMotms && currentTab === 'motms') {
+        fetchNextPageMotms();
+      }
+    };
+
     if (!observerMotms.current) {
-      observerMotms.current = new IntersectionObserver(
-          entries => {
-              if (entries[0].isIntersecting && hasNextPageMotms && !isFetchingNextPageMotms && currentTab === 'motms') {
-                  fetchNextPageMotms();
-              }
-          },
-          { threshold: 1 }
-      );
+      observerMotms.current = new IntersectionObserver(observerCallback, { threshold: 1 });
+    } else {
+      observerMotms.current.disconnect();
+      observerMotms.current = new IntersectionObserver(observerCallback, { threshold: 1 });
     }
 
     if (!isLoadingMotms && !isErrorMotms && ignitionPageMotms.current) {
@@ -173,24 +182,32 @@ function TeamDetail() {
     }
 
     return () => {
-      sourceRefMotms.current.cancel("Operation cancelled by user.");
-      sourceRefMotms.current = axios.CancelToken.source(); 
+      try {
+        sourceRefMotms.current.cancel("Operation cancelled by user.");
+      } catch (cancelError) {
+        console.error("Error cancelling:", cancelError);
+      }
+      sourceRefMotms.current = axios.CancelToken.source();
+
       if (observerMotms.current) {
         observerMotms.current.disconnect();
       }
     };
-  }, [dataMotms, isLoadingMotms, ignitionPageMotms, hasNextPageMotms, isFetchingNextPageMotms, currentTab, fetchNextPageMotms]);
+  }, [dataMotms, isLoadingMotms, ignitionPageMotms, hasNextPageMotms, currentTab, fetchNextPageMotms]);
 
   useEffect(() => {
+
+    const observerCallback = entries => {
+      if (entries[0].isIntersecting && hasNextPageUsers && !isFetchingNextPageUsers && currentTab === 'watches') {
+        fetchNextPageUsers();
+      }
+    };
+
     if (!observerUsers.current) {
-      observerUsers.current = new IntersectionObserver(
-          entries => {
-              if (entries[0].isIntersecting && hasNextPageUsers && !isFetchingNextPageUsers && currentTab === 'users') {
-                  fetchNextPageMotms();
-              }
-          },
-          { threshold: 1 }
-      );
+      observerUsers.current = new IntersectionObserver(observerCallback, { threshold: 1 });
+    } else {
+      observerUsers.current.disconnect();
+      observerUsers.current = new IntersectionObserver(observerCallback, { threshold: 1 });
     }
 
     if (!isLoadingUsers && !isErrorUsers && ignitionPageUsers.current) {
@@ -198,13 +215,19 @@ function TeamDetail() {
     }
 
     return () => {
-      sourceRefUsers.current.cancel("Operation cancelled by user.");
-      sourceRefUsers.current = axios.CancelToken.source(); 
+      try {
+        sourceRefUsers.current.cancel("Operation cancelled by user.");
+      } catch (cancelError) {
+        console.error("Error cancelling:", cancelError);
+      }
+      sourceRefUsers.current = axios.CancelToken.source();
+
       if (observerUsers.current) {
         observerUsers.current.disconnect();
       }
     };
-  }, [dataUsers, isLoadingUsers, ignitionPageUsers, hasNextPageUsers, isFetchingNextPageUsers, currentTab, fetchNextPageUsers]);
+  }, [dataUsers, isLoadingUsers, ignitionPageUsers, hasNextPageUsers, currentTab, fetchNextPageUsers]);
+
 
   // 初期読み込み時のLoader
   if (isLoading) {
