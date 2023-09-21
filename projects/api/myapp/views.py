@@ -1059,7 +1059,7 @@ def fetch_standings_data(competition_code):
         if standing.stage == "GROUP_STAGE":
             key = (standing.competition_id, standing.season_id, standing.stage, standing.group, standing.team_id)
         else:
-            key = (standing.competition_id, standing.season_id, standing.stage, standing.position)
+            key = (standing.competition_id, standing.season_id, standing.stage, standing.team_id)
             if standing.group:
                 key += (standing.group,)
         existing_standings_lookup[key] = standing
@@ -1071,7 +1071,7 @@ def fetch_standings_data(competition_code):
         if standing_data['stage'] == "GROUP_STAGE":
             key = (standing_data['competition_id'], standing_data['season_id'], standing_data['stage'], standing_data['group'], standing_data['team_id'])
         else:
-            key = (standing_data['competition_id'], standing_data['season_id'], standing_data['stage'], standing_data['position'])
+            key = (standing_data['competition_id'], standing_data['season_id'], standing_data['stage'], standing_data['team_id'])
             if standing_data.get('group'):
                 key += (standing_data['group'],)
 

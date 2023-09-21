@@ -18,16 +18,11 @@ export const FetchContext = createContext();
 
 function Standing() {
 
-  const queryClient = useQueryClient();
-
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
   const { currentUser, apiBaseUrl } = useContext(AuthContext);
-
-  // 初回レンダリング
-  const [isInitialRender, setIsInitialRender] = useState(true);
 
   const initialCompetitionId = getDefaultCompetitionId(currentUser);
   const initialCompetitionName = getCompetitionName(initialCompetitionId);
@@ -35,9 +30,6 @@ function Standing() {
   const initialCompetitionIcon = getCompetitionIcon(initialCompetitionId);
 
   const [competitionId, setCompetitionId] = useState(initialCompetitionId);
-  // competitonIdが変わったときにisLoadingをtrueにするために使用
-  const prevCompetitionIdRef = useRef(competitionId);
-
   const [seasonYear, setseasonYear] = useState(2023);
 
   const [competitionIcon, setCompetitionIcon] = useState(initialCompetitionIcon);
@@ -46,47 +38,13 @@ function Standing() {
 
   const [isLeagueSelectModalVisible, setLeagueSelectModalVisible] = useState(false);
 
-  // グローバルのローディング
-  const [isLoading, setLoading] = useState(true);
-  // ローカルのローディング（standingList）
-  const [isLoadingStanding, setLoadingStanding] = useState(false);
-
-  // fetchStandingがキャッシュされていればtrue、そうでなければfalseを返す
-  const isCached = (key) => {
-    return !!queryClient.getQueryData(key);
-  }
-
-  const queryKey = [competitionId, seasonYear];
-
-  useEffect(() => {
-    
-    if (!isCached(queryKey)) {
-      if (isInitialRender) {
-        setLoading(true);
-      } else {
-        setLoadingStanding(true);
-      }
-    }
-  
-  }, [competitionId, seasonYear]);
-
   // 初期レンダリング  
   const fetchStanding = async () => {
     const res = await apiBaseUrl.get(`/standing/${competitionId}/`);
     return res.data.standings;
   };
   
-  const { data, isError, error } = useQuery(queryKey, fetchStanding, {
-    onSuccess: (data) => {
-      setLoading(false);
-      setLoadingStanding(false);
-      if (data.length > 0 && isInitialRender) {
-        setIsInitialRender(false);
-      }
-    }}
-  );
-
-  prevCompetitionIdRef.current = competitionId;
+  const { data, isLoading, isError, error } = useQuery(['standing', competitionId, seasonYear], fetchStanding );
 
   // UIでgroup名で日本語変換する（UCL用）
   const getGroupLabel = (groupKey) => {
@@ -113,7 +71,7 @@ function Standing() {
       <div className='bg'></div>
 
       <div className='standing-wrapper'>
-        <FetchContext.Provider value={{ fetchStanding, isLoading, setLoadingStanding }}>
+        <FetchContext.Provider value={{ fetchStanding, isLoading }}>
           <div className='standing-container'>
             <div className='content-bg' style={{ backgroundImage: `linear-gradient(${competitionColor}, #f7f7f7 360px)` }}>
               
@@ -145,7 +103,7 @@ function Standing() {
                   </div>
                 }
                 
-                {isLoading || isLoadingStanding ? (
+                {isLoading ? (
                   <>
                     {competitionId === 2001 && (
                       <div className='standing-column'>
