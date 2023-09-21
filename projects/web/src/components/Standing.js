@@ -195,7 +195,7 @@ function Standing() {
                       }
                     </span>
                   </div>
-                  { competitionId === 2014 || competitionId === 2019 &&
+                  { (competitionId === 2014 || competitionId === 2019) &&
                     <div className='standing-column-block'>
                       <span className='standing-discription-circle circle-uecl'></span>
                       <span className='standing-discription-text'>カンファレンスリーグ予選</span>
