@@ -49,19 +49,7 @@ function Posts() {
     }
     return () => observer.disconnect();
   }, [observer, status, ignitionPage]);
-  
-  if (isLoading) {
-    return(
-      <>
-        <div className='bg'></div>
-        <div className='container'>
-          <h2 className='container-title'>みんなの観戦記録</h2>
-          <SkeletonScreenPost />
-        </div>
-      </>
-    )
-  }
-  
+ 
   if (isError) {
     return(
       <>
@@ -81,13 +69,17 @@ function Posts() {
       <>
       <div className='bg'></div>
       <div className='container'>
-        <h2 className='container-title'>みんなの観戦記録</h2>
-        {data && <PostList
-          data={data}
-          isLoading={isLoading}
-          isFetchingNextPage={isFetchingNextPage}
-          ignitionPage={ignitionPage}
-        />}
+        <h2 className='container-title'>みんなの観戦記録を見てみよう</h2>
+        { isLoading && !data ? (
+          <SkeletonScreenPost />
+        ) : (
+          <PostList
+            data={data}
+            isLoading={isLoading}
+            isFetchingNextPage={isFetchingNextPage}
+            ignitionPage={ignitionPage}
+          />
+        )}
       </div>
       </>
     </>

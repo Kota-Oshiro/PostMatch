@@ -116,9 +116,8 @@
         padding-top: 24px;
     }
 
-    .loader-schedulecard {
+    .loader-schedulecard, .loader-standingcard {
         padding: 0 18px;
-
     }
     
     .loader-matchcards {

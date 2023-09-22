@@ -54,9 +54,19 @@
     line-height: 36px;
 }
 
+.standing-column, .standing-column-groupstage {
+    height: 36px;
+    line-height: 36px;
+}
+
+.standing-group-title {
+    height: 48px;
+    line-height: 48px;
+}
+
 .standing-group-title {
     margin-top: 6px;
-    font-size: 1.2rem;
+    font-size: 1.4rem;
     border-radius: 6px 6px 0 0;
 }
 
@@ -149,6 +159,10 @@
 
     .standing-header {
         padding: 18px 18px 12px;
+    }
+
+    .standing-column, .standing-column-groupstage, .standing-group-title {
+        padding: 0 18px;
     }
   
   }

@@ -318,7 +318,7 @@ function UserDetail() {
             <div className='tab-header'>
               <span className='tab-header-name'>{ account.name }</span>
               {currentUser && currentUser.id ===  account.id &&
-              <Link to='/user/edit'>
+              <Link to='/user/edit' className='user-edit'>
                 <SettingIcon className='user-edit-icon'/>
               </Link>
               }

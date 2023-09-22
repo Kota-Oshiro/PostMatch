@@ -14,11 +14,13 @@
 .tab-header {
   display: flex;
   justify-content:space-between;
-  margin-bottom: 12px;
+  margin-bottom: 1.2rem;
 }
 
 .tab-header-name, .tab-header-name-team {
-  font-size: 1.4rem;
+  margin-right: 1.2rem;
+  line-height: 2.4rem;
+  font-size: 1.8rem;
   font-weight: 900;
   color: #fff;
 }
@@ -137,11 +139,9 @@
   font-size: 1.2rem;
 }
 
-.tab-sns-icon:hover, .team-tablinks:hover {
+.tab-middle-crest:hover, .tab-sns-icon:hover, .team-tablinks:hover {
   opacity: 0.8;
 }
-
-
 
 .activity-tab {
   display: flex;
@@ -171,7 +171,6 @@
 
 .activity-tab-column.match-detail {
   width: calc(50% - 12px);
-  height: 21px;
 }
   
 .activity-tab-column.match-detail.active:after {
@@ -203,7 +202,6 @@
 }
 
 .activity-tab-column > span {
-  font-size: 1.2rem;
   font-weight: 900;
   color: #fff;
   opacity: 0.7;
@@ -211,7 +209,7 @@
 
 .activity-tab-column.match-detail > span {
   color: #000;
-  opacity: 0.7;
+  opacity: 0.5;
 }
   
 .activity-tab-column.active > span {
@@ -265,14 +263,12 @@
 
   .tab-content {
     padding: 18px 18px 24px ;
-
   }
 
-  .tab-header-name, .tab-header-name-team {
-    font-size: 1.8rem;
+  .tab-label {
+    font-size: 1.2rem;
   }
   
-
   .activity-content.padding {
     padding: 24px 18px;
   }

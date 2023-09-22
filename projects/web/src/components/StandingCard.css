@@ -162,6 +162,10 @@
 
 @media (min-width: 800px) {
 
+    .standing-card {
+        padding: 12px 18px;
+    }
+
     .standing-tla {
         display: none;
     }
@@ -175,5 +179,9 @@
         font-size: 1rem;
         font-weight: 700;
     }
+
+    .standing-bar {
+        left: 12px;
+    }    
 
 }

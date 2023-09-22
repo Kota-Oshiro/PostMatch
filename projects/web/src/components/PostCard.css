@@ -9,8 +9,8 @@
 }
 
 .post.post-detail {
+  margin-bottom: 13.2rem;
   cursor: default;
-
 }
 
 .post.post-border {
@@ -264,7 +264,6 @@
   border: none;
 }
 
-
 .read-more-text {
   margin-right: 0.5rem;
   line-height: 32px;
@@ -289,7 +288,7 @@
   text-decoration: underline;
 }
 
-.post-user-icon:hover, .post-user-crest:hover, .post-tag-match:hover, .ellipsis-icon:hover, .ellipsis-menu-icon:hover {
+.post-user-icon:hover, .post-tag-match:hover, .ellipsis-icon:hover, .ellipsis-menu-icon:hover {
   opacity: 0.8;
 }
 
@@ -331,7 +330,11 @@
 
   .post {
     padding: 24px;
-  }  
+  }
+
+  .post.post-detail {
+    margin-bottom: 0;
+  }
 
   .post.post-border {
     margin-top: 0;
