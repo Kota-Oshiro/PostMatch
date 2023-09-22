@@ -1,29 +1,3 @@
-.user-profile-block {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.user-profile-main {
-  display: flex;
-  align-items:center;
-  margin-bottom: 6px;
-}
-
-.user-support-crest {
-  display: flex;
-  align-items: center;
-  width: 2rem;
-  height: 2rem;
-  object-fit: cover;
-}
-
-.user-profile-text-sub {
-  font-size: 1.2rem;
-  line-height: 1.4rem;
-  color: #fff;
-}
-
 .user-edit-icon {
   padding: 4px;
   width: 1.6rem;
@@ -31,6 +5,33 @@
   background-color: #fff;
   border-radius: 50px;
   object-fit: cover;
+}
+
+.user-description-wrapper {
+  position: relative;
+}
+
+.user-description {
+  display: flex;
+  align-items:flex-start;
+  white-space: pre-wrap;
+  color: #fff;
+  font-size: 1.2rem;
+  line-height: 20px;
+}
+
+.user-description-accordion {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  padding-left: 24px;
+  height: 20px;
+  line-height: 20px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #fff;
+  background-color: transparent;
+  cursor: pointer;
 }
 
 .user-support-crest:hover, .user-edit-icon:hover {

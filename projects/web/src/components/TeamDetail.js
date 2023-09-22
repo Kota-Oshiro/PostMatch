@@ -21,7 +21,7 @@ function TeamDetail() {
 
   const { id } = useParams();
 
-  const [currentTab, setCurrentTab] = useState('detail'); 
+  const [currentTab, setCurrentTab] = useState('posts'); 
   
   // タブクリック切り替え
   const openForm = (formName) => {
@@ -29,7 +29,7 @@ function TeamDetail() {
   };
 
   //スワイプしたらcurrentTabの更新
-  const tabs = ['detail', 'users', 'posts', 'motms'];
+  const tabs = ['posts', 'motms','users'];
 
   const handlers = useSwipeable({
     onSwipedLeft: () => {
@@ -260,57 +260,56 @@ function TeamDetail() {
 
         <div className='bg'></div>
         <div className='tab-container'>
-          <div className='content-bg'  style={{backgroundImage: `linear-gradient(${team.club_color_code_first}, #f7f7f7 360px)`}} >
-            <div className='tab-content'>
-              <div className='tab-header'>
-                <div className='tab-header-left'>
-                  {team.competition_id !== 2119 ? (
-                    <img src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/${team.crest_name}.webp`} className='tab-header-icon' style={{transition: 'none'}}/>
-                  ) : (
-                    <CrestIcon className='tab-header-icon'/>
-                  )}
-                  <span className='tab-header-name-team'>{ team.name_ja }</span>
-                </div>
-              </div>
-              <div className='activity-tab'>
-                <div className={`activity-tab-column ${currentTab === 'detail' ? 'active' : ''}`} onClick={() => openForm('detail')}>
-                  <span>情報</span>
-                </div>
-                <div className={`activity-tab-column ${currentTab === 'users' ? 'active' : ''}`} onClick={() => openForm('users')}>
-                  <span>サポーター</span>
-                </div>
-                <div className={`activity-tab-column ${currentTab === 'posts' ? 'active' : ''}`} onClick={() => openForm('posts')}>
-                  <span>ポスト</span>
-                </div>
-                <div className={`activity-tab-column ${currentTab === 'motms' ? 'active' : ''}`} onClick={() => openForm('motms')}>
-                  <span>MOTM</span>
-                </div>
-              </div>        
+          <div className='content-bg'  style={{backgroundImage: `linear-gradient(${team.club_color_code_first} 40%, #f7f7f7 80%)`}} >
+          <div className='tab-content'> 
+            <div className='tab-header'>
+              <span className='tab-header-name'>{ team.name_ja }</span>
             </div>
-            <div className='activity-container' {...handlers}>
-            {currentTab === 'detail' ? (
-              <>
-              <h2 className='activity-title'>クラブ情報</h2>
-              <div className='activity-content add-padding'>
-                <div className='tab-profile-item'>
-                  <h3 className='tab-profile-column'>創設</h3>
-                  <span>{ team.founded_year }年</span>
+            <div className='tab-middle'>
+              {team.competition_id !== 2119 ? (
+                <img src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/${team.crest_name}.webp`} className='tab-team-crest' style={{transition: 'none'}}/>
+              ) : (
+                <CrestIcon className='tab-team-crest'/>
+              )}
+              <div className='tab-middle-item-wrapper'>
+                <div className='tab-middle-item'>
+                  <span className={team.competition_id === 2119 ? 'tab-middle-tla' : 'tab-middle-count'}>{team.tla}</span>
+                  <span className='tab-label'>略称</span>            
                 </div>
-                <div className='tab-profile-item'>
-                  <h3 className='tab-profile-column'>スタジアム</h3>
-                  <span>{ team.venue_ja }</span>
+                <div className='tab-middle-item'>
+                  <span className='tab-middle-count'>{team.founded_year}</span>
+                  <span className='tab-label'>創設</span>            
                 </div>
-                <div className='tab-profile-item'>
-                  <h3 className='tab-profile-column'>略称</h3>
-                  <span>{ team.tla }</span>
-                </div>
-                <div className='tab-profile-item'>
-                  <h3 className='tab-profile-column'>監督</h3>
-                  <span>{ team.coach_name_ja }</span>
+                <div className='tab-middle-item'>
+                  <span className='tab-middle-count'>{team.total_supporter_count}</span>
+                  <span className='tab-label'>サポーター</span>            
                 </div>
               </div>
-              </>
-            ) : currentTab === 'posts' ? (
+            </div>
+            <div className='tab-bottom'>
+              <div className='tab-profile-item'>
+                <h3 className='tab-profile-column'>スタジアム</h3>
+                <span className='tab-profile-text'>{ team.venue_ja }</span>
+              </div>
+              <div className='tab-profile-item'>
+                <h3 className='tab-profile-column'>監督</h3>
+                <span className='tab-profile-text'>{ team.coach_name_ja }</span>
+              </div>
+            </div>
+            <div className='activity-tab'>
+              <div className={`activity-tab-column ${currentTab === 'posts' ? 'active' : ''}`} onClick={() => openForm('posts')}>
+                <span>ポスト</span>
+              </div>
+              <div className={`activity-tab-column ${currentTab === 'motms' ? 'active' : ''}`} onClick={() => openForm('motms')}>
+                <span>MOM投票</span>
+              </div>
+              <div className={`activity-tab-column ${currentTab === 'users' ? 'active' : ''}`} onClick={() => openForm('users')}>
+                <span>サポーター</span>
+              </div>
+            </div>        
+          </div>            
+            <div className='activity-container' {...handlers}>
+            {currentTab === 'posts' ? (
               isLoadingPosts ? (
               <SkeletonScreenPost />
               ) : (
@@ -343,7 +342,7 @@ function TeamDetail() {
               <LoaderInTabContent />
               ) : (
               <>
-                <h2 className='activity-title'>マンオブザマッチ投票</h2>
+                <h2 className='activity-title'>ユーザーが選んだマンオブザマッチ</h2>
                 <PlayerList
                   data={dataMotms}
                   isLoading={isLoadingMotms}

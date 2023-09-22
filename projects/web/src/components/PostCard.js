@@ -7,8 +7,8 @@ import PostCardHeader from './PostCardHeader';
 import PostCardTagMatch from './PostCardTagMatch';
 import PostCardTagMotm from './PostCardTagMotm';
 
-import { ReactComponent as ReadMoreIcon } from '../icons/arrow_down_white.svg';
-import { ReactComponent as ReadMoreIconBelow } from '../icons/arrow_up_white.svg';
+import { ReactComponent as ReadMoreIcon } from '../icons/arrow_down.svg';
+import { ReactComponent as ReadMoreIconBelow } from '../icons/arrow_up.svg';
 import { ReactComponent as HighlightIcon } from '../icons/highlight.svg';
 
 function PostCard({ post }) {
@@ -56,7 +56,7 @@ function PostCard({ post }) {
         }
       </div>
       <div className='post-content'>
-          <pre className='post-text' style={!isExpanded && isLong ? { display: '-webkit-box', WebkitLineClamp: '5', WebkitBoxOrient: 'vertical', overflow: 'hidden', textOverflow: 'ellipsis' }: {}} ref={mainTextRef}>{ post.content }</pre> 
+        <pre className='post-text' style={!isExpanded && isLong ? { display: '-webkit-box', WebkitLineClamp: '5', WebkitBoxOrient: 'vertical', overflow: 'hidden', textOverflow: 'ellipsis' }: {}} ref={mainTextRef}>{ post.content }</pre> 
         <div className={`fade-out ${isExpanded || !isLong ? '' : 'show'}`}></div>
         <div className={`read-more ${isExpanded && isLong ? 'below' : ''}`} style={{display: isLong ? 'inline-flex' : 'none'}} onClick={handleExpand}>
           <span className='read-more-text'>{isExpanded ? '閉じる' : '続きを読む'}</span>

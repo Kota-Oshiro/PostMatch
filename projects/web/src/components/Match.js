@@ -243,13 +243,13 @@ function Match() {
             {data.match && <span className='total-post-count'>{ data.match.total_post_count }</span>}
           </div>
           <div className={`activity-tab-column match-detail ${currentTab === 'motms' ? 'active' : ''}`} onClick={() => openForm('motms')}>
-            <span>MOTM</span>
+            <span>MOM投票</span>
           </div>
         </div>
         <div {...handlers}>
         {currentTab === 'posts' ? (
           <>
-            <h2 className='activity-title'>みんなのポスト</h2>
+            <h2 className='activity-title'>みんなの観戦記録</h2>
             <PostList
               data={dataPosts}
               isLoading={isLoadingPosts}

@@ -47,15 +47,15 @@ const PostCardHeader = ({ post }) => {
       <div className='post-header-left'>
         <div onClick={(e) => {e.stopPropagation(); navigation(`/user/${post.user.id}`)}} className='post-user-icon' >
           <img src={post.user.profile_image}/>
+          {post.user.support_team && post.user.support_team.competition_id !== 2119 &&
+            <div className='post-user-support'>
+              <img src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Badge/${post.user.support_team.badge_name}.webp`} className='post-user-crest'/>
+            </div>
+          }
         </div> 
         <div className='post-header-user'>
           <div className='post-header-block'>
             <span className='post-user-name' onClick={(e) => {e.stopPropagation(); navigation(`/user/${post.user.id}`)}}>{post.user.name}</span>
-            {post.user.support_team && post.user.support_team.competition_id !== 2119 &&
-            <div className='post-user-support' onClick={(e) => {e.stopPropagation(); navigation(`/team/${post.user.support_team.id}`)}}>
-              <img src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Badge/${post.user.support_team.badge_name}.webp`} className='post-user-crest'/>
-            </div>
-            }
           </div>
           <span className='post-created'>{formatUsing(post.created_at, formats.DATE_TIME)}</span>
         </div>
