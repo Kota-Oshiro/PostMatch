@@ -104,11 +104,6 @@ function renderMatchScoreForSchedule(match, isScoreVisible, competitionId) {
     const { status, home_score, away_score } = match;
     const baseClasses = ['schedule-text'];
     
-    // Jリーグの場合はロゴではなくテキスト表示のためマージン調整を行う用のクラス付与
-    if (competitionId === 2119) {
-        baseClasses.push('schedule-narrow');
-    }
-
     // TIMEDのときの時間表示
     if (status === 'TIMED') {
         baseClasses.push('schedule-timed');

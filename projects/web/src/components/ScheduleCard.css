@@ -115,19 +115,6 @@
     width: 24px;
 }
 
-@media (max-width: 799px) {
-    
-    .schedule-text.schedule-narrow {
-        margin: 0 6px;
-    }
-
-    .schedule-record.schedule-narrow {
-        margin-left: 6px;
-        padding-left: 6px;
-    }
-  
-}
-
 @media (min-width: 800px) {
 
     .schedule {
