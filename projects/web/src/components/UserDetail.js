@@ -369,7 +369,7 @@ function UserDetail() {
               {account.description &&
                 <div className='user-description-wrapper'>
                   <pre className='user-description' style={accordionStyle} ref={mainTextRef}>{ account.description }</pre>
-                  {isLong && 
+                  {isLong && !isExpanded &&
                     <div onClick={handleExpand} className='user-description-accordion' style={{background: `linear-gradient(to right, transparent, ${account.support_team ? account.support_team.club_color_code_first : '#3465FF'} 12px)`}} >
                       {!isExpanded && '続きを読む'}
                     </div>
