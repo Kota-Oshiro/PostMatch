@@ -4,6 +4,7 @@ import json
 from datetime import timedelta
 from django.test.runner import DiscoverRunner
 from pathlib import Path
+from google.oauth2 import service_account
 
 ENV = os.environ.get('ENV')
 
@@ -123,13 +124,12 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.getenv("SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET")
 SOCIAL_AUTH_GOOGLE_OAUTH2_REDIRECT_URI = os.environ.get('SOCIAL_AUTH_GOOGLE_OAUTH2_REDIRECT_URI')
 
 if ENV == 'production':
-    # 環境変数からサービスアカウントの情報を読み込む
     SERVICE_ACCOUNT_INFO = os.getenv('GOOGLE_SERVICE_ACCOUNT_INFO')
     if SERVICE_ACCOUNT_INFO:
         SERVICE_ACCOUNT_FILE = json.loads(SERVICE_ACCOUNT_INFO)
 else:
-    # 開発環境では、ファイルから読み込む
-    SERVICE_ACCOUNT_FILE = os.path.join(BASE_DIR, 'google_service_account.json')
+    with open(os.path.join(BASE_DIR, 'google_service_account.json'), 'r') as f:
+        SERVICE_ACCOUNT_FILE = json.load(f)
 
 
 REST_FRAMEWORK = {

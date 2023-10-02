@@ -1102,8 +1102,7 @@ def fetch_standings_from_competitions():
 def fetch_youtube_videos():
     SCOPES = ['https://www.googleapis.com/auth/youtube.readonly']
 
-    credentials = google.oauth2.service_account.Credentials.from_service_account_file(
-        settings.SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+    credentials = google.oauth2.service_account.Credentials.from_service_account_info(settings.SERVICE_ACCOUNT_FILE, scopes=SCOPES)
     youtube = googleapiclient.discovery.build('youtube', 'v3', credentials=credentials)
 
     # competition_idとチャンネルIDのマッピング
