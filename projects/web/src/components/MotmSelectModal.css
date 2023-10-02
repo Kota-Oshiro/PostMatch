@@ -4,14 +4,14 @@
 }
 
 #motm-select-modal {
-  position: fixed;
-  top: 172px;
+  position: absolute;
+  top: 6.8rem;
   left: 50%;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
   transform: translate(-50%);
-  width: calc(100% - 48px);
+  width: 100%;
   max-width: 472px;
   max-height: 432px;
   background: #fff;

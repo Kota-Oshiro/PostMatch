@@ -6,6 +6,7 @@ import './ScheduleCard.css';
 import { ReactComponent as PostIcon } from '../icons/post.svg';
 import { ReactComponent as WatchedIconGrey } from '../icons/watched_grey.svg';
 import { ReactComponent as CrestIcon } from '../icons/crest.svg';
+import { ReactComponent as VideoIcon } from '../icons/youtube_grey.svg';
 
 function ScheduleCard({ match, isScoreVisible, isFirst, isLast, isSingle }) {
 
@@ -24,7 +25,7 @@ function ScheduleCard({ match, isScoreVisible, isFirst, isLast, isSingle }) {
     return (
         <>
         {match.home_team ? (
-            <Link to={`/match/${match.id}`} className='match-links'>
+            <Link to={`/match/${match.id}`} className='match-links' onClick={(e) => {if (e.target.closest('.schedule-highlight')) {e.preventDefault();}}}>
             <div className={classNames.join(' ')}>
             <div className='schedule-block'>
                 <div className='schedule-left'>
@@ -53,9 +54,14 @@ function ScheduleCard({ match, isScoreVisible, isFirst, isLast, isSingle }) {
                             <span className='schedule-tla'>{match.away_team.tla}</span>
                         </div>
                     )}
+                    {renderMatchDateTime(match)}
                 </div>
                 <div className='schedule-right'>
-                    {renderMatchDateTime(match)}
+                    {match.highlight_video_url && 
+                        <div href={match.highlight_video_url} className='schedule-highlight' onClick={() => {window.open(match.highlight_video_url, '_blank', 'noopener,noreferrer')}}>
+                            <VideoIcon className='schedule-icon schedule-icon-video'/>
+                        </div>                    
+                    }
                     <div className='schedule-record'>
                         <div className='schedule-record-block'>
                             <WatchedIconGrey className='schedule-icon' />
@@ -77,9 +83,14 @@ function ScheduleCard({ match, isScoreVisible, isFirst, isLast, isSingle }) {
                         <CrestIcon className='schedule-crest'/>
                         {renderMatchScore(match, isScoreVisible, competitionId)}
                         <CrestIcon className='schedule-crest'/>
+                        {renderMatchDateTime(match)}
                     </div>
                     <div className='schedule-right'>
-                        {renderMatchDateTime(match)}
+                        {match.highlight_video_url && 
+                            <a href={match.highlight_video_url} className='schedule-highlight' onClick={(e) => {e.stopPropagation()}} target='_blank' rel='noopener noreferrer'>
+                                <VideoIcon className='schedule-icon schedule-icon-video'/>
+                            </a>                    
+                        }
                         <div className='schedule-record'>
                             <div className='schedule-record-block'>
                                 <WatchedIconGrey className='schedule-icon' />

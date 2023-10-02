@@ -3,3 +3,5 @@ venv
 staticfiles
 .env
 db.sqlite3
+client_secrets.json
+google_service_account.json

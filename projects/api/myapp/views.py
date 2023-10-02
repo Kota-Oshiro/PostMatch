@@ -1,6 +1,11 @@
 import json, pandas as pd, http.client, requests
 from datetime import datetime, timezone, timedelta
 
+import google.oauth2.service_account
+from google.oauth2.service_account import Credentials
+import googleapiclient.discovery
+import re
+
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.conf import settings
@@ -504,7 +509,7 @@ class MatchPostCreateView(APIView):
         match = get_object_or_404(Match, id=match_id)
         return match
 
-    def create_object(self, match, user_id, player_id, content, is_highlight):
+    def create_object(self, match, user_id, player_id, content, is_highlight, is_stadium):
         # player_idが空文字列の場合、Noneに変換する
         player_id = None if player_id == "" else player_id
 
@@ -520,13 +525,14 @@ class MatchPostCreateView(APIView):
             player=player,
             content=content,
             is_highlight = is_highlight,
+            is_stadium = is_stadium,
         )
 
     def post(self, request, pk, *args, **kwargs):
         try:
             match = self.get_match(id=pk)
             data = request.data
-            self.create_object(match, data.get('user'), data.get('player_id'), data.get('content'), data.get('is_highlight'))
+            self.create_object(match, data.get('user'), data.get('player_id'), data.get('content'), data.get('is_highlight'), data.get('is_stadium'))
             return Response({'message': '投稿が完了しました'}, status=status.HTTP_201_CREATED)
         except ValueError as e:
             error_message = str(e)
@@ -912,10 +918,11 @@ def fetch_matches_data(competition_code):
         }
 
     #全期間の既存データを取得
-    #matches_data = [extract_match_data(match, competition_id, season_id, season_year) for match in data['matches']]
+    matches_data = [extract_match_data(match, competition_id, season_id, season_year) for match in data['matches']]
 
     #1日前以降の既存データを取得
-    matches_data = [extract_match_data(match, competition_id, season_id, season_year) for match in data['matches'] if match['utcDate'] > (datetime.now() - timedelta(days=1)).isoformat()]
+    #matches_data = [extract_match_data(match, competition_id, season_id, season_year) for match in data['matches'] if match['utcDate'] > (datetime.now() - timedelta(days=1)).isoformat()]
+
 
     existing_match_ids = {match.id for match in Match.objects.filter(id__in=[m['id'] for m in matches_data])}
 
@@ -1091,6 +1098,67 @@ def fetch_standings_from_competitions():
     competitions = ['PL', 'PD', 'SA', 'JJL', 'CL']
     for competition in competitions:
         fetch_standings_data(competition)
+
+def fetch_youtube_videos():
+    SCOPES = ['https://www.googleapis.com/auth/youtube.readonly']
+
+    credentials = google.oauth2.service_account.Credentials.from_service_account_file(
+        settings.SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+    youtube = googleapiclient.discovery.build('youtube', 'v3', credentials=credentials)
+
+    # competition_idとチャンネルIDのマッピング
+    competition_channel_mapping = {
+        2021: "UCJ-l-sMQFHogSy8KXRyMIRA",
+        2119: "UCoFLB_Gw_AoxUuuzKjXrc_Q",
+        2014: "UCoFLB_Gw_AoxUuuzKjXrc_Q",
+        2019: "UCoFLB_Gw_AoxUuuzKjXrc_Q",
+        2001: "UCJQj2lbG_3w8UrncJd7JZXw",
+    }
+
+    one_day_ago = timezone.now() - timedelta(days=1)
+
+    matches = Match.objects.filter(status='FINISHED', started_at__gte=one_day_ago, highlight_video_url__isnull=True).select_related('home_team', 'away_team')
+
+    for match in matches:
+        home_team_name = match.home_team.short_name_ja
+        away_team_name = match.away_team.short_name_ja
+
+        # Youtube検索ワード
+        pattern = re.compile(fr"{home_team_name}.*{away_team_name}.*ハイライト|{away_team_name}.*{home_team_name}.*ハイライト")
+
+        end_date = timezone.now()
+        start_date_str = one_day_ago.strftime("%Y-%m-%dT%H:%M:%SZ")
+
+        # matchのcompetition_idに基づいてチャンネルIDを取得
+        channel_id = competition_channel_mapping.get(match.competition_id)
+        if not channel_id:
+            continue  # Skip to the next match if there is no channel mapping
+
+        request = youtube.search().list(
+            part="snippet",
+            channelId=channel_id,
+            type="video",
+            publishedAfter=start_date_str,
+            maxResults=50
+        )
+        response = request.execute()
+
+        video_found = False
+        for item in response.get("items", []):
+            title = item["snippet"]["title"]
+            if pattern.search(title):
+                video_id = item["id"]["videoId"]
+                video_url = f"https://www.youtube.com/watch?v={video_id}"
+                
+                match.highlight_video_url = video_url
+                match.save(update_fields=['highlight_video_url'])
+                
+                video_found = True
+                break
+
+        if not video_found:
+            print(f"Match: {home_team_name} vs {away_team_name}, No matching video found.")
+
 
 ''' メールログイン関連（廃止）
 

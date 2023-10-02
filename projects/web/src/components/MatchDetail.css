@@ -14,8 +14,9 @@
 }
 
 .match-header, .match-bottom {
+  display: flex;
   justify-content: center;
-  padding: 12px 24px;
+  padding: 1.2rem;
   width: 100%;
   box-sizing: border-box;
 }
@@ -28,6 +29,12 @@
   background-color: #fff;
   border-radius: 0 0 12px 12px;
   border: solid 1px #eeeeee;
+}
+
+.match-header-wrapper, .match-bottom-wrapper {
+  display: flex;
+  align-items: center;
+  height: 2.4rem;
 }
 
 .match-content {
@@ -123,8 +130,13 @@
 }
 
 .match-text-header {
+  line-height: 2.4rem;
   font-size: 1.2rem;
   color: #fff;
+}
+
+.match-text, .match-text-header {
+  line-height: 1.6rem;
 }
 
 .match-status {

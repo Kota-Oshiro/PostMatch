@@ -9,7 +9,9 @@ import { ReactComponent as CloseIcon } from '../icons/close.svg';
 import { ReactComponent as ArrowDownIcon } from '../icons/arrow_down.svg';
 import { ReactComponent as ArrowUpIcon } from '../icons/arrow_up.svg';
 import { ReactComponent as HighlightIcon } from '../icons/highlight.svg';
-import { ReactComponent as HighlightFillIcon } from '../icons/highlight_fill_white.svg';
+import { ReactComponent as HighlightFillIcon } from '../icons/highlight_white.svg';
+import { ReactComponent as StadiumIcon } from '../icons/stadium.svg';
+import { ReactComponent as StadiumFillIcon } from '../icons/stadium_white.svg';
 
 import { AuthContext } from '../AuthContext';
 import { LoaderInButton } from './Loader';
@@ -31,6 +33,9 @@ function MatchPostForm({
 
   const [isHighlightWatch, setHighlightWatch] = useState(false);
   const CurrentHighlightIcon = isHighlightWatch ? HighlightFillIcon : HighlightIcon;
+
+  const [isStadiumWatch, setStadiumWatch] = useState(false);
+  const CurrentStadiumIcon = isStadiumWatch ? StadiumFillIcon : StadiumIcon;
 
   const [charCount, setCharCount] = useState(0);
   const [postContent, setPostContent] = useState('');
@@ -130,6 +135,12 @@ function MatchPostForm({
     setHighlightWatch(prevState => !prevState);
   };
 
+  // スタジアム視聴のセット
+  const handleStadiumClick = (e) => {
+    e.stopPropagation();
+    setStadiumWatch(prevState => !prevState);
+  };
+
   const handleContentChange = (e) => {
     setPostContent(e.target.value);
     setCharCount(e.target.value.length);
@@ -176,7 +187,8 @@ function MatchPostForm({
       user: currentUser.id,
       player_id: postPlayerId,
       content: postContent,
-      is_highlight: isHighlightWatch
+      is_highlight: isHighlightWatch,
+      is_stadium: isStadiumWatch
     };
 
     mutation.mutate(postData);
@@ -201,6 +213,16 @@ function MatchPostForm({
         {validateErrorMessage && <span className='error-message'>{validateErrorMessage}</span>}
 
         <div className='post-modal-selecter' onClick={handleMotmSelectModal}>
+          <div className='post-modal-selecter-type'>
+            <div className={`post-modal-watchtype ${isStadiumWatch ? 'watchtype-selected' : ''}`} onClick={handleStadiumClick} >
+              <CurrentStadiumIcon className='post-modal-icon'/>
+              <span className={`post-modal-watchtype-text ${isStadiumWatch ? 'watchtype-selected' : ''}`}>スタジアム観戦</span>
+            </div>
+            <div className={`post-modal-watchtype ${isHighlightWatch ? 'watchtype-selected' : ''}`} onClick={handleHighlightClick} >
+              <CurrentHighlightIcon className='post-modal-icon'/>
+              <span className={`post-modal-watchtype-text ${isHighlightWatch ? 'watchtype-selected' : ''}`}>ハイライト視聴</span>
+            </div>
+          </div>
           <div className='post-modal-motm' onClick={handleMotmSelectModal}>
             {postPlayerName ? (
               <span className='custom-form-text'>{postPlayerName}</span>
@@ -214,10 +236,7 @@ function MatchPostForm({
             )}
             {isMotmSelectModalVisible && <MotmSelectModal match={match} postPlayerList={postPlayerList} handlePlayerClick={handlePlayerClick} handleModalClose={handleModalClose} />}
           </div>
-          <div className={`post-modal-highlight ${isHighlightWatch ? 'highlighted' : ''}`} onClick={handleHighlightClick} >
-            <CurrentHighlightIcon className='post-modal-icon'/>
-            <span className={`post-modal-highlight-text ${isHighlightWatch ? 'highlighted' : ''}`}>ハイライト視聴</span>
-          </div>
+
         </div>
 
         <textarea

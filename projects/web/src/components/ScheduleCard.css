@@ -91,6 +91,10 @@
 .schedule-date, .schedule-record-count {
     font-size: 1rem;
 }
+
+.schedule-date {
+    margin-left: 1.2rem;
+}
   
 .schedule-record {
     display: flex;
@@ -107,12 +111,23 @@
   
 .schedule-icon {
     width: auto;
-    height: 15px;
+    height: 1.6rem;
 }
+
+.schedule-icon.schedule-icon-video:hover {
+    opacity: 0.8;
+}
+
 
 .schedule-record-count {
     text-align: center;
     width: 24px;
+}
+
+.schedule-highlight {
+    display: flex;
+    align-items: center;
+    height: 100%;
 }
 
 @media (min-width: 800px) {

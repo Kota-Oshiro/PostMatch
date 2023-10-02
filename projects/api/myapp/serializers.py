@@ -167,7 +167,7 @@ class MatchSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Match
-        fields = ['id', 'competition_id', 'season_year', 'matchday', 'stage', 'group', 'home_team', 'away_team', 'started_at', 'status', 'home_score', 'away_score', 'total_watch_count', 'total_post_count']
+        fields = ['id', 'competition_id', 'season_year', 'matchday', 'stage', 'group', 'home_team', 'away_team', 'started_at', 'status', 'home_score', 'away_score', 'total_watch_count', 'total_post_count', 'highlight_video_url']
 
 class MatchPlayerSerializer(serializers.ModelSerializer):
 

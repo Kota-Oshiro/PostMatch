@@ -11,6 +11,7 @@ import MatchDetail from './MatchDetail';
 import MatchFloatButton from './MatchFloatButton';
 import MatchPostForm from './MatchPostForm';
 import Login from './Login';
+import EmbedVideo from './EmbedVideo';
 import NotFoundPage from './error/NotFoundPage';
 
 import './Match.css';
@@ -234,8 +235,10 @@ function Match() {
         setHasWatched={setHasWatched}
         setPostModalVisible={setPostModalVisible}
       />
+
       {!isAuthenticated && <Login /> }
-  
+      {data.match.highlight_video_url && <EmbedVideo match={data.match} /> }
+
       <div className='activity-container match-post-list'>
         <div className='activity-tab match-detail'>
           <div className={`activity-tab-column match-detail ${currentTab === 'posts' ? 'active' : ''}`} onClick={() => openForm('posts')}>

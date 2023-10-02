@@ -22,6 +22,7 @@ class Team(models.Model):
     venue = models.CharField(max_length=255, null=True)
     api_updated_at = models.DateTimeField()
     name_ja = models.CharField(max_length=255, null=True)
+    short_name_ja = models.CharField(max_length=255, null=True)
     crest_name = models.CharField(max_length=255, null=True)
     badge_name = models.CharField(max_length=255, null=True)
     total_supporter_count = models.IntegerField(default=0)
@@ -154,6 +155,7 @@ class Match(models.Model):
     total_watch_count = models.IntegerField(default=0)
     total_post_count = models.IntegerField(default=0)
     is_national = models.BooleanField(default=False)
+    highlight_video_url = models.URLField(null=True)
 
     class Meta:
         db_table = 'matches'
@@ -169,6 +171,7 @@ class Post(models.Model):
     player = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='player_posts', db_column='player_id', null=True)
     content = models.TextField(max_length=900, null=True)
     is_highlight = models.BooleanField(default=False)
+    is_stadium = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
         # 初めて保存される（新規作成される）場合にTrueとなる

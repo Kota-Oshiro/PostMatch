@@ -300,27 +300,34 @@
   background-color: #fff;
 }
 
-.post-highlight {
+.post-watch-type {
   display: flex;
   align-self: flex-end;
   align-items: center;
   margin-top: 12px;
-  padding: 4px 8px;
+}
+
+.post-watchtype {
+  display: flex;
+  align-items: center;
+  margin-left: 0.6rem;
+  padding: 0.4rem 0.8rem;
   border-radius: 6px;
   background-color: #f7f7f7;
 }
 
-.post-highlight.highlight-expand {
+.post-watchtype.watchtype-expand {
   margin-top: 50px;
 }
 
-.post-highlight-icon {
+.post-watchtype-icon {
   width: 1.4rem;
   height: auto;
   margin-right: 6px;
 }
 
-.post-highlight-text {
+.post-watchtype-text {
+  line-height: 1.4rem;
   color: #888;
   font-weight: 700;
   font-size: 1rem;

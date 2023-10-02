@@ -10,6 +10,7 @@ import PostCardTagMotm from './PostCardTagMotm';
 import { ReactComponent as ReadMoreIcon } from '../icons/arrow_down.svg';
 import { ReactComponent as ReadMoreIconBelow } from '../icons/arrow_up.svg';
 import { ReactComponent as HighlightIcon } from '../icons/highlight.svg';
+import { ReactComponent as StadiumIcon } from '../icons/stadium.svg';
 
 function PostCard({ post }) {
 
@@ -67,12 +68,22 @@ function PostCard({ post }) {
           }
         </div>
       </div>
-      {post.is_highlight &&
-        <div className={`post-highlight ${(isExpanded && isLong) ? 'highlight-expand' : ''}`}>
-          <HighlightIcon className='post-highlight-icon'/>
-          <span className='post-highlight-text' >ハイライト視聴</span>
+      {(post.is_stadium || post.is_highlight) && 
+        <div className='post-watch-type'>
+          {post.is_stadium &&
+            <div className={`post-watchtype ${(isExpanded && isLong) ? 'watchtype-expand' : ''}`}>
+              <StadiumIcon className='post-watchtype-icon'/>
+              <span className='post-watchtype-text' >現地観戦</span>
+            </div>
+          } 
+          {post.is_highlight &&
+            <div className={`post-watchtype ${(isExpanded && isLong) ? 'watchtype-expand' : ''}`}>
+              <HighlightIcon className='post-watchtype-icon'/>
+              <span className='post-watchtype-text' >ハイライト</span>
+            </div>
+          }
         </div>
-      } 
+      }
     </div>
   );
 }

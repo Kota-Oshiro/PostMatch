@@ -20,8 +20,10 @@ function MatchDetail({ match, goals }) {
   return (
     <>
       <div className='match-header' style={{backgroundColor: CompetitionColor}}>
-        <CompetitionIcon className='match-icon' />
-        <h2 className='match-text-header'>{ competitionName }</h2>
+          <div className='match-header-wrapper'>
+            <CompetitionIcon className='match-icon' />
+            <h2 className='match-text-header'>{ competitionName }</h2>
+          </div>
       </div>
       <div className='match-content'>
         <span className='match-text'>{ competitionType }{match.matchday}</span>
@@ -61,8 +63,10 @@ function MatchDetail({ match, goals }) {
 
       </div>
       <div className='match-bottom'>
+        <div className='match-bottom-wrapper'>
           <CalenderIcon className='match-icon' />
           {renderMatchStatusBottom(match)}
+        </div>
       </div>
   </>
   );
