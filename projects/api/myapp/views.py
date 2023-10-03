@@ -1152,11 +1152,11 @@ def fetch_youtube_videos():
                 match.save(update_fields=['highlight_video_url'])
                 
                 video_found = True
+                print(f"Match: {home_team_name} vs {away_team_name}, Matching video URL: {video_url}")
                 break
 
         if not video_found:
             print(f"Match: {home_team_name} vs {away_team_name}, No matching video found.")
-
 
 ''' メールログイン関連（廃止）
 
