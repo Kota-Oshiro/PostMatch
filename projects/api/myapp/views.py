@@ -918,10 +918,10 @@ def fetch_matches_data(competition_code):
         }
 
     #全期間の既存データを取得
-    matches_data = [extract_match_data(match, competition_id, season_id, season_year) for match in data['matches']]
+    #matches_data = [extract_match_data(match, competition_id, season_id, season_year) for match in data['matches']]
 
     #1日前以降の既存データを取得
-    #matches_data = [extract_match_data(match, competition_id, season_id, season_year) for match in data['matches'] if match['utcDate'] > (datetime.now() - timedelta(days=1)).isoformat()]
+    matches_data = [extract_match_data(match, competition_id, season_id, season_year) for match in data['matches'] if match['utcDate'] > (datetime.now() - timedelta(days=1)).isoformat()]
 
 
     existing_match_ids = {match.id for match in Match.objects.filter(id__in=[m['id'] for m in matches_data])}
@@ -1122,30 +1122,29 @@ def fetch_youtube_videos():
         home_team_name = match.home_team.short_name_ja
         away_team_name = match.away_team.short_name_ja
 
-        # Youtube検索ワード
-        pattern = re.compile(fr"{home_team_name}.*{away_team_name}.*ハイライト|{away_team_name}.*{home_team_name}.*ハイライト")
-
         end_date = timezone.now()
         start_date_str = one_day_ago.strftime("%Y-%m-%dT%H:%M:%SZ")
 
         # matchのcompetition_idに基づいてチャンネルIDを取得
         channel_id = competition_channel_mapping.get(match.competition_id)
         if not channel_id:
-            continue  # Skip to the next match if there is no channel mapping
-
+            continue
+        
         request = youtube.search().list(
             part="snippet",
             channelId=channel_id,
             type="video",
             publishedAfter=start_date_str,
-            maxResults=50
+            maxResults=50,
         )
         response = request.execute()
 
         video_found = False
         for item in response.get("items", []):
             title = item["snippet"]["title"]
-            if pattern.search(title):
+
+            # 単語が存在するかどうかのみで検索
+            if home_team_name in title and away_team_name in title and "ハイライト" in title:
                 video_id = item["id"]["videoId"]
                 video_url = f"https://www.youtube.com/watch?v={video_id}"
                 
