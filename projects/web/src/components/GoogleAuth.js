@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
 import { GoogleOAuthProvider, useGoogleLogin } from '@react-oauth/google';
 
-import getCsrfToken from '../Utility';
+import { getCsrfToken } from '../Utility';
 import { AuthContext } from '../AuthContext';
 
 import '../styles/socialButton.css';

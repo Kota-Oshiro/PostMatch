@@ -1,5 +1,5 @@
 import json, pandas as pd, http.client, requests
-from datetime import datetime, timezone, timedelta
+from datetime import date, datetime, timezone, timedelta
 
 import google.oauth2.service_account
 from google.oauth2.service_account import Credentials
@@ -51,7 +51,7 @@ from rest_framework.pagination import PageNumberPagination, LimitOffsetPaginatio
 from rest_framework.exceptions import ValidationError
 
 from .models import Account, Team, Player, Match, Post, Watch, Goal, Standing
-from .serializers import MyTokenObtainPairSerializer, AccountSerializer, AccountHeaderSerializer, AccountEditSerializer, AccountEditTeamSerializer, TeamSerializer, TeamListSerializer, TeamSupporterSerializer, PlayerSerializer, MatchSerializer, MatchGoalSerializer, PostSerializer, MotmPlayerSerializer, MatchPlayerSerializer, MatchNationalPlayerSerializer, WatchSerializer, StandingSerializer
+from .serializers import MyTokenObtainPairSerializer, AccountSerializer, AccountHeaderSerializer, AccountEditSerializer, AccountStatisticsSerializer, AccountEditTeamSerializer, TeamSerializer, TeamListSerializer, TeamSupporterSerializer, PlayerSerializer, MatchSerializer, MatchGoalSerializer, PostSerializer, MotmPlayerSerializer, MatchPlayerSerializer, MatchNationalPlayerSerializer, WatchSerializer, StandingSerializer
 
 #モデルのインクリメントを初期化
 def reset_sequence(model):
@@ -297,6 +297,76 @@ class UserDetail(UserBase):
             }
 
         return Response(response)
+
+class UserStatistics(UserBase, APIView):
+    permission_classes = [AllowAny]
+    serializer_class = AccountStatisticsSerializer
+   
+    def get_queryset(self):
+        account_id = self.kwargs['pk']
+
+        # 今月と前月の範囲を設定
+        today = date.today()
+        first_day_this_month = date(today.year, today.month, 1)
+        if today.month == 1:
+            first_day_last_month = date(today.year - 1, 12, 1)
+        else:
+            first_day_last_month = date(today.year, today.month - 1, 1)
+
+        # 投稿数
+        post_count_this_month = Post.objects.filter(user_id=account_id, created_at__gte=first_day_this_month).count()
+        post_count_last_month = Post.objects.filter(user_id=account_id, created_at__lt=first_day_this_month, created_at__gte=first_day_last_month).count()
+
+        # 今月の観戦数
+        watched_matches_this_month = Watch.objects.filter(user_id=account_id, created_at__gte=first_day_this_month).values_list('match_id', flat=True)
+        posted_matches_this_month = Post.objects.filter(user_id=account_id, created_at__gte=first_day_this_month).values_list('match_id', flat=True)
+        unique_matches_this_month = set(watched_matches_this_month).union(posted_matches_this_month)
+        match_count_this_month = len(unique_matches_this_month)
+
+        # 前月の観戦数
+        watched_matches_last_month = Watch.objects.filter(user_id=account_id, created_at__lt=first_day_this_month, created_at__gte=first_day_last_month).values_list('match_id', flat=True)
+        posted_matches_last_month = Post.objects.filter(user_id=account_id, created_at__lt=first_day_this_month, created_at__gte=first_day_last_month).values_list('match_id', flat=True)
+        unique_matches_last_month = set(watched_matches_last_month).union(posted_matches_last_month)
+        match_count_last_month = len(unique_matches_last_month)
+
+        # 現地観戦数
+        stadium_count_this_month = Post.objects.filter(user_id=account_id, created_at__gte=first_day_this_month, is_stadium=True).count()
+        stadium_count_last_month = Post.objects.filter(user_id=account_id, created_at__lt=first_day_this_month, created_at__gte=first_day_last_month, is_stadium=True).count()
+
+        # 今月の選手投票数
+        players_this_month = list(Post.objects.filter(user_id=account_id, created_at__gte=first_day_this_month).values('player__id', 'player__name_ja').annotate(count=Count('player_id')).order_by('-count', 'player__name')[:5])
+        while len(players_this_month) < 5:
+            players_this_month.append({
+                "player__id": None,
+                "player__name_ja": None,
+                "count": 0
+            })
+
+        # 前月の選手投票数
+        players_last_month = list(Post.objects.filter(user_id=account_id, created_at__lt=first_day_this_month, created_at__gte=first_day_last_month).values('player__id', 'player__name_ja').annotate(count=Count('player_id')).order_by('-count', 'player__name')[:5])
+        while len(players_last_month) < 5:
+            players_last_month.append({
+                "player__id": None,
+                "player__name_ja": None,
+                "count": 0
+            })
+
+        statistics = {
+            'post_count_this_month': post_count_this_month,
+            'post_count_last_month': post_count_last_month,
+            'match_count_this_month': match_count_this_month,
+            'match_count_last_month': match_count_last_month,
+            'stadium_count_this_month': stadium_count_this_month,
+            'stadium_count_last_month': stadium_count_last_month,
+            'top_players_this_month': players_this_month,
+            'top_players_last_month': players_last_month
+        }
+
+        return statistics
+
+    def get(self, request, *args, **kwargs):
+        statistics = self.get_queryset()
+        return Response(statistics)
 
 class UserPost(UserBase, generics.ListAPIView):
     permission_classes = [AllowAny]

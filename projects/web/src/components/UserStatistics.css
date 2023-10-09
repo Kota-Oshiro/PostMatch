@@ -1,0 +1,105 @@
+.statistics-wrapper {
+  padding: 1.2rem;
+}
+
+.statistics {
+  border-radius: 12px;
+}
+
+.statistics.statistics-lastmonth {
+  margin-top: 1.8rem;
+  background-color: #888;
+}
+
+.statistics {
+  padding: 1.8rem;
+}
+
+.statistics-title {
+  display: flex;
+  align-items: end;
+  margin-bottom: 2.4rem;
+  height: 2.4rem;
+}
+
+.statistics-title > h2 {
+  margin-right: 1.2rem;
+}
+
+.statistics-title > span {
+  line-height: 2rem;
+}
+
+.statistics-title > h2, .statistics-title > span {
+  color: #fff;
+  font-weight: 700;
+}
+
+.statistics-metrics {
+  display: flex;
+  margin-bottom: 2.4rem;
+}
+
+.statistics-metric {
+  display: flex;
+  flex-direction: column;
+  margin-right: 2.4rem;
+}
+
+.statistics-metric-title {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.2rem;
+}
+
+.statistics-icon {
+  margin-right: 0.6rem;
+  width: auto;
+  height: 2rem
+}
+
+.statistics-text {
+  color: #fff;
+  font-weight: 700;
+  line-height: 1.8rem;
+}
+
+.statistics-block {
+  height: 4.8rem;
+}
+
+.statistics-count {
+  margin-right: 0.6rem;
+  font-size: 4.2rem;
+  font-weight: 900;
+  line-height: 4.8rem;
+  color: #fff;
+}
+
+.statistics-unit {
+  font-weight: 700;
+  color: #fff;
+}
+
+.statistics-motm {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1.2rem;
+}
+
+.statistics-motm > span {
+  color: #fff;
+  font-weight: 700;
+}
+
+@media (min-width: 800px) {
+
+  .statistics-wrapper {
+    padding: 2.4rem;
+  }
+
+  .statistics.statistics-lastmonth {
+    margin-top: 2.4rem;
+  }
+
+}

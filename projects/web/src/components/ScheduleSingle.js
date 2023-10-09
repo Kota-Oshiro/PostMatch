@@ -15,7 +15,7 @@ import ScheduleTab from './ScheduleTab';
 import ScoreVisibleSwitcher from './ScoreVisibleSwitcher';
 import NotFoundPage from './error/NotFoundPage';
 
-import { getSingleCompetitionId, getCompetitionName, getCompetitionColor, getCompetitionIcon } from './UtilityCompetition';
+import { getSingleCompetitionId, getCompetitionName, getCompetitionColor, getCompetitionIcon } from '../Utility';
 
 export const FetchContext = createContext();
 

@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { formatUsing, formats } from '../DateFormat.js';
 
-import { getCompetitionName, getCompetitionType, getCompetitionIcon, getCompetitionColor } from './UtilityCompetition';
+import { getCompetitionName, getCompetitionType, getCompetitionIcon, getCompetitionColor } from '../Utility';
 
 import './MatchDetail.css';
 

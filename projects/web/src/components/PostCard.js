@@ -9,7 +9,7 @@ import PostCardTagMotm from './PostCardTagMotm';
 
 import { ReactComponent as ReadMoreIcon } from '../icons/arrow_down.svg';
 import { ReactComponent as ReadMoreIconBelow } from '../icons/arrow_up.svg';
-import { ReactComponent as HighlightIcon } from '../icons/highlight.svg';
+import { ReactComponent as HighlightIcon } from '../icons/highlight_grey.svg';
 import { ReactComponent as StadiumIcon } from '../icons/stadium.svg';
 
 function PostCard({ post }) {

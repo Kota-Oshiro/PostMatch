@@ -11,7 +11,7 @@ import TeamCard from './TeamCard';
 import LeagueSelecter from './LeagueSelecter';
 import NotFoundPage from './error/NotFoundPage';
 
-import { getDefaultCompetitionId,getCompetitionName, getCompetitionColor, getCompetitionIcon } from './UtilityCompetition';
+import { getDefaultCompetitionId, getCompetitionName, getCompetitionColor, getCompetitionIcon } from '../Utility';
 
 function TeamList() {
   

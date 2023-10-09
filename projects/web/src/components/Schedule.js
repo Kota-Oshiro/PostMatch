@@ -16,7 +16,7 @@ import ScoreVisibleSwitcher from './ScoreVisibleSwitcher';
 import BannerList from './BannerList';
 import NotFoundPage from './error/NotFoundPage';
 
-import { getDefaultCompetitionId,getCompetitionName, getCompetitionColor, getCompetitionIcon } from './UtilityCompetition';
+import { getDefaultCompetitionId,getCompetitionName, getCompetitionColor, getCompetitionIcon } from '../Utility';
 
 // nationalバナー枠用、使うときだけ
 // const MatchCardListNational = React.lazy(() => import('./MatchCardListNational.js'));

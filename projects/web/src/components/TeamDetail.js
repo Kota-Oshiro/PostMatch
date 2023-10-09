@@ -6,7 +6,10 @@ import { Helmet } from 'react-helmet';
 
 import axios from 'axios';
 
+import './Profile.css';
 import './TabContent.css';
+import { hexToRgba } from '../Utility';
+
 import { ReactComponent as CrestIcon } from '../icons/crest.svg';
 
 import { Loader, LoaderInTabContent, SkeletonScreenPost } from './Loader';
@@ -259,60 +262,65 @@ function TeamDetail() {
         </Helmet>
 
         <div className='bg'></div>
-        <div className='tab-container'>
-          <div className='content-bg'  style={{backgroundImage: `linear-gradient(${team.club_color_code_first} 40%, #f7f7f7 80%)`}} >
-          <div className='tab-content'> 
-            <div className='tab-header'>
-              <span className='tab-header-name'>{ team.name_ja }</span>
+        <div className='profile-container'>
+          <div className='profile-card' style={{
+            backgroundImage: team.club_color_code_first
+              ? `linear-gradient(160deg, ${hexToRgba(team.club_color_code_first, 0.6)}, ${hexToRgba(team.club_color_code_first, 1)} 80%)`
+              : `linear-gradient(160deg, rgba(52, 101, 255, 0.6), rgba(52, 101, 255, 1) 60%)`
+          }}>
+            <div className='profile-header'>
+              <span className='profile-header-name team-profile'>{ team.name_ja }</span>
             </div>
-            <div className='tab-middle'>
+            <div className='profile-middle'>
               {team.competition_id !== 2119 ? (
-                <img src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/${team.crest_name}.webp`} className='tab-team-crest' style={{transition: 'none'}}/>
+                <img src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/${team.crest_name}.webp`} className='profile-team-crest' style={{transition: 'none'}}/>
               ) : (
-                <CrestIcon className='tab-team-crest'/>
+                <CrestIcon className='profile-team-crest'/>
               )}
-              <div className='tab-middle-item-wrapper'>
-                <div className='tab-middle-item'>
-                  <span className={team.competition_id === 2119 ? 'tab-middle-tla' : 'tab-middle-count'}>{team.tla}</span>
-                  <span className='tab-label'>略称</span>            
+              <div className='profile-middle-item-wrapper'>
+                <div className='profile-middle-item'>
+                  <span className={team.competition_id === 2119 ? 'profile-middle-tla' : 'profile-middle-count team-profile'}>{team.tla}</span>
+                  <span className='profile-label team-profile'>略称</span>            
                 </div>
-                <div className='tab-middle-item'>
-                  <span className='tab-middle-count'>{team.founded_year}</span>
-                  <span className='tab-label'>創設</span>            
+                <div className='profile-middle-item'>
+                  <span className='profile-middle-count team-profile'>{team.founded_year}</span>
+                  <span className='profile-label team-profile'>創設</span>            
                 </div>
-                <div className='tab-middle-item'>
-                  <span className='tab-middle-count'>{team.total_supporter_count}</span>
-                  <span className='tab-label'>サポーター</span>            
+                <div className='profile-middle-item'>
+                  <span className='profile-middle-count team-profile'>{team.total_supporter_count}</span>
+                  <span className='profile-label team-profile'>サポーター</span>            
                 </div>
               </div>
             </div>
-            <div className='tab-bottom'>
-              <div className='tab-profile-item'>
-                <h3 className='tab-profile-column'>スタジアム</h3>
-                <span className='tab-profile-text'>{ team.venue_ja }</span>
+            <div className='profile-bottom'>
+              <div className='profile-item team-profile'>
+                <h3 className='profile-column team-profile'>スタジアム</h3>
+                <span className='profile-text team-profile'>{ team.venue_ja }</span>
               </div>
-              <div className='tab-profile-item'>
-                <h3 className='tab-profile-column'>監督</h3>
-                <span className='tab-profile-text'>{ team.coach_name_ja }</span>
+              <div className='profile-item'>
+                <h3 className='profile-column team-profile'>監督</h3>
+                <span className='profile-text team-profile'>{ team.coach_name_ja }</span>
               </div>
             </div>
-            <div className='activity-tab'>
-              <div className={`activity-tab-column ${currentTab === 'posts' ? 'active' : ''}`} onClick={() => openForm('posts')}>
-                <span>ポスト</span>
-              </div>
-              <div className={`activity-tab-column ${currentTab === 'motms' ? 'active' : ''}`} onClick={() => openForm('motms')}>
-                <span>MOM投票</span>
-              </div>
-              <div className={`activity-tab-column ${currentTab === 'users' ? 'active' : ''}`} onClick={() => openForm('users')}>
-                <span>サポーター</span>
-              </div>
-            </div>        
-          </div>            
-            <div className='activity-container' {...handlers}>
-            {currentTab === 'posts' ? (
-              isLoadingPosts ? (
-              <SkeletonScreenPost />
-              ) : (
+          </div>
+        </div>
+        <div className='activity-container'>
+          <div className='activity-tab'>
+            <div className={`activity-tab-column ${currentTab === 'posts' ? 'active' : ''}`} onClick={() => openForm('posts')}>
+              <span>ポスト</span>
+            </div>
+            <div className={`activity-tab-column ${currentTab === 'motms' ? 'active' : ''}`} onClick={() => openForm('motms')}>
+              <span>MOM投票</span>
+            </div>
+            <div className={`activity-tab-column ${currentTab === 'users' ? 'active' : ''}`} onClick={() => openForm('users')}>
+              <span>サポーター</span>
+            </div>
+          </div>        
+          <div className='activity-content' {...handlers}>
+          {currentTab === 'posts' ? (
+            isLoadingPosts ? (
+            <SkeletonScreenPost />
+            ) : (
               <>
                 <h2 className='activity-title'>{dataPosts.pages[0].count}件のポスト</h2>
                 <PostList
@@ -354,8 +362,7 @@ function TeamDetail() {
             )}
           </div>
         </div>
-      </div>
-    </>
+      </>
   )}
 }
 

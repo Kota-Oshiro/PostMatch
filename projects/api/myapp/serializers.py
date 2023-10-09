@@ -60,6 +60,38 @@ class AccountHeaderSerializer(serializers.ModelSerializer):
         else:
             return None
 
+class AccountStasticsSerializer(serializers.ModelSerializer):
+    support_team_competition = serializers.SerializerMethodField()
+    support_team_season = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Account
+        fields = ['id', 'support_team', 'profile_image', 'support_team_competition', 'support_team_season']
+
+    def get_support_team_competition(self, obj):
+        if obj.support_team is not None:
+            return obj.support_team.competition_id
+        else:
+            return None
+
+    def get_support_team_season(self, obj):
+        if obj.support_team is not None:
+            return obj.support_team.season_id
+        else:
+            return None
+
+class TopPlayerSerializer(serializers.Serializer):
+    post_player__name = serializers.CharField()
+    count = serializers.IntegerField()
+
+class AccountStatisticsSerializer(serializers.Serializer):
+    post_count_this_month = serializers.IntegerField()
+    post_count_last_month = serializers.IntegerField()
+    match_count = serializers.IntegerField()
+    stadium_count_this_month = serializers.IntegerField()
+    stadium_count_last_month = serializers.IntegerField()
+    top_players = TopPlayerSerializer(many=True)
+
 class AccountEditTeamSerializer(serializers.ModelSerializer):
     class Meta:
         model = Team

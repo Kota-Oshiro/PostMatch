@@ -10,14 +10,15 @@ import { AuthContext } from '../AuthContext';
 import { formatUsing, formats } from '../DateFormat.js';
 
 import './UserDetail.css';
-import './TabContent.css';
+import './Profile.css';
 import { ReactComponent as SettingIcon } from '../icons/setting.svg';
-import { ReactComponent as XIcon } from '../icons/x_white.svg';
+import { ReactComponent as XIcon } from '../icons/x_black.svg';
 
 import { Loader, LoaderInTabContent, SkeletonScreenPost } from './Loader';
 import NotFoundPage from './error/NotFoundPage';
 
 // 初期表示で遅延読み込み対象
+const UserStatistics = React.lazy(() => import('./UserStatistics'));
 const PlayerList = React.lazy(() => import('./PlayerList'));
 const ScheduleList = React.lazy(() => import('./ScheduleList'));
 const PostList = React.lazy(() => import('./PostList'));
@@ -31,7 +32,7 @@ function UserDetail() {
 
   const { currentUser, setToastId, setToastMessage, setToastType } = useContext(AuthContext);
 
-  const [currentTab, setCurrentTab] = useState('posts'); 
+  const [currentTab, setCurrentTab] = useState('statistics'); 
 
   const [isExpanded, setExpanded] = useState(false);
   const [isLong, setIsLong] = useState(false);
@@ -52,7 +53,7 @@ function UserDetail() {
   };
 
   //スワイプしたらcurrentTabの更新
-  const tabs = ['posts', 'motms', 'watches'];
+  const tabs = ['statistics', 'posts', 'motms', 'watches'];
 
   const handlers = useSwipeable({
     onSwipedLeft: () => {
@@ -101,11 +102,19 @@ function UserDetail() {
   };
 
   // 各タブのキャンセルトークン（データ取得が未完了の場合の初期化に使う）
+  const sourceRefStatistics = useRef(axios.CancelToken.source());
   const sourceRefPosts = useRef(axios.CancelToken.source());
   const sourceRefMotms = useRef(axios.CancelToken.source());
   const sourceRefWatches = useRef(axios.CancelToken.source());
 
   // 各タブのフェッチ
+  const fetchStatistics = async ({ pageParam = 1 }) => {
+    const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/user/${id}/statistics/`, {
+      cancelToken: sourceRefStatistics.current.token
+    }); 
+    return res.data;
+  };
+
   const fetchPosts = async ({ pageParam = 1 }) => {
     const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/user/${id}/posts/?page=${pageParam}`, {
       cancelToken: sourceRefPosts.current.token
@@ -128,6 +137,10 @@ function UserDetail() {
   };
 
   // 各タブのuseQuery
+  const { data: dataStatistics, isLoading: isLoadingStatistics, isError: isErrorStatistics, error: errorStatistics } = useQuery(['statistics', id], fetchStatistics, {
+    enabled: currentTab === 'statistics', //タブがアクティブな時だけデータを取得
+  });
+
   const { data: dataPosts, isLoading: isLoadingPosts, isError: isErrorPosts, error: errorPosts, fetchNextPage: fetchNextPagePosts, hasNextPage: hasNextPagePosts, isFetchingNextPage: isFetchingNextPagePosts } = useInfiniteQuery(['posts', id], fetchPosts, {
     enabled: currentTab === 'posts', //タブがアクティブな時だけデータを取得
     staleTime: Infinity,
@@ -205,7 +218,6 @@ function UserDetail() {
       }
     };
   }, [dataPosts, isLoadingPosts, ignitionPagePosts, hasNextPagePosts, currentTab, fetchNextPagePosts]);
-
 
   useEffect(() => {
 
@@ -312,57 +324,57 @@ function UserDetail() {
       
       <div className='bg'></div>
       {account && (
-      <div className='tab-container'>
-        <div className='content-bg' style={{backgroundImage: `linear-gradient(${account.support_team ? account.support_team.club_color_code_first : '#3465FF'} 40%, #f7f7f7 80%)`}}>
-          <div className='tab-content'> 
-            <div className='tab-header'>
-              <span className='tab-header-name'>{ account.name }</span>
+      <>
+      <div className='profile-container'>
+        <div className='profile-card'>
+              <div className='profile-header'>
+              <span className='profile-header-name'>{ account.name }</span>
               {currentUser && currentUser.id ===  account.id &&
               <Link to='/user/edit' className='user-edit'>
                 <SettingIcon className='user-edit-icon'/>
               </Link>
               }
             </div>
-            <div className='tab-middle'>
-              <img src={ account.profile_image } className='tab-profile-image' style={{transition: 'none'}}/>
-              <div className='tab-middle-item-wrapper'>
-                <div className='tab-middle-item'>
+            <div className='profile-middle'>
+              <img src={ account.profile_image } className='profile-image' style={{transition: 'none'}}/>
+              <div className='profile-middle-item-wrapper'>
+                <div className='profile-middle-item'>
                   {account.support_team ? (
-                    <Link to={`/team/${account.support_team.id}`} className='tab-middle-crest'>
+                    <Link to={`/team/${account.support_team.id}`} className='profile-middle-crest'>
                       {account.support_team.competition_id !== 2119 ? (
                         <img src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/${account.support_team.crest_name}.webp`} />
                       ) : (
-                        <span className='tab-middle-tla'>{account.support_team.tla}</span>
+                        <span className='profile-middle-tla'>{account.support_team.tla}</span>
                       )}
                     </Link>
                   ) : (
-                    <span className='tab-middle-count'>-</span>
+                    <span className='profile-middle-count'>-</span>
                   )}
                   {account.support_team && account.supported_at ? (
-                    <span className='tab-label'>
+                    <span className='profile-label'>
                       { support_years !== 0 && `${support_years}年`}
                       { support_months !== 0 &&  `${support_months}ヶ月`}
                     </span>
                   ) : (
-                    <span className='tab-label'>応援</span>
+                    <span className='profile-label'>応援</span>
                   )}        
                 </div>
-                <div className='tab-middle-item'>
-                  <span className='tab-middle-count'>{account.total_post_count}</span>
-                  <span className='tab-label'>ポスト</span>            
+                <div className='profile-middle-item'>
+                  <span className='profile-middle-count'>{account.total_post_count}</span>
+                  <span className='profile-label'>ポスト</span>            
                 </div>
-                <div className='tab-middle-item'>
-                  <span className='tab-middle-count'>{account.total_watch_count}</span>
-                  <span className='tab-label'>観た</span>            
+                <div className='profile-middle-item'>
+                  <span className='profile-middle-count'>{account.total_watch_count}</span>
+                  <span className='profile-label'>観た</span>            
                 </div>
               </div>
             </div>
-            <div className='tab-bottom'>
-              <div className='tab-bottom-content'>
-                <span className='tab-label'>{formatUsing(account.created_at, formats.DATE)} 登録</span>
+            <div className='profile-bottom'>
+              <div className='profile-bottom-content'>
+                <span className='profile-label'>{formatUsing(account.created_at, formats.DATE)} 登録</span>
                 { account.twitter_id &&
-                <a href={`https://twitter.com/${account.twitter_id}`} className='tab-sns-link' target='_blank' rel='noopener noreferrer'>
-                  <XIcon className='tab-sns-icon'/>
+                <a href={`https://twitter.com/${account.twitter_id}`} className='profile-sns-link' target='_blank' rel='noopener noreferrer'>
+                  <XIcon className='profile-sns-icon'/>
                 </a>
                 }
               </div>
@@ -370,27 +382,39 @@ function UserDetail() {
                 <div className='user-description-wrapper'>
                   <pre className='user-description' style={accordionStyle} ref={mainTextRef}>{ account.description }</pre>
                   {isLong && !isExpanded &&
-                    <div onClick={handleExpand} className='user-description-accordion' style={{background: `linear-gradient(to right, transparent, ${account.support_team ? account.support_team.club_color_code_first : '#3465FF'} 12px)`}} >
+                    <div onClick={handleExpand} className='user-description-accordion'>
                       {!isExpanded && '続きを読む'}
                     </div>
                   }
                 </div>
               }
             </div>
-            <div className='activity-tab'>
-              <div className={`activity-tab-column ${currentTab === 'posts' ? 'active' : ''}`} onClick={() => openForm('posts')}>
-                <span>ポスト</span>
-              </div>
-              <div className={`activity-tab-column ${currentTab === 'motms' ? 'active' : ''}`} onClick={() => openForm('motms')}>
-                <span>MOM投票</span>
-              </div>
-              <div className={`activity-tab-column ${currentTab === 'watches' ? 'active' : ''}`} onClick={() => openForm('watches')}>
-                <span>観戦済</span>
-              </div>
-            </div>        
           </div>
-          <div className='activity-container' {...handlers}>
-          {currentTab === 'motms' ? (
+      </div>
+
+      <div className='activity-container'>
+        <div className='activity-tab'>
+          <div className={`activity-tab-column ${currentTab === 'statistics' ? 'active' : ''}`} onClick={() => openForm('statistics')}>
+            <span>統計</span>
+          </div>
+          <div className={`activity-tab-column ${currentTab === 'posts' ? 'active' : ''}`} onClick={() => openForm('posts')}>
+            <span>ポスト</span>
+          </div>
+          <div className={`activity-tab-column ${currentTab === 'motms' ? 'active' : ''}`} onClick={() => openForm('motms')}>
+            <span>MOM投票</span>
+          </div>
+          <div className={`activity-tab-column ${currentTab === 'watches' ? 'active' : ''}`} onClick={() => openForm('watches')}>
+            <span>観戦済</span>
+          </div>
+        </div>  
+        <div className='activity-content' {...handlers}>
+          {currentTab === 'statistics' ? (
+            isLoadingStatistics ? (
+              <LoaderInTabContent />
+            ) : (
+              <UserStatistics data={dataStatistics}  account={account} />
+            )
+          ) : currentTab === 'motms' ? (
             isLoadingMotms ? (
               <LoaderInTabContent />
             ) : (
@@ -433,9 +457,9 @@ function UserDetail() {
             </>
             )
           )}
-          </div>
         </div>
       </div>
+    </>
       )}
       </>
     )

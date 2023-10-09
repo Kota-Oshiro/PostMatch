@@ -4,7 +4,7 @@ import { useLocation } from 'react-router-dom';
 import TeamSelecter from './TeamSelecter';
 
 import './LeagueSelectModal.css';
-import { getCompetitionName, getCompetitionColor, getCompetitionIcon } from './UtilityCompetition';
+import { getCompetitionName, getCompetitionColor, getCompetitionIcon } from '../Utility';
 
 import { ReactComponent as CloseIcon } from '../icons/close.svg';
 
