@@ -8,7 +8,7 @@
 
 .statistics.statistics-lastmonth {
   margin-top: 1.8rem;
-  background-color: #888;
+  background: linear-gradient(160deg, rgba(136, 136, 136, 0.6), rgba(136, 136, 136, 1) 60%)
 }
 
 .statistics {

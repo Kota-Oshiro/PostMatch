@@ -1212,6 +1212,7 @@ def fetch_youtube_videos():
         video_found = False
         for item in response.get("items", []):
             title = item["snippet"]["title"]
+            print(f"Retrieved video title: {title}")
 
             # 単語が存在するかどうかのみで検索
             if home_team_name in title and away_team_name in title and "ハイライト" in title:
