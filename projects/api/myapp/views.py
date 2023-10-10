@@ -1184,7 +1184,7 @@ def fetch_youtube_videos():
         2001: "UCJQj2lbG_3w8UrncJd7JZXw",
     }
 
-    one_day_ago = timezone.now() - timedelta(days=2)
+    one_day_ago = timezone.now() - timedelta(days=3)
 
     print(f"Current time: {timezone.now()}")
     print(f"One day ago: {one_day_ago}")
@@ -1209,6 +1209,8 @@ def fetch_youtube_videos():
             type="video",
             publishedAfter=start_date_str,
             maxResults=50,
+            regionCode="JP",
+            hl="ja_JP",
         )
         response = request.execute()
 
