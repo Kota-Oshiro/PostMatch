@@ -1186,9 +1186,6 @@ def fetch_youtube_videos():
 
     one_day_ago = timezone.now() - timedelta(days=3)
 
-    print(f"Current time: {timezone.now()}")
-    print(f"One day ago: {one_day_ago}")
-
     matches = Match.objects.filter(status='FINISHED', started_at__gte=one_day_ago, highlight_video_url__isnull=True).select_related('home_team', 'away_team')
 
     for match in matches:
@@ -1210,16 +1207,14 @@ def fetch_youtube_videos():
             publishedAfter=start_date_str,
             maxResults=50,
             regionCode="JP",
-            hl="ja_JP",
         )
         response = request.execute()
 
-        print(response)
+        #print(response)
 
         video_found = False
         for item in response.get("items", []):
             title = item["snippet"]["title"]
-            print(f"Retrieved video title: {title}")
 
             # 単語が存在するかどうかのみで検索
             if home_team_name in title and away_team_name in title and "ハイライト" in title:
