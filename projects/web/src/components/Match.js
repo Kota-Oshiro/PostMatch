@@ -240,7 +240,7 @@ function Match() {
       {data.match.highlight_video_url && <EmbedVideo match={data.match} /> }
 
       <div className='activity-container match-post-list'>
-        <div className='activity-tab match-detail'>
+        <div className='activity-tab'>
           <div className={`activity-tab-column match-detail ${currentTab === 'posts' ? 'active' : ''}`} onClick={() => openForm('posts')}>
             <span>ポスト</span>
             {data.match && <span className='total-post-count'>{ data.match.total_post_count }</span>}
@@ -249,7 +249,7 @@ function Match() {
             <span>MOM投票</span>
           </div>
         </div>
-        <div {...handlers}>
+        <div className='activity-content' {...handlers}>
         {currentTab === 'posts' ? (
           <>
             <h2 className='activity-title'>みんなの観戦記録</h2>

@@ -51,11 +51,6 @@
   color: #888888;
   font-weight: 900;
 }
-
-.activity-tab-column.match-detail > span {
-  color: #000;
-  opacity: 0.5;
-}
   
 .activity-tab-column.active > span {
   color: #000;
