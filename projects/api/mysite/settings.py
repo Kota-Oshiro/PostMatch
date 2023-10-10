@@ -212,8 +212,6 @@ USE_I18N = True
 USE_TZ = True
 USE_L10N = True
 
-
-
 #メール送信
 DEFAULT_FROM_EMAIL = 'info@post-match.com'
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' # コンソールログでメールテキストを送信する

@@ -1184,7 +1184,10 @@ def fetch_youtube_videos():
         2001: "UCJQj2lbG_3w8UrncJd7JZXw",
     }
 
-    one_day_ago = timezone.now() - timedelta(days=1)
+    one_day_ago = timezone.now() - timedelta(days=2)
+
+    print(f"Current time: {timezone.now()}")
+    print(f"One day ago: {one_day_ago}")
 
     matches = Match.objects.filter(status='FINISHED', started_at__gte=one_day_ago, highlight_video_url__isnull=True).select_related('home_team', 'away_team')
 
@@ -1208,6 +1211,8 @@ def fetch_youtube_videos():
             maxResults=50,
         )
         response = request.execute()
+
+        print(response)
 
         video_found = False
         for item in response.get("items", []):
