@@ -334,7 +334,7 @@ class UserStatistics(UserBase, APIView):
         stadium_count_last_month = Post.objects.filter(user_id=account_id, created_at__lt=first_day_this_month, created_at__gte=first_day_last_month, is_stadium=True).count()
 
         # 今月の選手投票数
-        players_this_month = list(Post.objects.filter(user_id=account_id, created_at__gte=first_day_this_month).values('player__id', 'player__name_ja').annotate(count=Count('player_id')).order_by('-count', 'player__name')[:5])
+        players_this_month = list(Post.objects.filter(user_id=account_id, created_at__gte=first_day_this_month).values('player__id', 'player__name_ja', 'player__team__badge_name').annotate(count=Count('player_id')).order_by('-count', 'player__name')[:5])
         while len(players_this_month) < 5:
             players_this_month.append({
                 "player__id": None,
@@ -343,7 +343,7 @@ class UserStatistics(UserBase, APIView):
             })
 
         # 前月の選手投票数
-        players_last_month = list(Post.objects.filter(user_id=account_id, created_at__lt=first_day_this_month, created_at__gte=first_day_last_month).values('player__id', 'player__name_ja').annotate(count=Count('player_id')).order_by('-count', 'player__name')[:5])
+        players_last_month = list(Post.objects.filter(user_id=account_id, created_at__lt=first_day_this_month, created_at__gte=first_day_last_month).values('player__id', 'player__name_ja', 'player__team__badge_name').annotate(count=Count('player_id')).order_by('-count', 'player__name')[:5])
         while len(players_last_month) < 5:
             players_last_month.append({
                 "player__id": None,

@@ -81,7 +81,8 @@ class AccountStasticsSerializer(serializers.ModelSerializer):
             return None
 
 class TopPlayerSerializer(serializers.Serializer):
-    post_player__name = serializers.CharField()
+    post_player__name_ja = serializers.CharField()
+    badge_name = serializers.CharField()
     count = serializers.IntegerField()
 
 class AccountStatisticsSerializer(serializers.Serializer):

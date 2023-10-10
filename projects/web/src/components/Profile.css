@@ -84,8 +84,7 @@
   height: 2.8rem;
 }
 
-.profile-middle-tla {
-  color: #fff;
+.profile-middle-tla  {
   font-size: 1.6rem;
   line-height: 3.6rem;
   font-weight: 900;
@@ -148,7 +147,7 @@
   opacity: 0.8;
 }
 
-.profile-header-name.team-profile, .profile-middle-count.team-profile, .profile-label.team-profile, .profile-column.team-profile , .profile-text.team-profile {
+.profile-header-name.team-profile, .profile-middle-tla.team-profile, .profile-middle-count.team-profile, .profile-label.team-profile, .profile-column.team-profile , .profile-text.team-profile {
   color: #fff;
 }
 

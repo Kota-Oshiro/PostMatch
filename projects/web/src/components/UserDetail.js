@@ -344,7 +344,12 @@ function UserDetail() {
                       {account.support_team.competition_id !== 2119 ? (
                         <img src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/${account.support_team.crest_name}.webp`} />
                       ) : (
-                        <span className='profile-middle-tla'>{account.support_team.tla}</span>
+                        <span className='profile-middle-tla'
+                          style={{ 
+                            color: account.support_team.club_color_code_first
+                          }}
+                        >
+                        {account.support_team.tla}</span>
                       )}
                     </Link>
                   ) : (

@@ -279,7 +279,7 @@ function TeamDetail() {
               )}
               <div className='profile-middle-item-wrapper'>
                 <div className='profile-middle-item'>
-                  <span className={team.competition_id === 2119 ? 'profile-middle-tla' : 'profile-middle-count team-profile'}>{team.tla}</span>
+                  <span className={team.competition_id === 2119 ? 'profile-middle-tla team-profile' : 'profile-middle-count team-profile'}>{team.tla}</span>
                   <span className='profile-label team-profile'>略称</span>            
                 </div>
                 <div className='profile-middle-item'>
