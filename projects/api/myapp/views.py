@@ -699,6 +699,27 @@ class ScheduleList(generics.ListAPIView):
                 competition_id=competition_id, season_year=season_year, stage=closest_stage, matchday=closest_matchday
             ).select_related('home_team', 'away_team').order_by('group', 'started_at', 'home_team_id')
 
+class TeamScheduleList(generics.ListAPIView):
+    permission_classes = [AllowAny]
+
+    serializer_class = MatchSerializer
+    pagination_class = CommonPagination
+
+    def get_queryset(self):
+        team_id = self.kwargs.get('team_id')
+        return Match.objects.select_related('home_team', 'away_team').filter(Q(home_team=(team_id)) | Q(away_team=(team_id))).order_by('started_at')
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
 class NationalMatches(generics.ListAPIView):
 
     permission_classes = [AllowAny]
@@ -1184,7 +1205,7 @@ def fetch_youtube_videos():
         2001: "UCJQj2lbG_3w8UrncJd7JZXw",
     }
 
-    one_day_ago = timezone.now() - timedelta(days=1)
+    one_day_ago = timezone.now() - timedelta(days=1 )
 
     matches = Match.objects.filter(status='FINISHED', started_at__gte=one_day_ago, highlight_video_url__isnull=True).select_related('home_team', 'away_team')
 

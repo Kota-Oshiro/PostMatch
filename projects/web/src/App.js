@@ -19,6 +19,7 @@ import TeamDetail from './components/TeamDetail';
 import Match from './components/Match';
 import Schedule from './components/Schedule';
 import ScheduleSingle from './components/ScheduleSingle';
+import ScheduleTeam from './components/ScheduleTeam';
 import Posts from './components/Posts';
 import PostDetail from './components/PostDetail';
 import Standing from './components/Standing';
@@ -185,6 +186,7 @@ function App() {
                 <Route path='/match/:id' element={<Match />} />
                 <Route path='/schedules' element={<Schedule />} />
                 <Route path='/schedule/:id' element={<ScheduleSingle />} />
+                <Route path='/schedule/team/:id' element={<ScheduleTeam />} />
                 <Route path='/posts/' element={<Posts />} />
                 <Route path='/post/:id' element={<PostDetail />} />
                 <Route path='/standings' element={<Standing />} />

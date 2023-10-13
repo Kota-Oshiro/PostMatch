@@ -40,6 +40,7 @@ export const getCompetitionName = (competitionId) => {
     case 2001: return 'チャンピオンズリーグ';
     case 10000001: return '国際親善試合';
     case 10000002: return 'キリンチャレンジカップ';
+    case 10000003: return 'FIFAワールドカップ アジア2次予選';
     case 'others': return 'その他';
     default: return 'マッチアップ';
   }
@@ -69,8 +70,38 @@ export const getCompetitionColor = (competitionId) => {
     case 2119: return '#000000';
     case 2001: return '#091442';
     case 10000001:
-    case 10000002: return '#052667';
+    case 10000002:
+    case 10000003: return '#052667';
     case 'others': return '#888888';
+    default: return'#3465FF';
+  }
+}
+
+export const getTeamId = (teamCode) => {
+  switch (teamCode) {
+    case 'japan': return 766;
+    default: return 766;
+  }
+}
+
+export const getTeamName = (teamId) => {
+  switch (teamId) {
+    case 766: return 'サッカー日本代表';
+    default: return '試合スケジュール';
+  }
+}
+
+export const getTeamIcon = (teamId) => {
+  switch (teamId) {
+    case 766: return NationJpnIcon;
+    case 'others': return EarthIcon;
+    default: return EarthIcon;
+  }
+}
+
+export const getTeamColor = (teamId) => {
+  switch (teamId) {
+    case 766: return '#052667';
     default: return'#3465FF';
   }
 }

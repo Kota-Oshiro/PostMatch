@@ -336,15 +336,6 @@ function Schedule() {
 
       <BannerList />
 
-      {/*
-      <Suspense fallback={<SkeletonMatchCardList />}>
-        {isLoadingMatchCardList ? (
-          <SkeletonMatchCardList />
-        ) : (
-          matchCardData && <MatchCardListNational data={matchCardData} />
-        )}
-      </Suspense>
-      */}
       </div>
         
     </>

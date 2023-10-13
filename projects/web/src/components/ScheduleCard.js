@@ -23,36 +23,38 @@ function ScheduleCard({ match, isScoreVisible, isFirst, isLast, isSingle }) {
     const competitionId = match.competition_id
 
     return (
-        <>
-        {match.home_team ? (
-            <Link to={`/match/${match.id}`} className='match-links' onClick={(e) => {if (e.target.closest('.schedule-highlight')) {e.preventDefault();}}}>
-            <div className={classNames.join(' ')}>
+        <Link to={`/match/${match.id}`} className='match-links' onClick={(e) => {if (e.target.closest('.schedule-highlight')) {e.preventDefault();}}}>
+        <div className={classNames.join(' ')}>
             <div className='schedule-block'>
                 <div className='schedule-left'>
-                    {competitionId !== 2119 ? (                
+                    {match.home_team && competitionId !== 2119 ? (             
                         <img
                         src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/${match.home_team.crest_name}.webp`}
                         alt={match.home_team.tla}
                         className='schedule-crest'
                         />
-                    ) : (
+                    ) : competitionId === 2119 ? (
                         <div className='schedule-tmp-crest'>
-                            <TmpCrest color={match.home_team.club_color_code_first}/>
-                            <span className='schedule-tla'>{match.home_team.tla}</span>
+                        <TmpCrest color={match.home_team.club_color_code_first}/>
+                        <span className='schedule-tla'>{match.home_team.tla}</span>
                         </div>
+                    ) : (
+                        <CrestIcon className='schedule-crest'/>
                     )}
                     {renderMatchScore(match, isScoreVisible, competitionId)}
-                    {competitionId !== 2119 ? (                
+                    {match.away_team && competitionId !== 2119 ? (             
                         <img
                         src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/${match.away_team.crest_name}.webp`}
                         alt={match.away_team.tla}
                         className='schedule-crest'
                         />
-                    ) : (
+                    ) : competitionId === 2119 ? (
                         <div className='schedule-tmp-crest'>
-                            <TmpCrest color={match.away_team.club_color_code_first} />
-                            <span className='schedule-tla'>{match.away_team.tla}</span>
+                        <TmpCrest color={match.away_team.club_color_code_first}/>
+                        <span className='schedule-tla'>{match.away_team.tla}</span>
                         </div>
+                    ) : (
+                        <CrestIcon className='schedule-crest'/>
                     )}
                     {renderMatchDateTime(match)}
                 </div>
@@ -74,38 +76,8 @@ function ScheduleCard({ match, isScoreVisible, isFirst, isLast, isSingle }) {
                     </div>
                 </div>
             </div>
-            </div>
-            </Link>
-        ) : (
-            <div className={classNames.join(' ')}>
-                <div className='schedule-block'>
-                    <div className='schedule-left'>                   
-                        <CrestIcon className='schedule-crest'/>
-                        {renderMatchScore(match, isScoreVisible, competitionId)}
-                        <CrestIcon className='schedule-crest'/>
-                        {renderMatchDateTime(match)}
-                    </div>
-                    <div className='schedule-right'>
-                        {match.highlight_video_url && 
-                            <a href={match.highlight_video_url} className='schedule-highlight' onClick={(e) => {e.stopPropagation()}} target='_blank' rel='noopener noreferrer'>
-                                <VideoIcon className='schedule-icon schedule-icon-video'/>
-                            </a>                    
-                        }
-                        <div className='schedule-record'>
-                            <div className='schedule-record-block'>
-                                <WatchedIconGrey className='schedule-icon' />
-                                <span className='schedule-record-count'>{match.total_watch_count}</span>
-                            </div>
-                            <div className='schedule-record-block'>
-                                <PostIcon className='schedule-icon' />
-                                <span className='schedule-record-count'>{match.total_post_count}</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        )}
-        </>
+        </div>
+    </Link>
     );
 }
 
@@ -115,10 +87,13 @@ function renderMatchScoreForSchedule(match, isScoreVisible, competitionId) {
     const { status, home_score, away_score } = match;
     const baseClasses = ['schedule-text'];
     
-    // TIMEDのときの時間表示
-    if (status === 'TIMED') {
+    // 未実施の試合の時間表示
+    if (status === 'TIMED' || status === 'SCHEDULED') {
         baseClasses.push('schedule-timed');
-        return <span className={baseClasses.join(' ')}>{formatUsing(match.started_at, formats.HOUR_MINUTE)}</span>;
+        const timeDisplay = status === 'TIMED' 
+            ? formatUsing(match.started_at, formats.HOUR_MINUTE) 
+            : '-- : --';
+        return <span className={baseClasses.join(' ')}>{timeDisplay}</span>;
     }
     
     // スコア表示且つ最近 または 最近でない場合はスコア表示

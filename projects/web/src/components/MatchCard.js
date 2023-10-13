@@ -29,39 +29,49 @@ function MatchCard({ match, className }) {
         <div className='match-card-content'>
           <span className='match-card-text'>{ competitionType }{ match.matchday }</span>
           <div className='match-card-scoreboard'>
-            {match.competition_id !== 2119 ? (
-              <img
-              src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/${match.home_team.crest_name}.webp`}
-              className='match-card-crest-home'
-              alt={match.home_team.tla}
-              />
-            ) : (
-              <CrestIcon className='match-card-crest-home' />
-            )}
-            {match.competition_id !== 2119 ? (
-              <img
-              src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/${match.away_team.crest_name}.webp`}
-              className='match-card-crest-away'
-              alt={match.away_team.tla}
-              />
-            ) : (
-              <CrestIcon className='match-card-crest-away' />
-            )}
-            <span className={`match-card-team-home ${match.competition_id === 2119 ? 'match-card-tla-japanese' : ''}`} style={{background: `linear-gradient( -90deg, ${match.home_team.club_color_code_first}, 90%, white)`}}>
-              { match.home_team.tla }
-            </span>
+            <MatchCardCrest team={match.home_team} competitionId={match.competition_id} position="home" />
+            <MatchCardCrest team={match.away_team} competitionId={match.competition_id} position="away" />
+
+            <MatchCardTeamName team={match.home_team} competitionId={match.competition_id} position="home" />
             <VersusEngIcon className='match-card-versus-icon'/>
-            <span className={`match-card-team-away ${match.competition_id === 2119 ? 'match-card-tla-japanese' : ''}`} style={{background: `linear-gradient( 90deg, ${match.away_team.club_color_code_first}, 90%, white)`}}>
-              { match.away_team.tla }
-            </span>
+            <MatchCardTeamName team={match.away_team} competitionId={match.competition_id} position="away" />
           </div>
           {renderMatchCardStatus(match)}
         </div>
-        </div>
+      </div>
       </div>
     </Link>
   );
 }
+
+const MatchCardCrest = ({ team, competitionId, position }) => {
+  if (!team || competitionId === 2119) {
+    return <CrestIcon className={`match-card-crest-${position}`} />;
+  }
+
+  return (
+    <img
+      src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/${team.crest_name}.webp`}
+      className={`match-card-crest-${position}`}
+      alt={team.tla}
+    />
+  );
+};
+
+const MatchCardTeamName = ({ team, competitionId, position }) => {
+  const gradientDegree = position === "home" ? "-90deg" : "90deg";
+  const background = team 
+    ? `linear-gradient( ${gradientDegree}, ${team.club_color_code_first}, 90%, white)`
+    : `linear-gradient( ${gradientDegree}, #888888, 90%, white)`;
+  
+  const classes = `match-card-team-${position} ${(!team || competitionId === 2119) ? 'match-card-tla-japanese' : ''}`;
+
+  return (
+    <span className={classes} style={{background: background}}>
+      {team ? team.tla : '未定'}
+    </span>
+  );
+};
 
 // 試合スコアの定義
 function renderMatchCardStatus(match) {

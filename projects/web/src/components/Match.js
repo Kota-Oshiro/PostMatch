@@ -200,8 +200,14 @@ function Match() {
   return (
     <>
       <Helmet>
-        <title>{data.match.home_team.name_ja} vs {data.match.away_team.name_ja} - ポストマッチ</title>
-        <meta property='og:title' content={`${data.match.home_team.name_ja} vs ${data.match.away_team.name_ja} - ポストマッチ`} />
+        <title>
+          {data.match.home_team ? data.match.home_team.name_ja : '未定'} vs {data.match.away_team ? data.match.away_team.name_ja : '未定'} - ポストマッチ
+        </title>
+        <meta 
+          property='og:title' 
+          content={`${data.match.home_team ? data.match.home_team.name_ja : '未定'} vs ${data.match.away_team ? data.match.away_team.name_ja : '未定'} - ポストマッチ`
+          } 
+        />
       </Helmet>
 
       {isPostModalVisible &&

@@ -108,7 +108,7 @@ function UserDetail() {
   const sourceRefWatches = useRef(axios.CancelToken.source());
 
   // 各タブのフェッチ
-  const fetchStatistics = async ({ pageParam = 1 }) => {
+  const fetchStatistics = async () => {
     const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/user/${id}/statistics/`, {
       cancelToken: sourceRefStatistics.current.token
     }); 
@@ -441,9 +441,10 @@ function UserDetail() {
             <h2 className='activity-title'>観戦した試合</h2>
             <ScheduleList
               data={dataWatches}
-              isLoading={isErrorWatches}
+              isLoading={isLoadingWatches}
               isFetchingNextPage={isFetchingNextPageWatches}
               ignitionPage={ignitionPageWatches}
+              fromComponent='UserDetail'
             />
             </>
             )

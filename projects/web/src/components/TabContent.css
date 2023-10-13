@@ -77,6 +77,7 @@
 
 .activity-container.match-post-list {
   margin: 24px auto 144px;
+  padding: 0;
   width: calc(100% - 24px);
 }
 

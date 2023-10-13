@@ -8,7 +8,7 @@ import './MatchPostForm.css';
 import { ReactComponent as CloseIcon } from '../icons/close.svg';
 import { ReactComponent as ArrowDownIcon } from '../icons/arrow_down.svg';
 import { ReactComponent as ArrowUpIcon } from '../icons/arrow_up.svg';
-import { ReactComponent as HighlightIcon } from '../icons/highlight.svg';
+import { ReactComponent as HighlightIcon } from '../icons/highlight_grey.svg';
 import { ReactComponent as HighlightFillIcon } from '../icons/highlight_white.svg';
 import { ReactComponent as StadiumIcon } from '../icons/stadium.svg';
 import { ReactComponent as StadiumFillIcon } from '../icons/stadium_white.svg';

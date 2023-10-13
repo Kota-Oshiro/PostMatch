@@ -27,36 +27,13 @@ function MatchDetail({ match, goals }) {
       </div>
       <div className='match-content'>
         <span className='match-text'>{ competitionType }{match.matchday}</span>
-        <div className='match-scoreboard'>          
-          <Link to={`/team/${match.home_team.id}`} className='match-crest-home'>
-            {match.competition_id !== 2119 ? (
-            <img
-              src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/${match.home_team.crest_name}.webp`}
-              alt={match.home_team.tla}
-              className='match-crest-img'
-            />
-            ) : (
-              <CrestIcon className='match-crest-img' />
-            )}
-          </Link>
-          <Link to={`/team/${match.away_team.id}`} className='match-crest-away'>
-            {match.competition_id !== 2119 ? (
-            <img
-              src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/${match.away_team.crest_name}.webp`}
-              alt={match.away_team.tla}
-              className='match-crest-img'
-            />
-            ) : (
-              <CrestIcon className='match-crest-img' />
-            )}
-          </Link>
-          <span className={`match-team-home ${match.competition_id === 2119 ? 'match-tla-japanese' : ''}`} style={{background: `linear-gradient( -90deg, ${match.home_team.club_color_code_first}, 90%, white)`}}>
-            { match.home_team.tla }
-          </span>
+        <div className='match-scoreboard'>
+          <TeamCrestLink team={match.home_team} position="home" competitionId={match.competition_id} />
+          <TeamCrestLink team={match.away_team} position="away" competitionId={match.competition_id} />
+          
+          <TeamNameWithGradient team={match.home_team} competitionId={match.competition_id} position="home" />
           {renderMatchScore(match)}
-          <span className={`match-team-away ${match.competition_id === 2119 ? 'match-tla-japanese' : ''}`} style={{background: `linear-gradient( 90deg, ${match.away_team.club_color_code_first}, 90%, white)`}}>
-            { match.away_team.tla }
-          </span>
+          <TeamNameWithGradient team={match.away_team} competitionId={match.competition_id} position="away" />
         </div>
         {renderMatchStatus(match)}
         {renderGoals(match, goals)}
@@ -71,6 +48,45 @@ function MatchDetail({ match, goals }) {
   </>
   );
 }
+
+const TeamCrestLink = ({ team, position, competitionId }) => {
+  const defaultCrest = (
+    <div className={`match-crest-${position}`}>
+      <CrestIcon className='match-crest-img' />
+    </div>
+  );
+
+  if (!team) return defaultCrest;
+
+  return (
+    <Link to={`/team/${team.id}`} className={`match-crest-${position}`}>
+      {competitionId !== 2119 ? (
+        <img
+          src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/${team.crest_name}.webp`}
+          alt={team.tla}
+          className='match-crest-img'
+        />
+      ) : (
+        <CrestIcon className='match-crest-img' />
+      )}
+    </Link>
+  );
+};
+
+const TeamNameWithGradient = ({ team, competitionId, position }) => {
+  const gradientDegree = position === "home" ? "-90deg" : "90deg";
+  const background = team 
+    ? `linear-gradient( ${gradientDegree}, ${team.club_color_code_first}, 90%, white)`
+    : `linear-gradient( ${gradientDegree}, #888888, 90%, white)`;
+
+  return (
+    <span 
+      className={`match-team-${position} ${(!team || competitionId === 2119) ? 'match-tla-japanese' : ''}`} 
+      style={{background: background}}>
+      {team ? team.tla : '未定'}
+    </span>
+  );
+};
 
 // 試合スコアの定義
 function renderMatchScore(match) {
@@ -93,7 +109,7 @@ function renderMatchScore(match) {
   }
 }
 
-// 試合スコアの定義
+// 試合ステータスの定義
 function renderMatchStatus(match) {
   if (match.status === 'FINISHED') {
     return (
