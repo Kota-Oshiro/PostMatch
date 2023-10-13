@@ -132,6 +132,7 @@ function ScheduleTeam() {
                 isLoading={isLoading}
                 isFetchingNextPage={isFetchingNextPage}
                 ignitionPage={ignitionPage}
+                isScoreVisible={isScoreVisible}
                 fromComponent='ScheduleTeam'
                 />
               )}

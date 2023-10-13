@@ -6,7 +6,7 @@ import { Loader, LoaderSpinner } from './Loader';
 import ScheduleCard from './ScheduleCard';
 import NoContent from './NoContent';
 
-function ScheduleList({ data, isLoading, isFetchingNextPage, ignitionPage, fromComponent }) {
+function ScheduleList({ data, isLoading, isFetchingNextPage, ignitionPage, isScoreVisible, fromComponent }) {
 
   const totalCount = data?.pages.reduce((sum, page) => sum + page.results.length, 0);
 
@@ -40,6 +40,7 @@ function ScheduleList({ data, isLoading, isFetchingNextPage, ignitionPage, fromC
                     match={selectedMatch}
                     isFirst={matchIndex === 0 && selectedMatch.stage !== 'FINAL'}
                     isLast={matchIndex === pageData.results.length - 1 && selectedMatch.stage !== 'FINAL'}
+                    isScoreVisible={isScoreVisible}
                   />
                 );
               })}
