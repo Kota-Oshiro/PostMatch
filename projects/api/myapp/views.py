@@ -906,6 +906,11 @@ def fetch_teams_data(competition_code):
     #    'coach_name', 'api_updated_at'
     #])
 
+    #更新したくないカラムを除外
+    Team.objects.bulk_update(updated_teams, [
+        'season_id', 'coach_id', 'coach_name', 'api_updated_at'
+    ])
+
     Team.objects.bulk_create(new_teams)
 
 def fetch_teams_from_competitions():

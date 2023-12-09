@@ -19,6 +19,11 @@ function StandingCard({ data, isLast, isSingle, isFirst, isSecond, isThird, isBo
         if (isThird) classNamesBar.push('third-position');
         if (isBottom) classNamesBar.push('bottom-position');
 
+        // 次の相手がいないとき用のスタイル指定
+        if (data.next_opponent_team === null) {
+            classNames.push('no-oppenent-stading-card');
+        }
+
     const competitionId = data.competition_id
 
     return (
@@ -57,18 +62,20 @@ function StandingCard({ data, isLast, isSingle, isFirst, isSecond, isThird, isBo
                     <span className='standing-text'>{data.goals_for}</span>
                     <span className='standing-text'>{data.goals_against}</span>
                     <span className='standing-text'>{data.goal_difference > 0 ? `+${data.goal_difference}` : data.goal_difference}</span>
-                    {competitionId !== 2119 ? (                
-                        <img
-                        src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/${data.next_opponent_team.crest_name}.webp`}
-                        alt={data.next_opponent_team.tla}
-                        className='standing-crest-next'
-                        />
-                    ) : (
-                        <div className='standing-tmp-crest-next'>
-                            <TmpCrest color={data.next_opponent_team.club_color_code_first}/>
-                            <span className='schedule-tla'>{data.next_opponent_team.tla}</span>
-                        </div>
-                    )}
+                    {data.next_opponent_team !== null ? (
+                        competitionId !== 2119 ? (
+                            <img
+                                src={`https://res.cloudinary.com/dx5utqv2s/image/upload/v1686214597/Crest/${data.next_opponent_team.crest_name}.webp`}
+                                alt={data.next_opponent_team.tla}
+                                className='standing-crest-next'
+                            />
+                        ) : (
+                            <div className='standing-tmp-crest-next'>
+                                <TmpCrest color={data.next_opponent_team.club_color_code_first}/>
+                                <span className='schedule-tla'>{data.next_opponent_team.tla}</span>
+                            </div>
+                        )
+                    ) : null}
                 </div>
             </div>
             </Link>

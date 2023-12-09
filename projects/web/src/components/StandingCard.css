@@ -11,6 +11,10 @@
     border-radius: 0 0 6px 6px;
 }
 
+.standing-card.no-oppenent-stading-card {
+    padding-right: 48px;
+}
+
 .standing-bar {
     position: absolute;
     top: calc(50% - 12px);
