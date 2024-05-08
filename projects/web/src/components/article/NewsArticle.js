@@ -124,19 +124,6 @@ const newsArticle = [
         },
         {
           type: "text",
-          value: "ありがたいことに手伝ってくれる知人（ミラニスタ）も見つかりまして、気長にアップデートしていきます。"
-        },
-        {
-          type: "text",
-          value: "もし、サッカー観戦が趣味で、サービスを改善したり広めていくことに協力しても良いよ、という方がいればお気軽にTwitter改めXにご連絡ください！"
-        },
-        {
-          type: "link",
-          href: "https://twitter.com/ktbc008",
-          value: "@ktbc008"
-        },
-        {
-          type: "text",
           value: "という訳で本記事は以上です。"
         },
         {
